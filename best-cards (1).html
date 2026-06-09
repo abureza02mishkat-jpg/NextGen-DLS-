@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Best Cards DB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let initTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', initTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            document.addEventListener('touchstart', function(event) { if (event.touches.length > 1) { event.preventDefault(); } }, { passive: false });
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+            document.addEventListener('wheel', function(event) { if (event.ctrlKey) event.preventDefault(); }, { passive: false });
+        })();
+    </script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root { 
+            --bg-main: #0a0e17; --bg-panel: #111827; --bg-inner: #06090f; 
+            --text-main: #f1f2f6; --text-muted: #808e9b; --primary: #f97316; 
+            --border-light: rgba(255,255,255,0.05); 
+            --accent-orange: #f97316;
+        }
+        :root[data-theme="light"] { 
+            --bg-main: #f1f4f9; --bg-panel: #ffffff; --bg-inner: #e5e7eb; 
+            --text-main: #1e293b; --text-muted: #4b5563; --border-light: rgba(0,0,0,0.1); 
+        }
+        
+        html, body { 
+            width: 100vw; max-width: 100%; overflow-x: hidden; touch-action: pan-y; 
+            background-color: var(--bg-main); color: var(--text-main); padding-bottom: 50px; 
+            transition: background-color 0.3s ease, color 0.3s ease; user-select: none; 
+            -webkit-user-select: none; font-family: 'Poppins', sans-serif; 
+        }
+        
+        .sticky-top-section { 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
+            background-color: var(--bg-main); border-bottom: 2px solid var(--accent-orange); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); padding-bottom: 15px; 
+        }
+        
+        .header { 
+            padding: 25px 20px 20px 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            width: 100%;
+        }
+        
+        .header-title-wrapper { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 10px; 
+        }
+        
+        .page-title { 
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--accent-orange); 
+            text-transform: uppercase; 
+        }
+
+        .filter-bar { display: flex; flex-direction: column; gap: 12px; max-width: 1200px; margin: 0 auto; padding: 5px 15px 0 15px; }
+
+        .search-box { width: 100%; position: relative; }
+        .search-box input { width: 100%; padding: 12px 15px 12px 40px; border-radius: 25px; border: 1px solid var(--border-light); background: var(--bg-inner); color: var(--text-main); outline: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 13px; transition: 0.3s; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px;}
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(249, 115, 22, 0.2); }
+
+        .horizontal-scroll-filters { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; align-items: center; }
+        .horizontal-scroll-filters::-webkit-scrollbar { display: none; }
+        .pill-select { width: auto; flex-shrink: 0; padding: 8px 30px 8px 15px; border-radius: 20px; border: 1px solid var(--border-light); background-color: var(--bg-inner); color: var(--text-muted); font-size: 12px; font-weight: 600; outline: none; cursor: pointer; white-space: nowrap; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23808e9b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 10px top 50%; background-size: 8px auto; transition: 0.2s; font-family: 'Poppins', sans-serif;}
+        .pill-select:focus { border-color: var(--primary); color: var(--primary); }
+        
+        /* 🔥 এখানেই কার্ডের উপরের গ্যাপ (padding-top) ২৪০px করে স্পেস বাড়ানো হয়েছে 🔥 */
+        .cards-grid { max-width: 1200px; margin: 0 auto; padding: 240px 15px 35px 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); justify-content: center; gap: 30px; } 
+
+        .theme-Normal { --card-theme: #f1c40f; } .theme-Team-of-25 { --card-theme: #10ac84; } .theme-Classic { --card-theme: #bdc3c7; } .theme-Kickoff-Star { --card-theme: #ff4757; } .theme-Champion { --card-theme: #eccc68; } .theme-Dream-Stars-26 { --card-theme: #ff9ff3; } .theme-Dream-Stars-25 { --card-theme: #9b59b6; }
+        
+        .player-wrapper { background: var(--bg-panel); border-top: 6px solid var(--card-theme); border-bottom: 6px solid var(--card-theme); border-left: 1px solid var(--card-theme); border-right: 1px solid var(--card-theme); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: background-color 0.3s; overflow: hidden; }
+        .card-showcase { width: 100%; height: 350px; display: flex; justify-content: center; align-items: center; background: transparent; border-radius: 12px; }
+        .card-showcase img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
+        
+        .action-bar { display: flex; justify-content: space-between; gap: 10px; margin-top: 5px;}
+        .toggle-btn, .dl-btn-simple { flex: 1; padding: 12px 5px; border-radius: 8px; font-size: 12px; font-family: 'Poppins', sans-serif; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; white-space: nowrap; }
+        .toggle-btn { background: transparent; color: var(--text-main); border: 2px solid var(--card-theme); }
+        .dl-btn-simple { background: var(--card-theme); color: #000; border: 2px solid var(--card-theme); }
+        
+        .details-panel { display: flex; flex-direction: column; align-items: center; padding-top: 10px; }
+        .dp-name { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 900; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; text-align: center;}
+        .dp-badge { font-family: 'Poppins', sans-serif; background: var(--bg-inner); border: 1px solid var(--card-theme); color: var(--card-theme); font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 25px; white-space: nowrap; display: inline-block; line-height: 1.2;}
+        
+        .dp-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-bottom: 30px; }
+        .dp-info-badge { font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; text-transform: uppercase; background: var(--bg-inner); padding: 10px 5px; border-radius: 10px; font-size: 10px; font-weight: 800; color: var(--text-muted); border: 1px solid var(--border-light); box-shadow: 0 2px 5px rgba(0,0,0,0.05); white-space: nowrap; transition: 0.3s; line-height: 1.4; }
+        .dp-info-badge i { color: var(--card-theme); font-size: 12px;}
+        
+        .radar-wrapper { width: 100%; display: flex; justify-content: center; align-items: center; padding: 10px 0;}
+        .radar-container { width: 250px; height: 250px; display: flex; justify-content: center; align-items: center; }
+        .no-results { text-align: center; grid-column: 1 / -1; padding: 50px; font-size: 18px; color: var(--primary); font-family: 'Poppins', sans-serif; font-weight: bold;}
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+<body>
+    <div class="sticky-top-section">
+        
+        <div class="header">
+            <div class="header-title-wrapper">
+                <i class="fa-solid fa-shield-halved" style="color: var(--accent-orange); font-size: 22px;"></i> 
+                <div class="page-title" id="titleText">
+                    BEST CARDS DATABASE
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-bar">
+            <label id="lblSearch" style="display:none;">Search Player</label>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="filterName" placeholder="Search Player..." onkeyup="renderCards()">
+            </div>
+            <div class="horizontal-scroll-filters">
+                <select id="filterSort" class="pill-select" onchange="renderCards()">
+                    <option value="top" id="optTop">Top Rated First</option><option value="fast" id="optFast">Fastest Players</option>
+                    <option value="tall" id="optTall">Tallest Players</option><option value="short" id="optShort">Shortest Players</option>
+                </select>
+                <select id="filterCategory" class="pill-select" onchange="renderCards()">
+                    <option value="all">All Categories</option><option value="Normal">Normal</option><option value="Classic">Classic</option>
+                    <option value="Dream Stars 25">Dream Stars 25</option><option value="Dream Stars 26">Dream Stars 26</option>
+                    <option value="Kickoff Star">Kickoff Star</option><option value="Champion">Champion</option><option value="Team of 25">Team of 25</option>
+                </select>
+                <select id="filterPosition" class="pill-select" onchange="renderCards()">
+                    <option value="all">All Positions</option><option value="CF">CF</option><option value="LW">LW</option><option value="RW">RW</option>
+                    <option value="SS">SS</option><option value="AM">AM</option><option value="CM">CM</option><option value="DM">DM</option>
+                    <option value="LM">LM</option><option value="RM">RM</option><option value="CB">CB</option><option value="LB">LB</option>
+                    <option value="RB">RB</option><option value="LWB">LWB</option><option value="RWB">RWB</option><option value="GK">GK</option>
+                </select>
+                <select id="filterClub" class="pill-select" onchange="renderCards()"><option value="all">All Clubs</option></select>
+                <select id="filterCountry" class="pill-select" onchange="renderCards()"><option value="all">All Countries</option></select>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="cards-grid" id="cardsGrid"></div>
+    <script>
+        const langDict = {
+            en: { title: "BEST CARDS DATABASE", searchLbl: "Search Player", allCategories: "All Categories", allPositions: "All Positions", allClubs: "All Clubs", allCountries: "All Countries", showBaseBtn: "BASE CARD", showMaxBtn: "MAX CARD", showBaseText: "BASE CARD", showMaxText: "MAX CARD", saveCard: "DOWNLOAD", noResult: "No players match your filters!", sortTop: "Top Rated First", sortFast: "Fastest Players", sortTall: "Tallest Players", sortShort: "Shortest Players" },
+            bn: { title: "বেস্ট কার্ড ডেটাবেস", searchLbl: "প্লেয়ার খুঁজুন", allCategories: "সব ধরন", allPositions: "সব পজিশন", allClubs: "সব ক্লাব", allCountries: "সব দেশ", showBaseBtn: "বেস কার্ড", showMaxBtn: "ম্যাক্স কার্ড", showBaseText: "বেস কার্ড", showMaxText: "ম্যাক্স কার্ড", saveCard: "ডাউনলোড", noResult: "কোনো প্লেয়ার পাওয়া যায়নি!", sortTop: "সর্বোচ্চ রেটিং", sortFast: "সবচেয়ে দ্রুতগামী", sortTall: "সবচেয়ে লম্বা", sortShort: "সবচেয়ে খাটো" }
+        };
+        let currentLang = localStorage.getItem('savedLang') || 'bn';
+        let currentTheme = localStorage.getItem('savedTheme') || 'dark';
+
+        const playersData = [
+            { id: 'dimaria_1', fullName: 'Ángel Di María', name: 'Di María', category: 'Champion', position: 'AM', height: '178', foot: 'Left', club: 'Free Agent', country: 'Argentina', maxRating: 95, baseRating: 85, imgMax: 'di maria max.jpg', imgBase: 'di maria unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 71, con: 100, pas: 100, sho: 100, tac: 55 }, statsBase: { spe: 87, acc: 89, sta: 80, str: 63, con: 89, pas: 93, sho: 82, tac: 55 } },
+            { id: 'ronaldo_1', fullName: 'Cristiano Ronaldo', name: 'Ronaldo', category: 'Champion', position: 'LW', height: '187', foot: 'Both', club: 'Al Nassr', country: 'Portugal', maxRating: 98, baseRating: 88, imgMax: 'ronaldo max.jpg', imgBase: 'ronaldo unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 100, pas: 100, sho: 100, tac: 46 }, statsBase: { spe: 89, acc: 89, sta: 86, str: 85, con: 92, pas: 87, sho: 97, tac: 41 } },
+            { id: 'vidal_1', fullName: 'Arturo Vidal', name: 'Vidal', category: 'Champion', position: 'CM', height: '180', foot: 'Right', club: 'Free Agent', country: 'Chile', maxRating: 94, baseRating: 84, imgMax: 'vidal max.jpg', imgBase: 'vidal unmax.png', statsMax: { spe: 91, acc: 91, sta: 100, str: 83, con: 91, pas: 92, sho: 95, tac: 89 }, statsBase: { spe: 77, acc: 77, sta: 90, str: 78, con: 82, pas: 83, sho: 80, tac: 85 } },
+            { id: 'ronaldo_2', fullName: 'Cristiano Ronaldo', name: 'Ronaldo', category: 'Champion', position: 'RM', height: '187', foot: 'Both', club: 'Al Nassr', country: 'Portugal', maxRating: 92, baseRating: 82, imgMax: 'ronaldo 2 max.jpg', imgBase: 'ronaldo 2 unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 97, str: 80, con: 100, pas: 90, sho: 97, tac: 32 }, statsBase: { spe: 90, acc: 91, sta: 79, str: 72, con: 91, pas: 78, sho: 77, tac: 32 } },
+            { id: 'dimaria_2', fullName: 'Ángel Di María', name: 'Di María', category: 'Champion', position: 'RW', height: '178', foot: 'Left', club: 'Free Agent', country: 'Argentina', maxRating: 93, baseRating: 83, imgMax: 'di maria 2 max.jpg', imgBase: 'di maria 2 unmax.png', statsMax: { spe: 100, acc: 100, sta: 92, str: 69, con: 100, pas: 91, sho: 100, tac: 48 }, statsBase: { spe: 87, acc: 89, sta: 76, str: 62, con: 88, pas: 87, sho: 82, tac: 48 } },
+            { id: 'kante_1', fullName: "N'Golo Kanté", name: 'Kanté', category: 'Champion', position: 'DM', height: '168', foot: 'Right', club: 'Fenerbahçe', country: 'France', maxRating: 95, baseRating: 85, imgMax: 'kante max.jpg', imgBase: 'kante unmax.png', statsMax: { spe: 84, acc: 86, sta: 100, str: 92, con: 95, pas: 95, sho: 78, tac: 100 }, statsBase: { spe: 80, acc: 82, sta: 95, str: 76, con: 81, pas: 82, sho: 68, tac: 93 } },
+            { id: 'modric_1', fullName: 'Luka Modrić', name: 'Modrić', category: 'Champion', position: 'CM', height: '172', foot: 'Both', club: 'AC Milan', country: 'Croatia', maxRating: 96, baseRating: 86, imgMax: 'modric max.png', imgBase: 'modric unmax.png', statsMax: { spe: 90, acc: 91, sta: 91, str: 81, con: 100, pas: 100, sho: 94, tac: 81 }, statsBase: { spe: 75, acc: 83, sta: 85, str: 66, con: 92, pas: 95, sho: 77, tac: 76 } },
+            { id: 'messi_2', fullName: 'Lionel Messi', name: 'Messi', category: 'Champion', position: 'RW', height: '170', foot: 'Left', club: 'Inter Miami', country: 'Argentina', maxRating: 94, baseRating: 84, imgMax: 'messi 2 max.jpg', imgBase: 'messi 2 unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 79, con: 100, pas: 100, sho: 100, tac: 35 }, statsBase: { spe: 91, acc: 94, sta: 77, str: 60, con: 94, pas: 87, sho: 89, tac: 35 } },
+            { id: 'messi_1', fullName: 'Lionel Messi', name: 'Messi', category: 'Champion', position: 'CF', height: '170', foot: 'Left', club: 'Inter Miami', country: 'Argentina', maxRating: 98, baseRating: 88, imgMax: 'messi max.jpg', imgBase: 'messi unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 97, con: 100, pas: 100, sho: 100, tac: 41 }, statsBase: { spe: 90, acc: 93, sta: 81, str: 64, con: 97, pas: 90, sho: 97, tac: 41 } },
+            { id: 'balotelli_1', fullName: 'Mario Balotelli', name: 'Balotelli', category: 'Champion', position: 'CF', height: '189', foot: 'Right', club: 'Free Agent', country: 'Italy', maxRating: 92, baseRating: 82, imgMax: 'balotelli max.jpg', imgBase: 'balotelli unmax.png', statsMax: { spe: 100, acc: 100, sta: 94, str: 100, con: 88, pas: 82, sho: 100, tac: 23 }, statsBase: { spe: 84, acc: 79, sta: 70, str: 89, con: 85, pas: 77, sho: 88, tac: 23 } },
+            { id: 'sanchez_1', fullName: 'Alexis Sánchez', name: 'Sánchez', category: 'Champion', position: 'CF', height: '169', foot: 'Right', club: 'Free Agent', country: 'Chile', maxRating: 94, baseRating: 84, imgMax: 'sanchez max.jpg', imgBase: 'sanchez unmax.png', statsMax: { spe: 100, acc: 100, sta: 96, str: 80, con: 100, pas: 90, sho: 100, tac: 44 }, statsBase: { spe: 86, acc: 88, sta: 83, str: 70, con: 90, pas: 83, sho: 87, tac: 44 } },
+            { id: 'vardy_1', fullName: 'Jamie Vardy', name: 'Vardy', category: 'Champion', position: 'CF', height: '179', foot: 'Right', club: 'Cremonese', country: 'England', maxRating: 93, baseRating: 83, imgMax: 'vardy max.jpg', imgBase: 'vardy unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 87, con: 92, pas: 81, sho: 100, tac: 50 }, statsBase: { spe: 90, acc: 90, sta: 89, str: 70, con: 81, pas: 75, sho: 91, tac: 50 } },
+            { id: 'dembele_1', fullName: 'Ousmane Dembélé', name: 'O. Dembélé', category: 'Team of 25', position: 'RW', height: '178', foot: 'Both', club: 'PSG', country: 'France', maxRating: 97, baseRating: 87, imgMax: 'demble max.png', imgBase: 'demble unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 90, con: 100, pas: 100, sho: 100, tac: 46 }, statsBase: { spe: 91, acc: 94, sta: 82, str: 64, con: 93, pas: 92, sho: 92, tac: 46 } },
+            { id: 'mendes_1', fullName: 'Nuno Mendes', name: 'N. Mendes', category: 'Team of 25', position: 'LB', height: '180', foot: 'Left', club: 'PSG', country: 'Portugal', maxRating: 95, baseRating: 85, imgMax: 'nuno max.png', imgBase: 'nuno unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 90, con: 83, pas: 100, sho: 66, tac: 100 }, statsBase: { spe: 94, acc: 92, sta: 85, str: 70, con: 82, pas: 81, sho: 63, tac: 84 } },
+            { id: 'hakimi_1', fullName: 'Achraf Hakimi', name: 'Hakimi', category: 'Team of 25', position: 'RB', height: '181', foot: 'Right', club: 'PSG', country: 'Morocco', maxRating: 96, baseRating: 86, imgMax: 'hakimi max.jpg', imgBase: 'hakimi unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 90, con: 85, pas: 100, sho: 80, tac: 93 }, statsBase: { spe: 93, acc: 88, sta: 90, str: 70, con: 82, pas: 87, sho: 75, tac: 81 } },
+            { id: 'salah_1', fullName: 'Mohamed Salah', name: 'M. Salah', category: 'Team of 25', position: 'RW', height: '175', foot: 'Left', club: 'Liverpool', country: 'Egypt', maxRating: 96, baseRating: 86, imgMax: 'salah max.jpg', imgBase: 'salah unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 91, con: 100, pas: 100, sho: 100, tac: 39 }, statsBase: { spe: 87, acc: 90, sta: 86, str: 73, con: 93, pas: 91, sho: 93, tac: 39 } },
+            { id: 'gabriel_1', fullName: 'Gabriel Magalhães', name: 'Gabriel', category: 'Team of 25', position: 'CB', height: '190', foot: 'Left', club: 'Arsenal', country: 'Brazil', maxRating: 95, baseRating: 85, imgMax: 'gabriel max.jpg', imgBase: 'gabriel unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 80, pas: 90, sho: 64, tac: 100 }, statsBase: { spe: 82, acc: 72, sta: 83, str: 95, con: 78, pas: 81, sho: 62, tac: 94 } },
+            { id: 'pedri_1', fullName: 'Pedri', name: 'Pedri', category: 'Team of 25', position: 'CM', height: '174', foot: 'Right', club: 'Barcelona', country: 'Spain', maxRating: 96, baseRating: 86, imgMax: 'pedri max.jpg', imgBase: 'pedri unmax.jpg', statsMax: { spe: 94, acc: 92, sta: 100, str: 81, con: 100, pas: 100, sho: 92, tac: 82 }, statsBase: { spe: 75, acc: 86, sta: 87, str: 71, con: 93, pas: 93, sho: 77, tac: 79 } },
+            { id: 'kane_1', fullName: 'Harry Kane', name: 'Kane', category: 'Team of 25', position: 'CF', height: '188', foot: 'Right', club: 'Bayern Munich', country: 'England', maxRating: 97, baseRating: 87, imgMax: 'kane max.jpg', imgBase: 'kane unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 93, pas: 94, sho: 100, tac: 53 }, statsBase: { spe: 78, acc: 75, sta: 87, str: 92, con: 90, pas: 90, sho: 96, tac: 53 } },
+            { id: 'vitinha_1', fullName: 'Vitinha', name: 'Vitinha', category: 'Team of 25', position: 'CM', height: '172', foot: 'Right', club: 'PSG', country: 'Portugal', maxRating: 95, baseRating: 85, imgMax: 'vitinha max.jpg', imgBase: 'vitinha unmax.jpg', statsMax: { spe: 90, acc: 93, sta: 100, str: 73, con: 100, pas: 100, sho: 90, tac: 90 }, statsBase: { spe: 79, acc: 87, sta: 87, str: 59, con: 92, pas: 92, sho: 79, tac: 81 } },
+            { id: 'yamal_1', fullName: 'Lamine Yamal', name: 'Yamal', category: 'Team of 25', position: 'RW', height: '179', foot: 'Left', club: 'Barcelona', country: 'Spain', maxRating: 96, baseRating: 86, imgMax: 'yamal max.jpg', imgBase: 'yamal unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 86, con: 100, pas: 100, sho: 100, tac: 40 }, statsBase: { spe: 87, acc: 93, sta: 84, str: 66, con: 96, pas: 91, sho: 86, tac: 40 } },
+            { id: 'donnarumma_1', fullName: 'Gianluigi Donnarumma', name: 'Donnarumma', category: 'Team of 25', position: 'GK', height: '196', foot: 'Right', club: 'Manchester City', country: 'Italy', maxRating: 96, baseRating: 86, imgMax: 'donnarumma max.jpg', imgBase: 'donnarumma unmax.jpg', statsMax: { spe: 61, acc: 57, sta: 95, str: 70, con: 63, pas: 67, sho: 94, tac: 42 }, statsBase: { spe: 61, acc: 57, sta: 85, str: 70, con: 63, pas: 67, sho: 83, tac: 42 } },
+            { id: 'mbappe_1', fullName: 'Kylian Mbappé', name: 'Mbappé', category: 'Team of 25', position: 'CF', height: '178', foot: 'Right', club: 'Real Madrid', country: 'France', maxRating: 97, baseRating: 87, imgMax: 'mbappe max.jpg', imgBase: 'mbappe unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 97, con: 100, pas: 100, sho: 100, tac: 32 }, statsBase: { spe: 95, acc: 95, sta: 85, str: 75, con: 91, pas: 81, sho: 95, tac: 32 } },
+            { id: 'yildiz_1', fullName: 'Kenan Yildiz', name: 'Yildiz', category: 'Dream Stars 26', position: 'SS', height: '187', foot: 'Both', club: 'Juventus', country: 'Turkey', maxRating: 94, baseRating: 84, imgMax: 'yildiz max.jpg', imgBase: 'yildiz unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 81, con: 100, pas: 100, sho: 100, tac: 34 }, statsBase: { spe: 87, acc: 90, sta: 83, str: 72, con: 92, pas: 87, sho: 87, tac: 34 } },
+            { id: 'thiago_1', fullName: 'Igor Thiago', name: 'Thiago', category: 'Dream Stars 26', position: 'CF', height: '191', foot: 'Right', club: 'Brentford', country: 'Brazil', maxRating: 94, baseRating: 84, imgMax: 'thiago max.jpg', imgBase: 'thiago unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 90, pas: 81, sho: 100, tac: 38 }, statsBase: { spe: 82, acc: 77, sta: 83, str: 93, con: 84, pas: 75, sho: 93, tac: 37 } },
+            { id: 'suarez_1', fullName: 'Luis Suárez', name: 'Suárez', category: 'Dream Stars 26', position: 'CF', height: '181', foot: 'Right', club: 'Sporting CP', country: 'Colombia', maxRating: 93, baseRating: 83, imgMax: 'suarez max.jpg', imgBase: 'suarez unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 90, pas: 80, sho: 100, tac: 36 }, statsBase: { spe: 88, acc: 87, sta: 83, str: 83, con: 84, pas: 76, sho: 92, tac: 33 } },
+            { id: 'svilar_1', fullName: 'Mile Svilar', name: 'Svilar', category: 'Dream Stars 26', position: 'GK', height: '189', foot: 'Right', club: 'AS Roma', country: 'Serbia', maxRating: 94, baseRating: 84, imgMax: 'svilar max.jpg', imgBase: 'svilar unmax.jpg', statsMax: { spe: 67, acc: 65, sta: 93, str: 64, con: 63, pas: 65, sho: 90, tac: 45 }, statsBase: { spe: 67, acc: 65, sta: 83, str: 64, con: 64, pas: 65, sho: 79, tac: 45 } },
+            { id: 'el_karouani_1', fullName: 'Souffian El Karouani', name: 'El Karouani', category: 'Dream Stars 26', position: 'LB', height: '178', foot: 'Left', club: 'FC Utrecht', country: 'Morocco', maxRating: 92, baseRating: 82, imgMax: 'el karouani max.jpg', imgBase: 'el karouani unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 90, con: 83, pas: 90, sho: 63, tac: 83 }, statsBase: { spe: 82, acc: 84, sta: 89, str: 67, con: 82, pas: 90, sho: 62, tac: 78 } },
+            { id: 'berg_1', fullName: 'Patrick Berg', name: 'Berg', category: 'Dream Stars 26', position: 'DM', height: '178', foot: 'Right', club: 'Bodø/Glimt', country: 'Norway', maxRating: 93, baseRating: 83, imgMax: 'berg max.jpg', imgBase: 'berg unmax.jpg', statsMax: { spe: 90, acc: 90, sta: 100, str: 90, con: 90, pas: 90, sho: 78, tac: 90 }, statsBase: { spe: 70, acc: 71, sta: 93, str: 75, con: 85, pas: 90, sho: 78, tac: 85 } },
+            { id: 'anderson_1', fullName: 'Elliot Anderson', name: 'Anderson', category: 'Dream Stars 26', position: 'DM', height: '179', foot: 'Right', club: 'Nottingham Forest', country: 'England', maxRating: 94, baseRating: 84, imgMax: 'anderson max.jpg', imgBase: 'anderson unmax.jpg', statsMax: { spe: 90, acc: 90, sta: 100, str: 90, con: 90, pas: 90, sho: 90, tac: 90 }, statsBase: { spe: 76, acc: 77, sta: 90, str: 77, con: 87, pas: 90, sho: 70, tac: 82 } },
+            { id: 'ryerson_1', fullName: 'Julian Ryerson', name: 'Ryerson', category: 'Dream Stars 26', position: 'RB', height: '183', foot: 'Right', club: 'Borussia Dortmund', country: 'Norway', maxRating: 94, baseRating: 84, imgMax: 'ryerson max.jpg', imgBase: 'ryerson unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 90, con: 81, pas: 100, sho: 66, tac: 90 }, statsBase: { spe: 83, acc: 83, sta: 88, str: 74, con: 80, pas: 91, sho: 64, tac: 81 } },
+            { id: 'vuskovic_1', fullName: 'Luka Vušković', name: 'Vušković', category: 'Dream Stars 26', position: 'CB', height: '193', foot: 'Right', club: 'Hamburger SV', country: 'Croatia', maxRating: 93, baseRating: 83, imgMax: 'vuskovic max.jpg', imgBase: 'vuskovic unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 75, pas: 78, sho: 74, tac: 90 }, statsBase: { spe: 76, acc: 71, sta: 77, str: 94, con: 75, pas: 77, sho: 72, tac: 89 } },
+            { id: 'arrascaeta_1', fullName: 'Giorgian de Arrascaeta', name: 'De Arrascaeta', category: 'Dream Stars 26', position: 'AM', height: '174', foot: 'Right', club: 'Flamengo', country: 'Uruguay', maxRating: 94, baseRating: 84, imgMax: 'arrascaeta max.jpg', imgBase: 'arrascaeta unmax.jpg', statsMax: { spe: 91, acc: 91, sta: 100, str: 80, con: 100, pas: 100, sho: 100, tac: 60 }, statsBase: { spe: 79, acc: 87, sta: 84, str: 66, con: 90, pas: 90, sho: 90, tac: 56 } },
+            { id: 'tzolis_1', fullName: 'Christos Tzolis', name: 'Tzolis', category: 'Dream Stars 26', position: 'LM', height: '179', foot: 'Right', club: 'Club Brugge', country: 'Greece', maxRating: 93, baseRating: 83, imgMax: 'tzolis max.jpg', imgBase: 'tzolis unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 80, con: 93, pas: 100, sho: 100, tac: 40 }, statsBase: { spe: 84, acc: 84, sta: 87, str: 72, con: 88, pas: 89, sho: 89, tac: 39 } },
+            { id: 'sarr_1', fullName: 'Malang Sarr', name: 'Sarr', category: 'Dream Stars 26', position: 'CB', height: '183', foot: 'Left', club: 'RC Lens', country: 'France', maxRating: 93, baseRating: 83, imgMax: 'sarr max.jpg', imgBase: 'sarr unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 78, pas: 84, sho: 52, tac: 100 }, statsBase: { spe: 80, acc: 79, sta: 80, str: 87, con: 76, pas: 79, sho: 52, tac: 91 } },
+            { id: 'paz_1', fullName: 'Nico Paz', name: 'Paz', category: 'Dream Stars 25', position: 'AM', height: '186', foot: 'Left', club: 'Como', country: 'Argentina', maxRating: 93, baseRating: 83, imgMax: 'paz max.jpg', imgBase: 'paz unmax.png', statsMax: { spe: 97, acc: 96, sta: 93, str: 73, con: 98, pas: 96, sho: 95, tac: 58 }, statsBase: { spe: 82, acc: 80, sta: 79, str: 72, con: 88, pas: 84, sho: 83, tac: 57 } },
+            { id: 'mctominay_1', fullName: 'Scott McTominay', name: 'McTominay', category: 'Dream Stars 25', position: 'CM', height: '191', foot: 'Right', club: 'Napoli', country: 'Scotland', maxRating: 94, baseRating: 84, imgMax: 'mctominay max.jpg', imgBase: 'mctominay unmax.png', statsMax: { spe: 84, acc: 84, sta: 97, str: 90, con: 95, pas: 90, sho: 100, tac: 89 }, statsBase: { spe: 79, acc: 68, sta: 91, str: 87, con: 81, pas: 80, sho: 84, tac: 80 } },
+            { id: 'huijsen_1', fullName: 'Dean Huijsen', name: 'Huijsen', category: 'Dream Stars 25', position: 'CB', height: '195', foot: 'Both', club: 'Real Madrid', country: 'Spain', maxRating: 93, baseRating: 83, imgMax: 'huijsen max.png', imgBase: 'huijsen unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 78, pas: 80, sho: 54, tac: 100 }, statsBase: { spe: 82, acc: 77, sta: 79, str: 86, con: 77, pas: 79, sho: 53, tac: 90 } },
+            { id: 'cherki_1', fullName: 'Rayan Cherki', name: 'Cherki', category: 'Dream Stars 25', position: 'RW', height: '177', foot: 'Both', club: 'Manchester City', country: 'France', maxRating: 93, baseRating: 83, imgMax: 'cherki max.jpg', imgBase: 'cherki unmax.png', statsMax: { spe: 100, acc: 100, sta: 91, str: 72, con: 100, pas: 100, sho: 97, tac: 38 }, statsBase: { spe: 80, acc: 86, sta: 77, str: 70, con: 92, pas: 87, sho: 81, tac: 38 } },
+            { id: 'santos_1', fullName: 'Andrey Santos', name: 'Santos', category: 'Dream Stars 25', position: 'CM', height: '180', foot: 'Right', club: 'Chelsea', country: 'Brazil', maxRating: 93, baseRating: 83, imgMax: 'santos max.jpg', imgBase: 'santos unmax.png', statsMax: { spe: 90, acc: 88, sta: 100, str: 80, con: 90, pas: 96, sho: 87, tac: 94 }, statsBase: { spe: 75, acc: 75, sta: 87, str: 80, con: 81, pas: 81, sho: 79, tac: 83 } },
+            { id: 'robinson_1', fullName: 'Antonee Robinson', name: 'Robinson', category: 'Dream Stars 25', position: 'LB', height: '183', foot: 'Left', club: 'Fulham', country: 'USA', maxRating: 93, baseRating: 83, imgMax: 'robinson max.jpg', imgBase: 'robinson unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 90, con: 87, pas: 93, sho: 46, tac: 100 }, statsBase: { spe: 88, acc: 85, sta: 93, str: 80, con: 80, pas: 84, sho: 46, tac: 82 } },
+            { id: 'steijn_1', fullName: 'Sem Steijn', name: 'Steijn', category: 'Dream Stars 25', position: 'AM', height: '173', foot: 'Right', club: 'Feyenoord', country: 'Netherlands', maxRating: 93, baseRating: 83, imgMax: 'steijn max.jpg', imgBase: 'steijn unmax.png', statsMax: { spe: 95, acc: 94, sta: 100, str: 83, con: 92, pas: 97, sho: 95, tac: 51 }, statsBase: { spe: 79, acc: 82, sta: 93, str: 75, con: 83, pas: 82, sho: 87, tac: 50 } },
+            { id: 'wood_1', fullName: 'Chris Wood', name: 'Wood', category: 'Dream Stars 25', position: 'CF', height: '191', foot: 'Right', club: 'Nottingham Forest', country: 'New Zealand', maxRating: 94, baseRating: 84, imgMax: 'wood max.png', imgBase: 'wood unmax.png', statsMax: { spe: 100, acc: 90, sta: 100, str: 94, con: 92, pas: 82, sho: 100, tac: 56 }, statsBase: { spe: 77, acc: 70, sta: 86, str: 94, con: 85, pas: 76, sho: 92, tac: 51 } },
+            { id: 'trafford_1', fullName: 'James Trafford', name: 'Trafford', category: 'Dream Stars 25', position: 'GK', height: '197', foot: 'Right', club: 'Manchester City', country: 'England', maxRating: 93, baseRating: 82, imgMax: 'trafford max.jpg', imgBase: 'trafford unmax.png', statsMax: { spe: 62, acc: 59, sta: 91, str: 58, con: 60, pas: 62, sho: 90, tac: 48 }, statsBase: { spe: 62, acc: 59, sta: 81, str: 58, con: 60, pas: 62, sho: 79, tac: 48 } },
+            { id: 'baena_1', fullName: 'Álex Baena', name: 'Baena', category: 'Dream Stars 25', position: 'LM', height: '175', foot: 'Right', club: 'Atlético Madrid', country: 'Spain', maxRating: 95, baseRating: 84, imgMax: 'baena max.jpg', imgBase: 'baena unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 70, con: 91, pas: 100, sho: 100, tac: 70 }, statsBase: { spe: 82, acc: 83, sta: 85, str: 69, con: 86, pas: 92, sho: 81, tac: 64 } },
+            { id: 'vivian_1', fullName: 'Dani Vivian', name: 'Vivian', category: 'Dream Stars 25', position: 'CB', height: '183', foot: 'Right', club: 'Athletic Club', country: 'Spain', maxRating: 93, baseRating: 83, imgMax: 'vivian max.png', imgBase: 'vivian unmax.png', statsMax: { spe: 100, acc: 96, sta: 100, str: 96, con: 80, pas: 85, sho: 55, tac: 100 }, statsBase: { spe: 82, acc: 75, sta: 81, str: 86, con: 77, pas: 81, sho: 54, tac: 90 } },
+            { id: 'alvarez_1', fullName: 'Julián Álvarez', name: 'Alvarez', category: 'Kickoff Star', position: 'CF', height: '170', foot: 'Right', club: 'Atlético Madrid', country: 'Argentina', maxRating: 94, baseRating: 84, imgMax: 'alvarez max.jpg', imgBase: 'alvarez unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 96, str: 74, con: 100, pas: 90, sho: 100, tac: 52 }, statsBase: { spe: 83, acc: 85, sta: 83, str: 71, con: 86, pas: 82, sho: 88, tac: 52 } },
+            { id: 'raphinha_1', fullName: 'Raphinha', name: 'Raphinha', category: 'Kickoff Star', position: 'LW', height: '176', foot: 'Left', club: 'Barcelona', country: 'Brazil', maxRating: 95, baseRating: 85, imgMax: 'raphinha2 max.jpg', imgBase: 'raphinha1 unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 77, con: 100, pas: 100, sho: 100, tac: 50 }, statsBase: { spe: 86, acc: 87, sta: 86, str: 71, con: 89, pas: 89, sho: 90, tac: 50 } },
+            { id: 'fernando_torres', fullName: 'Fernando Torres', name: 'Torres', category: 'Classic', position: 'CF', height: '186', foot: 'Right', club: 'Free Agent', country: 'Spain', maxRating: 95, baseRating: 85, imgMax: 'fernando torres max.png', imgBase: 'fernando torres unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 100, pas: 90, sho: 100, tac: 35 }, statsBase: { spe: 92, acc: 94, sta: 83, str: 81, con: 89, pas: 76, sho: 90, tac: 32 } },
+            { id: 'andy_cole_1', fullName: 'Andy Cole', name: 'Cole', category: 'Classic', position: 'CF', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', maxRating: 94, baseRating: 84, imgMax: 'andy cole 1 max.png', imgBase: 'andy cole 1 unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 93, pas: 82, sho: 100, tac: 30 }, statsBase: { spe: 88, acc: 88, sta: 85, str: 80, con: 83, pas: 79, sho: 92, tac: 30 } },
+            { id: 'rivaldo_2', fullName: 'Rivaldo', name: 'Rivaldo', category: 'Classic', position: 'LW', height: '186', foot: 'Left', club: 'Free Agent', country: 'Brazil', maxRating: 96, baseRating: 86, imgMax: 'rivaldo 2 max.png', imgBase: 'rivaldo 2 unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 88, con: 100, pas: 100, sho: 100, tac: 42 }, statsBase: { spe: 86, acc: 84, sta: 84, str: 82, con: 92, pas: 88, sho: 90, tac: 42 } },
+            { id: 'david_trezeguet', fullName: 'David Trezeguet', name: 'Trezeguet', category: 'Classic', position: 'CF', height: '190', foot: 'Both', club: 'Free Agent', country: 'France', maxRating: 95, baseRating: 85, imgMax: 'david trezeguet max.jpg', imgBase: 'david trezeguet unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 96, pas: 82, sho: 100, tac: 33 }, statsBase: { spe: 86, acc: 82, sta: 83, str: 90, con: 85, pas: 74, sho: 93, tac: 33 } },
+            { id: 'hernan_crespo_1', fullName: 'Hernán Crespo', name: 'Crespo', category: 'Classic', position: 'CF', height: '184', foot: 'Right', club: 'Free Agent', country: 'Argentina', maxRating: 94, baseRating: 84, imgMax: 'hernan crespo 1 max.png', imgBase: 'hernan crespo 1 unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 88, pas: 86, sho: 100, tac: 37 }, statsBase: { spe: 85, acc: 84, sta: 84, str: 86, con: 84, pas: 75, sho: 93, tac: 37 } },
+            { id: 'gianfranco_zola', fullName: 'Gianfranco Zola', name: 'Zola', category: 'Classic', position: 'CF', height: '168', foot: 'Right', club: 'Free Agent', country: 'Italy', maxRating: 94, baseRating: 84, imgMax: 'gianfranco zola max.png', imgBase: 'gianfranco zola unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 71, con: 100, pas: 100, sho: 100, tac: 50 }, statsBase: { spe: 85, acc: 90, sta: 84, str: 66, con: 91, pas: 84, sho: 84, tac: 50 } },
+            { id: 'andy_cole_2', fullName: 'Andy Cole', name: 'Cole', category: 'Classic', position: 'CF', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', maxRating: 93, baseRating: 83, imgMax: 'andy cole 2 max.jpg', imgBase: 'andy cole 2 unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 96, con: 86, pas: 83, sho: 100, tac: 40 }, statsBase: { spe: 85, acc: 85, sta: 83, str: 80, con: 83, pas: 76, sho: 89, tac: 40 } },
+            { id: 'hernan_crespo_2', fullName: 'Hernán Crespo', name: 'Crespo', category: 'Classic', position: 'CF', height: '184', foot: 'Right', club: 'Free Agent', country: 'Argentina', maxRating: 93, baseRating: 83, imgMax: 'hernan crespo 2 max.png', imgBase: 'hernan crespo 2 unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 87, pas: 77, sho: 100, tac: 45 }, statsBase: { spe: 85, acc: 83, sta: 82, str: 86, con: 84, pas: 73, sho: 87, tac: 44 } },
+            { id: 'gabriel_batistuta_2', fullName: 'Gabriel Batistuta', name: 'Batistuta', category: 'Classic', position: 'CF', height: '185', foot: 'Both', club: 'Free Agent', country: 'Argentina', maxRating: 95, baseRating: 85, imgMax: 'gabriel batistuta 2 max.png', imgBase: 'gabriel batistuta 2 unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 94, pas: 84, sho: 100, tac: 43 }, statsBase: { spe: 84, acc: 82, sta: 85, str: 90, con: 85, pas: 79, sho: 92, tac: 43 } },
+            { id: 'robert_pires', fullName: 'Robert Pires', name: 'Pires', category: 'Classic', position: 'LM', height: '187', foot: 'Right', club: 'Free Agent', country: 'France', maxRating: 94, baseRating: 84, imgMax: 'robert pires max.jpg', imgBase: 'robert pires unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 81, con: 93, pas: 100, sho: 100, tac: 50 }, statsBase: { spe: 84, acc: 86, sta: 83, str: 77, con: 89, pas: 87, sho: 80, tac: 50 } },
+            { id: 'paul_gascoigne_1', fullName: 'Paul Gascoigne', name: 'Gascoigne', category: 'Classic', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'England', maxRating: 95, baseRating: 85, imgMax: 'paul gascoigne 1 max.jpg', imgBase: 'paul gascoigne 1 unmax.jpg', statsMax: { spe: 90, acc: 90, sta: 100, str: 91, con: 100, pas: 100, sho: 100, tac: 53 }, statsBase: { spe: 84, acc: 84, sta: 83, str: 74, con: 92, pas: 85, sho: 85, tac: 53 } },
+            { id: 'gabriel_batistuta_1', fullName: 'Gabriel Batistuta', name: 'Batistuta', category: 'Classic', position: 'CF', height: '185', foot: 'Both', club: 'Free Agent', country: 'Argentina', maxRating: 95, baseRating: 85, imgMax: 'gabriel batistuta 1 max.png', imgBase: 'gabriel batistuta 1 unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 94, pas: 83, sho: 100, tac: 41 }, statsBase: { spe: 83, acc: 82, sta: 83, str: 90, con: 87, pas: 78, sho: 93, tac: 41 } },
+            { id: 'rivaldo_1', fullName: 'Rivaldo', name: 'Rivaldo', category: 'Classic', position: 'AM', height: '186', foot: 'Left', club: 'Free Agent', country: 'Brazil', maxRating: 95, baseRating: 85, imgMax: 'rivaldo 1 max.png', imgBase: 'rivaldo 1 unmax.jpg', statsMax: { spe: 95, acc: 95, sta: 100, str: 83, con: 100, pas: 100, sho: 100, tac: 49 }, statsBase: { spe: 83, acc: 82, sta: 79, str: 83, con: 91, pas: 87, sho: 87, tac: 49 } },
+            { id: 'chiellini_1', fullName: 'Giorgio Chiellini', name: 'Chiellini', category: 'Classic', position: 'CB', height: '187', foot: 'Left', club: 'Free Agent', country: 'Italy', maxRating: 95, baseRating: 85, imgMax: 'giorgio chiellini max.jpg', imgBase: 'giorgio chiellini unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 80, pas: 86, sho: 66, tac: 100 }, statsBase: { spe: 82, acc: 75, sta: 83, str: 93, con: 80, pas: 80, sho: 57, tac: 92 } },
+            { id: 'davor_suker', fullName: 'Davor Šuker', name: 'Šuker', category: 'Classic', position: 'CF', height: '183', foot: 'Left', club: 'Free Agent', country: 'Croatia', maxRating: 93, baseRating: 83, imgMax: 'davor suker max.png', imgBase: 'davor suker unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 86, pas: 76, sho: 100, tac: 44 }, statsBase: { spe: 82, acc: 82, sta: 83, str: 78, con: 85, pas: 76, sho: 89, tac: 44 } },
+            { id: 'lothar_matthaus_1', fullName: 'Lothar Matthäus', name: 'Matthäus', category: 'Classic', position: 'DM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Germany', maxRating: 96, baseRating: 86, imgMax: 'lothar matthäus 1 max.jpg', imgBase: 'lothar matthäus 1 unmax.jpg', statsMax: { spe: 95, acc: 92, sta: 100, str: 90, con: 90, pas: 92, sho: 90, tac: 100 }, statsBase: { spe: 82, acc: 83, sta: 91, str: 82, con: 81, pas: 83, sho: 82, tac: 85 } },
+            { id: 'fabio_cannavaro', fullName: 'Fabio Cannavaro', name: 'Cannavaro', category: 'Classic', position: 'CB', height: '176', foot: 'Right', club: 'Free Agent', country: 'Italy', maxRating: 96, baseRating: 86, imgMax: 'fabio cannavaro max.png', imgBase: 'fabio cannavaro unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 85, pas: 85, sho: 60, tac: 100 }, statsBase: { spe: 81, acc: 82, sta: 88, str: 89, con: 80, pas: 80, sho: 53, tac: 95 } },
+            { id: 'dennis_bergkamp_1', fullName: 'Dennis Bergkamp', name: 'Bergkamp', category: 'Classic', position: 'CF', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', maxRating: 95, baseRating: 85, imgMax: 'dennis bergkamp 1 max.png', imgBase: 'dennis bergkamp 1 unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 92, pas: 83, sho: 100, tac: 46 }, statsBase: { spe: 81, acc: 81, sta: 83, str: 83, con: 92, pas: 83, sho: 90, tac: 46 } },
+            { id: 'marcel_desailly_1', fullName: 'Marcel Desailly', name: 'Desailly', category: 'Classic', position: 'CB', height: '188', foot: 'Right', club: 'Free Agent', country: 'France', maxRating: 95, baseRating: 85, imgMax: 'marcel desailly 1 max.jpg', imgBase: 'marcel desailly 1 unmax.jpg', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 84, pas: 84, sho: 53, tac: 100 }, statsBase: { spe: 81, acc: 75, sta: 86, str: 94, con: 80, pas: 80, sho: 53, tac: 92 } },
+            { id: 'lothar_matthaus_2', fullName: 'Lothar Matthäus', name: 'Matthäus', category: 'Classic', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Germany', maxRating: 96, baseRating: 86, imgMax: 'lothar matthäus 2 max.png', imgBase: 'lothar matthäus 2 unmax.jpg', statsMax: { spe: 93, acc: 90, sta: 100, str: 83, con: 97, pas: 100, sho: 98, tac: 84 }, statsBase: { spe: 81, acc: 81, sta: 91, str: 81, con: 82, pas: 84, sho: 85, tac: 84 } },
+      { id: 'dennis_bergkamp_2', fullName: 'Dennis Bergkamp', name: 'Bergkamp', category: 'Classic', position: 'SS', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', maxRating: 95, baseRating: 85, imgMax: 'dennis bergkamp 2 max.jpg', imgBase: 'dennis bergkamp 2 unmax.png', statsMax: { spe: 93, acc: 95, sta: 94, str: 91, con: 100, pas: 94, sho: 100, tac: 51 }, statsBase: { spe: 80, acc: 80, sta: 83, str: 83, con: 92, pas: 84, sho: 85, tac: 51 } },
+            { id: 'gaizka_mendieta', fullName: 'Gaizka Mendieta', name: 'Mendieta', category: 'Classic', position: 'RM', height: '173', foot: 'Right', club: 'Free Agent', country: 'Spain', maxRating: 92, baseRating: 82, imgMax: 'gaizka mendieta max.png', imgBase: 'gaizka mendieta unmax.png', statsMax: { spe: 91, acc: 92, sta: 97, str: 71, con: 97, pas: 95, sho: 93, tac: 71 }, statsBase: { spe: 80, acc: 83, sta: 90, str: 67, con: 82, pas: 82, sho: 80, tac: 70 } },
+            { id: 'marcel_desailly_2', fullName: 'Marcel Desailly', name: 'Desailly', category: 'Classic', position: 'DM', height: '188', foot: 'Right', club: 'Free Agent', country: 'France', maxRating: 94, baseRating: 84, imgMax: 'marcel desailly 2 max.png', imgBase: 'marcel desailly 2 unmax.jpg', statsMax: { spe: 88, acc: 89, sta: 100, str: 98, con: 93, pas: 96, sho: 52, tac: 98 }, statsBase: { spe: 80, acc: 75, sta: 89, str: 92, con: 80, pas: 80, sho: 52, tac: 90 } },
+            { id: 'emmanuel_petit_2', fullName: 'Emmanuel Petit', name: 'Petit', category: 'Classic', position: 'DM', height: '185', foot: 'Left', club: 'Free Agent', country: 'France', maxRating: 94, baseRating: 84, imgMax: 'emmanuel petit 2 max.png', imgBase: 'emmanuel petit 2 unmax.jpg', statsMax: { spe: 88, acc: 94, sta: 96, str: 99, con: 90, pas: 87, sho: 70, tac: 100 }, statsBase: { spe: 80, acc: 77, sta: 90, str: 84, con: 81, pas: 83, sho: 70, tac: 84 } },
+            { id: 'emmanuel_petit_1', fullName: 'Emmanuel Petit', name: 'Petit', category: 'Classic', position: 'DM', height: '185', foot: 'Left', club: 'Free Agent', country: 'France', maxRating: 94, baseRating: 84, imgMax: 'emmanuel petit 1 max.png', imgBase: 'emmanuel petit 1 unmax.png', statsMax: { spe: 90, acc: 90, sta: 100, str: 100, con: 90, pas: 90, sho: 72, tac: 100 }, statsBase: { spe: 79, acc: 77, sta: 90, str: 84, con: 81, pas: 82, sho: 72, tac: 85 } },
+            { id: 'tony_adams', fullName: 'Tony Adams', name: 'Adams', category: 'Classic', position: 'CB', height: '191', foot: 'Right', club: 'Free Agent', country: 'England', maxRating: 93, baseRating: 83, imgMax: 'tony adams max.png', imgBase: 'tony adams unmax.png', statsMax: { spe: 100, acc: 100, sta: 100, str: 100, con: 76, pas: 81, sho: 58, tac: 100 }, statsBase: { spe: 77, acc: 72, sta: 85, str: 93, con: 74, pas: 77, sho: 58, tac: 92 } },
+            { id: 'michael_essien', fullName: 'Michael Essien', name: 'Essien', category: 'Classic', position: 'DM', height: '178', foot: 'Right', club: 'Free Agent', country: 'Ghana', maxRating: 94, baseRating: 84, imgMax: 'michael essien max.png', imgBase: 'michael essien unmax.jpg', statsMax: { spe: 90, acc: 90, sta: 100, str: 100, con: 90, pas: 90, sho: 75, tac: 100 }, statsBase: { spe: 77, acc: 78, sta: 91, str: 82, con: 81, pas: 83, sho: 75, tac: 86 } },
+            { id: 'graeme_souness', fullName: 'Graeme Souness', name: 'Souness', category: 'Classic', position: 'CM', height: '180', foot: 'Right', club: 'Free Agent', country: 'Scotland', maxRating: 94, baseRating: 84, imgMax: 'graeme souness max.png', imgBase: 'graeme souness unmax.png', statsMax: { spe: 90, acc: 85, sta: 100, str: 84, con: 93, pas: 95, sho: 88, tac: 97 }, statsBase: { spe: 76, acc: 75, sta: 91, str: 84, con: 80, pas: 83, sho: 75, tac: 90 } },
+            { id: 'dennis_bergkamp_3', fullName: 'Dennis Bergkamp', name: 'Bergkamp', category: 'Classic', position: 'SS', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', maxRating: 93, baseRating: 83, imgMax: 'dennis bergkamp 3 max.png', imgBase: 'dennis bergkamp 3 unmax.png', statsMax: { spe: 90, acc: 89, sta: 95, str: 88, con: 100, pas: 90, sho: 94, tac: 49 }, statsBase: { spe: 75, acc: 74, sta: 80, str: 81, con: 90, pas: 82, sho: 81, tac: 49 } },
+            { id: 'paul_gascoigne_2', fullName: 'Paul Gascoigne', name: 'Gascoigne', category: 'Classic', position: 'AM', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', maxRating: 92, baseRating: 82, imgMax: 'paul gascoigne 2 max.jpg', imgBase: 'paul gascoigne 2 unmax.jpg', statsMax: { spe: 93, acc: 93, sta: 81, str: 80, con: 100, pas: 93, sho: 93, tac: 53 }, statsBase: { spe: 75, acc: 80, sta: 69, str: 80, con: 89, pas: 82, sho: 82, tac: 50 } },
+            { id: 'walter_zenga', fullName: 'Walter Zenga', name: 'Zenga', category: 'Classic', position: 'GK', height: '188', foot: 'Right', club: 'Free Agent', country: 'Italy', maxRating: 93, baseRating: 83, imgMax: 'walter zenga max.jpg', imgBase: 'walter zenga unmax.png', statsMax: { spe: 70, acc: 67, sta: 94, str: 66, con: 60, pas: 61, sho: 87, tac: 56 }, statsBase: { spe: 70, acc: 67, sta: 82, str: 66, con: 60, pas: 61, sho: 79, tac: 56 } },
+            { id: 'carlos_valderrama', fullName: 'Carlos Valderrama', name: 'Valderrama', category: 'Classic', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Colombia', maxRating: 93, baseRating: 83, imgMax: 'carlos valderrama max.png', imgBase: 'carlos valderrama unmax.jpg', statsMax: { spe: 92, acc: 91, sta: 100, str: 79, con: 90, pas: 99, sho: 93, tac: 70 }, statsBase: { spe: 70, acc: 83, sta: 82, str: 76, con: 86, pas: 85, sho: 76, tac: 67 } },  ];
+            let cardStates = {};
+        playersData.forEach(p => { cardStates[p.id] = 'max'; });
+        const categoryColors = { 'Normal': '#f1c40f', 'Team of 25': '#10ac84', 'Classic': '#bdc3c7', 'Kickoff Star': '#ff4757', 'Champion': '#eccc68', 'Dream Stars 26': '#ff9ff3', 'Dream Stars 25': '#9b59b6' };
+                function applyLanguage() {
+            const dict = langDict[currentLang];
+            document.getElementById('titleText').textContent = dict.title;
+            document.getElementById('filterName').placeholder = dict.searchLbl + '...';
+            document.querySelector('#filterCategory option[value="all"]').textContent = dict.allCategories;
+            document.querySelector('#filterPosition option[value="all"]').textContent = dict.allPositions;
+            document.getElementById('optTop').textContent = dict.sortTop;
+            document.getElementById('optFast').textContent = dict.sortFast;
+            document.getElementById('optTall').textContent = dict.sortTall;
+            document.getElementById('optShort').textContent = dict.sortShort;
+            
+            const clubSelect = document.getElementById('filterClub'); 
+            clubSelect.innerHTML = `<option value="all">${dict.allClubs}</option>`;
+            [...new Set(playersData.map(p => p.club))].sort().forEach(c => clubSelect.innerHTML += `<option value="${c}">${c}</option>`);
+            
+            const countrySelect = document.getElementById('filterCountry'); 
+            countrySelect.innerHTML = `<option value="all">${dict.allCountries}</option>`;
+            [...new Set(playersData.map(p => p.country))].sort().forEach(c => countrySelect.innerHTML += `<option value="${c}">${c}</option>`);
+            renderCards();
+        }
+
+        function getRadarPoint(val, index, maxR) { const angle = index * 45 * Math.PI / 180; const r = (val / 100) * maxR; return `${125 + r * Math.sin(angle)},${125 - r * Math.cos(angle)}`; }
+        
+        function generateRadar(stats, colorTheme, position) {
+            const labels = position === 'GK' ? ['SPE', 'ACC', 'GKR', 'STR', 'CON', 'PAS', 'GKH', 'TAC'] : ['SPE', 'ACC', 'STA', 'STR', 'CON', 'PAS', 'SHO', 'TAC'];
+            const vals = [stats.spe, stats.acc, stats.sta, stats.str, stats.con, stats.pas, stats.sho, stats.tac];
+            let webColor = currentTheme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.05)';
+            let textColor = currentTheme === 'light' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.7)';
+            let bgWeb = ''; for(let r=25; r<=75; r+=25) bgWeb += `<polygon points="${[0,1,2,3,4,5,6,7].map(i=>getRadarPoint(100,i,r)).join(' ')}" fill="none" stroke="${webColor}"/>`;
+            let lines = ''; for(let i=0; i<8; i++) lines += `<line x1="125" y1="125" x2="${getRadarPoint(100,i,75).split(',')[0]}" y2="${getRadarPoint(100,i,75).split(',')[1]}" stroke="${webColor}"/>`;
+            let polyPoints = vals.map((v, i) => getRadarPoint(v, i, 75)).join(' ');
+            let texts = ''; labels.forEach((lbl, i) => { let pt = getRadarPoint(100, i, 100); let [x,y] = pt.split(','); let valColor = vals[i] >= 90 ? '#00d8d6' : (vals[i] >= 80 ? '#0be881' : (vals[i] >= 70 ? '#fbc531' : (vals[i] >= 60 ? '#e67e22' : '#ff3f34'))); texts += `<text x="${x}" y="${y-6}" fill="${textColor}" font-size="11" font-weight="800" text-anchor="middle">${lbl}</text><text x="${x}" y="${+y+10}" fill="${valColor}" font-size="14" font-weight="900" text-anchor="middle">${vals[i]}</text>`; });
+            return `<svg viewBox="0 0 250 250" width="100%" height="100%">${bgWeb} ${lines} <polygon points="${polyPoints}" fill="${colorTheme}44" stroke="${colorTheme}" stroke-width="2.5"/> ${texts}</svg>`;
+        }
+        function renderCards() {
+            const grid = document.getElementById('cardsGrid');
+            const sName = document.getElementById('filterName').value.toLowerCase().trim();
+            const sCat = document.getElementById('filterCategory').value;
+            const sPos = document.getElementById('filterPosition').value;
+            const sClub = document.getElementById('filterClub').value;
+            const sCountry = document.getElementById('filterCountry').value;
+            const sSort = document.getElementById('filterSort').value;
+
+            let filtered = playersData.filter(p => {
+                let isNameMatched = false;
+                if (sName === '') { 
+                    isNameMatched = true; 
+                } else {
+                    // 🔥 Magic Regex Search: Only checks starting of words 🔥
+                    let escapedSearch = sName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    let regex = new RegExp('(^|\\s|-)' + escapedSearch, 'i');
+                    isNameMatched = regex.test(p.fullName) || regex.test(p.name);
+                }
+                return isNameMatched && (sCat === 'all' || p.category === sCat) && (sPos === 'all' || p.position === sPos) && (sClub === 'all' || p.club === sClub) && (sCountry === 'all' || p.country === sCountry);
+            });
+
+            filtered.sort((a, b) => {
+                if (sSort === 'top') {
+                    if (b.maxRating !== a.maxRating) return b.maxRating - a.maxRating;
+                    let statsA = a.statsMax.spe + a.statsMax.acc + a.statsMax.sta + a.statsMax.str + a.statsMax.con + a.statsMax.pas + a.statsMax.sho + a.statsMax.tac;
+                    let statsB = b.statsMax.spe + b.statsMax.acc + b.statsMax.sta + b.statsMax.str + b.statsMax.con + b.statsMax.pas + b.statsMax.sho + b.statsMax.tac;
+                    if (statsB !== statsA) return statsB - statsA;
+                    return a.name.localeCompare(b.name);
+                } 
+                else if (sSort === 'fast') {
+                    let speA = a.statsBase.spe; let speB = b.statsBase.spe;
+                    if (speB !== speA) return speB - speA;
+                    if (b.baseRating !== a.baseRating) return b.baseRating - a.baseRating;
+                    return a.name.localeCompare(b.name);
+                }
+                else if (sSort === 'tall') {
+                    let hA = parseInt(a.height); let hB = parseInt(b.height);
+                    if (hB !== hA) return hB - hA;
+                    return b.maxRating - a.maxRating;
+                }
+                else if (sSort === 'short') {
+                    let hA = parseInt(a.height); let hB = parseInt(b.height);
+                    if (hA !== hB) return hA - hB;
+                    return b.maxRating - a.maxRating;
+                }
+            });
+
+            if (filtered.length === 0) { grid.innerHTML = `<div class="no-results">${langDict[currentLang].noResult}</div>`; return; }
+            
+            let htmlString = '';
+            filtered.forEach(p => {
+                const state = cardStates[p.id]; const isMax = state === 'max';
+                const currentImg = isMax ? p.imgMax : p.imgBase; const currentOVR = isMax ? p.maxRating : p.baseRating;
+                const currentStats = isMax ? p.statsMax : p.statsBase;
+                const cardStateText = isMax ? langDict[currentLang].showMaxText : langDict[currentLang].showBaseText;
+                const toggleBtnText = isMax ? langDict[currentLang].showBaseBtn : langDict[currentLang].showMaxBtn;
+                const dlBtnText = langDict[currentLang].saveCard;
+                
+                const themeClass = `theme-${p.category.replace(/\s+/g, '-')}`;
+                let themeColor = categoryColors[p.category] || '#f97316';
+
+                htmlString += `
+                    <div class="player-wrapper ${themeClass}">
+                        <div class="card-showcase"><img src="${currentImg}" alt="${p.name}" loading="lazy"></div>
+                        <div class="action-bar">
+                            <button class="toggle-btn" onclick="toggleState('${p.id}')">
+                                <i class="fa-solid fa-rotate"></i> ${toggleBtnText}
+                            </button>
+                            <button class="dl-btn-simple" onclick="downloadImg('${p.id}', '${p.name}')" title="Download Image">
+                                ${dlBtnText} <i class="fa-solid fa-download"></i>
+                            </button>
+                        </div>
+                        <div class="details-panel">
+                            <div class="dp-name">${p.fullName}</div>
+                            <div class="dp-badge">${cardStateText} • OVR ${currentOVR}</div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-bottom: 25px;">
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                                    <span class="dp-info-badge" style="width: 100%;"><i class="fa-solid fa-flag"></i> ${p.country}</span>
+                                    <span class="dp-info-badge" style="width: 100%;"><i class="fa-solid fa-shirt"></i> ${p.club}</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                    <span class="dp-info-badge" style="width: 100%;"><i class="fa-solid fa-location-dot"></i> ${p.position}</span>
+                                    <span class="dp-info-badge" style="width: 100%;"><i class="fa-solid fa-ruler-vertical"></i> ${p.height}CM</span>
+                                    <span class="dp-info-badge" style="width: 100%;"><i class="fa-solid fa-shoe-prints"></i> ${p.foot}</span>
+                                </div>
+                            </div>
+                            <div class="radar-wrapper"><div class="radar-container">${generateRadar(currentStats, themeColor, p.position)}</div></div>
+                        </div>
+                    </div>`;
+            });
+            grid.innerHTML = htmlString;
+        }
+
+        function toggleState(id) { cardStates[id] = cardStates[id] === 'max' ? 'base' : 'max'; renderCards(); }
+        
+        async function downloadImg(id, name) {
+            const state = cardStates[id]; const player = playersData.find(p => p.id === id);
+            const imageSrc = state === 'max' ? player.imgMax : player.imgBase;
+            const a = document.createElement('a'); a.href = imageSrc; a.download = `${name}_${state}.png`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</body>
+</html>
