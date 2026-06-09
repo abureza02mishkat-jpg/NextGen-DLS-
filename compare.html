@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>NextGen DLS - Player Comparison</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        (function() {
+            let initTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', initTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+            document.addEventListener('touchstart', function(event) { if (event.touches.length > 1) { event.preventDefault(); } }, { passive: false });
+        })();
+    </script>
+    <style>
+        :root { 
+            --bg-main: #0a0e17; --bg-panel: #111827; --bg-inner: #06090f;
+            --text-main: #f1f2f6; --text-muted: #808e9b; --primary: #f97316; 
+            --p1-color: #00f0ff; --p1-glow: rgba(0, 240, 255, 0.3);
+            --p2-color: #f97316; --p2-glow: rgba(249, 115, 22, 0.3);
+            --border-light: rgba(255,255,255,0.05);
+        }
+
+        :root[data-theme="light"] {
+            --bg-main: #f1f4f9; --bg-panel: #ffffff; --bg-inner: #e5e7eb;
+            --text-main: #1e293b; --text-muted: #4b5563; --border-light: rgba(0,0,0,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        
+        html, body { 
+            width: 100vw; max-width: 100%; overflow-x: hidden; touch-action: pan-y;
+            background-color: var(--bg-main); color: var(--text-main); 
+            padding-bottom: 50px; transition: background-color 0.3s ease, color 0.3s ease;
+            user-select: none; -webkit-user-select: none;
+        }
+
+        /* 🔥 বর্ডার এখান থেকে সরিয়ে শুধু প্যাডিং রাখা হলো 🔥 */
+        .sticky-top-section {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background-color: var(--bg-main); padding-bottom: 10px;
+        }
+
+        /* 🔥 বর্ডার ও শ্যাডো শুধু হেডারে দেওয়া হলো, আইকন ও লেখা পিওর সেন্টারে 🔥 */
+        .header { 
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            padding: 20px 20px 15px 20px; background-color: var(--bg-panel); 
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+        }
+        .header h1 { color: var(--primary); font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 0;}
+
+        /* আপনার অরিজিনাল CSS হুবহু এক আছে, কার্ডের ডিজাইন ভাঙবে না */
+        .filter-bar { max-width: 1200px; margin: 0 auto; padding: 5px 15px 5px 15px; }
+        .dual-search { display: flex; gap: 10px; flex-direction: row; position: relative;}
+        .search-box { flex: 1; position: relative; }
+        .search-box input { width: 100%; padding: 12px 10px 12px 35px; border-radius: 20px; border: 1px solid var(--border-light); background: var(--bg-inner); color: var(--text-main); outline: none; font-weight: 600; font-size: 12px; transition: 0.3s; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px;}
+        
+        .p1-search input { border: 1px solid var(--p1-color); box-shadow: 0 0 5px var(--p1-glow); }
+        .p1-search input:focus { box-shadow: 0 0 12px var(--p1-color); }
+        .p1-search i { color: var(--p1-color); }
+        
+        .p2-search input { border: 1px solid var(--p2-color); box-shadow: 0 0 5px var(--p2-glow); }
+        .p2-search input:focus { box-shadow: 0 0 12px var(--p2-color); }
+        .p2-search i { color: var(--p2-color); }
+
+        .autocomplete-list {
+            position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-panel); 
+            z-index: 2000; max-height: 250px; overflow-y: auto; border: 1px solid var(--border-light); 
+            border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+            display: none; flex-direction: column; padding: 5px;
+        }
+        .autocomplete-item {
+            display: flex; align-items: center; padding: 8px 10px; border-radius: 8px; 
+            cursor: pointer; gap: 12px; transition: 0.2s;
+        }
+        .autocomplete-item:hover, .autocomplete-item:active { background: var(--bg-inner); }
+        .ac-img { width: 35px; height: 35px; object-fit: contain; }
+        .ac-details { display: flex; flex-direction: column; text-align: left;}
+        .ac-name { font-size: 12px; font-weight: 800; color: var(--text-main); }
+        .ac-pos { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+        .ac-empty { padding: 15px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); }
+
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 130px 15px 20px 15px; }
+
+        .selection-area { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 15px; background: var(--bg-panel); padding: 15px; border-radius: 20px; border: 1px solid var(--border-light); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+        .select-wrapper { flex: 1; position: relative; }
+        .select-wrapper select { width: 100%; padding: 12px 10px; border-radius: 12px; background: var(--bg-inner); color: var(--text-main); border: 1px solid var(--border-light); font-weight: 800; font-size: 13px; outline: none; appearance: none; cursor: pointer; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #p1-select { border-bottom: 3px solid var(--p1-color); box-shadow: 0 0 10px var(--p1-glow); }
+        #p2-select { border-bottom: 3px solid var(--p2-color); box-shadow: 0 0 10px var(--p2-glow); }
+        .bolt-badge { font-size: 20px; font-weight: 900; color: var(--text-muted); opacity: 0.7;}
+
+        #download-area { background: var(--bg-main); padding: 10px; border-radius: 20px; position: relative; }
+        .export-grid-wrapper { display: flex; flex-direction: column; gap: 20px; }
+        @media(min-width: 768px) {
+            .export-grid-wrapper { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "cards cards" "info stats" "radar stats"; gap: 20px; }
+            #panel-cards { grid-area: cards; } #panel-info { grid-area: info; } #panel-radar { grid-area: radar; } #panel-stats { grid-area: stats; }
+        }
+
+        .export-mode { width: 1000px !important; padding: 30px !important; background: #0a0e17 !important; margin: 0 auto; }
+        .export-mode .export-grid-wrapper { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-areas: "cards info" "radar stats" !important; gap: 25px !important; }
+        .export-mode #panel-cards { grid-area: cards !important; margin-bottom: 0 !important; align-items: center; justify-content: center; }
+        .export-mode #panel-info { grid-area: info !important; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        .export-mode #panel-radar { grid-area: radar !important; height: 100%; }
+        .export-mode #panel-stats { grid-area: stats !important; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        .export-mode #dl-watermark { display: block !important; margin-top: 30px; font-size: 16px !important; }
+        .export-mode .card-name-plate { display: block !important; } 
+
+        .cards-display { display: flex; justify-content: space-between; gap: 10px; position: relative;}
+        .player-card { flex: 1; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; position: relative; }
+        .card-img { height: 260px; width: 100%; display: flex; justify-content: center; z-index: 1;}
+        .card-img img { max-height: 100%; max-width: 100%; object-fit: contain; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.5)); transition: 0.3s;}
+
+        .vs-center-badge { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 26px; font-weight: 900; font-style: italic; color: #fff; z-index: 10; background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 12px; border: 1px solid var(--border-light); backdrop-filter: blur(5px); display: block; }
+        .card-name-plate { display: none; background: var(--bg-panel); border-radius: 12px; padding: 8px 15px; text-align: center; border: 1px solid; width: 85%; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 2; margin-top: -15px; position: relative; }
+        .card-name { font-size: 15px; font-weight: 900; text-transform: uppercase; white-space: nowrap; overflow: hidden;}
+        #card-1 .card-name-plate { border-color: var(--p1-color); box-shadow: 0 0 15px var(--p1-glow) inset; }
+        #card-2 .card-name-plate { border-color: var(--p2-color); box-shadow: 0 0 15px var(--p2-glow) inset; }
+        #card-1 .card-name { color: var(--p1-color); }
+        #card-2 .card-name { color: var(--p2-color); }
+
+        .panel { background: var(--bg-panel); border-radius: 20px; padding: 25px 20px; border: 1px solid var(--border-light); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .panel-title { text-align: center; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 25px; color: var(--text-muted); text-transform: uppercase; }
+
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px dashed var(--border-light); }
+        .info-row:last-child { border-bottom: none; }
+        .info-val { flex: 1; font-size: 13px; font-weight: 800; text-transform: uppercase; }
+        .info-val.left { text-align: right; color: var(--p1-color); padding-right: 15px; }
+        .info-val.right { text-align: left; color: var(--p2-color); padding-left: 15px; }
+        .info-label { width: 90px; text-align: center; font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px;}
+
+        .radar-wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 260px; position: relative;}
+        .radar-legend { display: flex; justify-content: center; gap: 25px; margin-bottom: 15px;}
+        .legend-item { font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase;}
+        .legend-color { width: 12px; height: 12px; border-radius: 50%; }
+        .l-p1 { color: var(--p1-color); } .l-p1 .legend-color { background: var(--p1-color); box-shadow: 0 0 10px var(--p1-color);}
+        .l-p2 { color: var(--p2-color); } .l-p2 .legend-color { background: var(--p2-color); box-shadow: 0 0 10px var(--p2-color);}
+
+        .stat-comp-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; width: 100%; }
+        .stat-val-box { width: 28px; font-size: 15px; font-weight: 900; text-align: center; flex-shrink: 0;}
+        .stat-val-box.left { color: var(--p1-color); }
+        .stat-val-box.right { color: var(--p2-color); }
+        .stat-diff-box { width: 34px; display: flex; justify-content: center; flex-shrink: 0;}
+        
+        .diff { height: 18px; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: 800; border-radius: 4px; padding: 0 6px;}
+        .diff.win { color: #10b981; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; }
+        .diff.loss { color: #ef4444; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; }
+        .diff.tie { color: var(--text-muted); background: rgba(128, 142, 155, 0.15); border: 1px solid var(--text-muted); padding: 0 8px;}
+
+        .stat-bars-container { flex: 1; display: flex; align-items: center; gap: 8px; margin: 0 10px; min-width: 0; }
+        .bar-wrap { flex: 1; height: 8px; background: var(--border-light); border-radius: 4px; position: relative; overflow: hidden; }
+        .bar-fill { position: absolute; top: 0; bottom: 0; height: 100%; transition: width 0.5s ease-in-out; border-radius: 4px;}
+        .bar-left .bar-fill { right: 0; background: var(--p1-color); box-shadow: 0 0 10px var(--p1-glow); }
+        .bar-right .bar-fill { left: 0; background: var(--p2-color); box-shadow: 0 0 10px var(--p2-glow); }
+        
+        .stat-label { width: 40px; text-align: center; font-size: 10px; font-weight: 800; color: var(--text-main); text-transform: uppercase; flex-shrink: 0; padding: 0 2px;}
+        
+        #dl-watermark { display: none; text-align: center; font-size: 10px; color: var(--text-muted); margin-top: 15px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
+        .dl-btn { display: block; max-width: 320px; width: 90%; margin: 25px auto 0 auto; background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); transition: 0.3s; letter-spacing: 1px;}
+        .dl-btn:active { transform: scale(0.95); }
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+
+<body>
+    <div class="sticky-top-section">
+        <header class="header">
+            <i class="fa-solid fa-scale-balanced" style="color: var(--primary); font-size: 22px;"></i>
+            <h1 id="titleText" data-bn="প্লেয়ার কম্পেয়ার" data-en="PLAYER COMPARE">PLAYER COMPARE</h1>
+        </header>
+        <div class="filter-bar dual-search">
+            <div class="search-box p1-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-p1" placeholder="Search P1..." oninput="handleSearch('p1')">
+                <div id="sugg-p1" class="autocomplete-list"></div>
+            </div>
+            <div class="search-box p2-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-p2" placeholder="Search P2..." oninput="handleSearch('p2')">
+                <div id="sugg-p2" class="autocomplete-list"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="selection-area">
+            <div class="select-wrapper"><select id="p1-select" onchange="updateComparison()"></select></div>
+            <div class="bolt-badge"><i class="fa-solid fa-bolt"></i></div>
+            <div class="select-wrapper"><select id="p2-select" onchange="updateComparison()"></select></div>
+        </div>
+
+        <div id="download-area">
+            <div class="export-grid-wrapper" id="grid-wrap">
+                <div class="cards-display export-item" id="panel-cards">
+                    <div class="player-card" id="card-1">
+                        <div class="card-name-plate"><div class="card-name" id="c1-name">P1</div></div>
+                        <div class="card-img"><img id="c1-img" src="" alt="Player 1"></div>
+                    </div>
+                    <div class="vs-center-badge">VS</div>
+                    <div class="player-card" id="card-2">
+                        <div class="card-name-plate"><div class="card-name" id="c2-name">P2</div></div>
+                        <div class="card-img"><img id="c2-img" src="" alt="Player 2"></div>
+                    </div>
+                </div>
+
+                <div class="panel export-item" id="panel-info">
+                    <div class="panel-title" id="lblGenInfo">/// PLAYER IDENTITY ///</div>
+                    <div id="general-info-box"></div>
+                </div>
+
+                <div class="panel export-item" id="panel-radar">
+                    <div class="panel-title">/// PERFORMANCE RADAR ///</div>
+                    <div class="radar-legend">
+                        <div class="legend-item l-p1"><div class="legend-color"></div><span id="rad-name-1">P1</span></div>
+                        <div class="legend-item l-p2"><div class="legend-color"></div><span id="rad-name-2">P2</span></div>
+                    </div>
+                    <div class="radar-wrapper" id="radar-box"></div>
+                </div>
+
+                <div class="panel export-item" id="panel-stats">
+                    <div class="panel-title" id="lblStats">/// SKILL SHOWDOWN ///</div>
+                    <div id="stats-box"></div>
+                </div>
+            </div>
+            <div id="dl-watermark">CREATED VIA NEXTGEN DLS</div>
+        </div>
+        <button class="dl-btn" onclick="downloadComparison()"><i class="fa-solid fa-camera"></i> <span id="lblDownload">SAVE COMPARISON IMAGE</span></button>
+    </div>
+
+    <script>
+        const langDict = {
+            en: { title: "PLAYER COMPARISON", searchP1: "Search P1...", searchP2: "Search P2...", genInfo: "/// PLAYER IDENTITY ///", statsInfo: "/// SKILL SHOWDOWN ///", downloadText: "SAVE COMPARISON IMAGE", height: "Height", foot: "Foot", position: "Position", club: "Club", nation: "Nation", totalStats: "TOTAL STATS" },
+            bn: { title: "প্লেয়ার কম্পারিজন", searchP1: "প্লেয়ার ১ খুঁজুন...", searchP2: "প্লেয়ার ২ খুঁজুন...", genInfo: "/// প্লেয়ার আইডেন্টিটি ///", statsInfo: "/// স্কিল শোডাউন ///", downloadText: "কম্পারিজন সেভ করুন", height: "উচ্চতা", foot: "পাদদেশ", position: "পজিশন", club: "ক্লাব", nation: "দেশ", totalStats: "TOTAL STATS" }
+        };
+        let currentLang = localStorage.getItem('savedLang') || 'bn';
+
+        const playersData = [
+            { id: 'dimaria_1', fullName: 'Ángel Di María', name: 'Di María', position: 'AM', height: '178', foot: 'Left', club: 'Free Agent', country: 'Argentina', imgBase: 'di maria.png', statsBase: { spe: 87, acc: 89, sta: 80, str: 63, con: 89, pas: 93, sho: 82, tac: 55 } },
+            { id: 'ronaldo_1', fullName: 'Cristiano Ronaldo', name: 'Ronaldo', position: 'LW', height: '187', foot: 'Both', club: 'Al Nassr', country: 'Portugal', imgBase: 'ronaldo.png', statsBase: { spe: 89, acc: 89, sta: 86, str: 85, con: 92, pas: 87, sho: 97, tac: 41 } },
+            { id: 'vidal_1', fullName: 'Arturo Vidal', name: 'Vidal', position: 'CM', height: '180', foot: 'Right', club: 'Free Agent', country: 'Chile', imgBase: 'vidal.png', statsBase: { spe: 77, acc: 77, sta: 90, str: 78, con: 82, pas: 83, sho: 80, tac: 85 } },
+            { id: 'ronaldo_2', fullName: 'Cristiano Ronaldo ', name: 'Ronaldo', position: 'RM', height: '187', foot: 'Both', club: 'Al Nassr', country: 'Portugal', imgBase: 'ronaldo 2.png', statsBase: { spe: 90, acc: 91, sta: 79, str: 72, con: 91, pas: 78, sho: 77, tac: 32 } },
+            { id: 'dimaria_2', fullName: 'Ángel Di María', name: 'Di María', position: 'RW', height: '178', foot: 'Left', club: 'Free Agent', country: 'Argentina', imgBase: 'di maria 2.png', statsBase: { spe: 87, acc: 89, sta: 76, str: 62, con: 88, pas: 87, sho: 82, tac: 48 } },
+            { id: 'kante_1', fullName: "N'Golo Kanté", name: 'Kanté', position: 'DM', height: '168', foot: 'Right', club: 'Fenerbahçe', country: 'France', imgBase: 'kante.png', statsBase: { spe: 80, acc: 82, sta: 95, str: 76, con: 81, pas: 82, sho: 68, tac: 93 } },
+            { id: 'modric_1', fullName: 'Luka Modrić', name: 'Modrić', position: 'CM', height: '172', foot: 'Both', club: 'AC Milan', country: 'Croatia', imgBase: 'modric.png', statsBase: { spe: 75, acc: 83, sta: 85, str: 66, con: 92, pas: 95, sho: 77, tac: 76 } },
+            { id: 'messi_2', fullName: 'Lionel Messi', name: 'Messi', position: 'RW', height: '170', foot: 'Left', club: 'Inter Miami', country: 'Argentina', imgBase: 'messi 2.png', statsBase: { spe: 91, acc: 94, sta: 77, str: 60, con: 94, pas: 87, sho: 89, tac: 35 } },
+            { id: 'messi_1', fullName: 'Lionel Messi', name: 'Messi', position: 'CF', height: '170', foot: 'Left', club: 'Inter Miami', country: 'Argentina', imgBase: 'messi.png', statsBase: { spe: 90, acc: 93, sta: 81, str: 64, con: 97, pas: 90, sho: 97, tac: 41 } },
+            { id: 'balotelli_1', fullName: 'Mario Balotelli', name: 'Balotelli', position: 'CF', height: '189', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'balotelli.png', statsBase: { spe: 84, acc: 79, sta: 70, str: 89, con: 85, pas: 77, sho: 88, tac: 23 } },
+            { id: 'sanchez_1', fullName: 'Alexis Sánchez', name: 'Sánchez', position: 'CF', height: '169', foot: 'Right', club: 'Free Agent', country: 'Chile', imgBase: 'sanchez.png', statsBase: { spe: 86, acc: 88, sta: 83, str: 70, con: 90, pas: 83, sho: 87, tac: 44 } },
+            { id: 'vardy_1', fullName: 'Jamie Vardy', name: 'Vardy', position: 'CF', height: '179', foot: 'Right', club: 'Cremonese', country: 'England', imgBase: 'vardy.png', statsBase: { spe: 90, acc: 90, sta: 89, str: 70, con: 81, pas: 75, sho: 91, tac: 50 } },
+            { id: 'dembele_1', fullName: 'Ousmane Dembélé', name: 'O. Dembélé', position: 'RW', height: '178', foot: 'Both', club: 'PSG', country: 'France', imgBase: 'demble.png', statsBase: { spe: 91, acc: 94, sta: 82, str: 64, con: 93, pas: 92, sho: 92, tac: 46 } },
+            { id: 'mendes_1', fullName: 'Nuno Mendes', name: 'N. Mendes', position: 'LB', height: '180', foot: 'Left', club: 'PSG', country: 'Portugal', imgBase: 'nuno.png', statsBase: { spe: 94, acc: 92, sta: 85, str: 70, con: 82, pas: 81, sho: 63, tac: 84 } },
+            { id: 'hakimi_1', fullName: 'Achraf Hakimi', name: 'Hakimi', position: 'RB', height: '181', foot: 'Right', club: 'PSG', country: 'Morocco', imgBase: 'hakimi.png', statsBase: { spe: 93, acc: 88, sta: 90, str: 70, con: 82, pas: 87, sho: 75, tac: 81 } },
+            { id: 'salah_1', fullName: 'Mohamed Salah', name: 'M. Salah', position: 'RW', height: '175', foot: 'Left', club: 'Liverpool', country: 'Egypt', imgBase: 'salah.png', statsBase: { spe: 87, acc: 90, sta: 86, str: 73, con: 93, pas: 91, sho: 93, tac: 39 } },
+            { id: 'gabriel_1', fullName: 'Gabriel Magalhães', name: 'Gabriel', position: 'CB', height: '190', foot: 'Left', club: 'Arsenal', country: 'Brazil', imgBase: 'gabriel.png', statsBase: { spe: 82, acc: 72, sta: 83, str: 95, con: 78, pas: 81, sho: 62, tac: 94 } },
+            { id: 'pedri_1', fullName: 'Pedri', name: 'Pedri', position: 'CM', height: '174', foot: 'Right', club: 'Barcelona', country: 'Spain', imgBase: 'pedri.png', statsBase: { spe: 75, acc: 86, sta: 87, str: 71, con: 93, pas: 93, sho: 77, tac: 79 } },
+            { id: 'kane_1', fullName: 'Harry Kane', name: 'Kane', position: 'CF', height: '188', foot: 'Right', club: 'Bayern Munich', country: 'England', imgBase: 'kane.png', statsBase: { spe: 78, acc: 75, sta: 87, str: 92, con: 90, pas: 90, sho: 96, tac: 53 } },
+            { id: 'vitinha_1', fullName: 'Vitinha', name: 'Vitinha', position: 'CM', height: '172', foot: 'Right', club: 'PSG', country: 'Portugal', imgBase: 'vitinha.png', statsBase: { spe: 79, acc: 87, sta: 87, str: 59, con: 92, pas: 92, sho: 79, tac: 81 } },
+            { id: 'yamal_1', fullName: 'Lamine Yamal', name: 'Yamal', position: 'RW', height: '179', foot: 'Left', club: 'Barcelona', country: 'Spain', imgBase: 'yamal.png', statsBase: { spe: 87, acc: 93, sta: 84, str: 66, con: 96, pas: 91, sho: 86, tac: 40 } },
+            { id: 'donnarumma_1', fullName: 'Gianluigi Donnarumma', name: 'Donnarumma', position: 'GK', height: '196', foot: 'Right', club: 'Manchester City', country: 'Italy', imgBase: 'donnarumma.png', statsBase: { spe: 61, acc: 57, sta: 85, str: 70, con: 63, pas: 67, sho: 83, tac: 42 } },
+            { id: 'mbappe_1', fullName: 'Kylian Mbappé', name: 'Mbappé', position: 'CF', height: '178', foot: 'Right', club: 'Real Madrid', country: 'France', imgBase: 'mbappe.png', statsBase: { spe: 95, acc: 95, sta: 85, str: 75, con: 91, pas: 81, sho: 95, tac: 32 } }
+
+            ,{ id: 'yildiz_1', fullName: 'Kenan Yildiz', name: 'Yildiz', position: 'SS', height: '187', foot: 'Both', club: 'Juventus', country: 'Turkey', imgBase: 'yildiz.png', statsBase: { spe: 87, acc: 90, sta: 83, str: 72, con: 92, pas: 87, sho: 87, tac: 34 } },
+            { id: 'thiago_1', fullName: 'Igor Thiago', name: 'Thiago', position: 'CF', height: '191', foot: 'Right', club: 'Brentford', country: 'Brazil', imgBase: 'thiago.png', statsBase: { spe: 82, acc: 77, sta: 83, str: 93, con: 84, pas: 75, sho: 93, tac: 37 } },
+            { id: 'suarez_1', fullName: 'Luis Suárez', name: 'Suárez', position: 'CF', height: '181', foot: 'Right', club: 'Sporting CP', country: 'Colombia', imgBase: 'suarez.png', statsBase: { spe: 88, acc: 87, sta: 83, str: 83, con: 84, pas: 76, sho: 92, tac: 33 } },
+            { id: 'svilar_1', fullName: 'Mile Svilar', name: 'Svilar', position: 'GK', height: '189', foot: 'Right', club: 'AS Roma', country: 'Serbia', imgBase: 'svilar.png', statsBase: { spe: 67, acc: 65, sta: 83, str: 64, con: 64, pas: 65, sho: 79, tac: 45 } },
+            { id: 'el_karouani_1', fullName: 'Souffian El Karouani', name: 'El Karouani', position: 'LB', height: '178', foot: 'Left', club: 'FC Utrecht', country: 'Morocco', imgBase: 'el karouani.png', statsBase: { spe: 82, acc: 84, sta: 89, str: 67, con: 82, pas: 90, sho: 62, tac: 78 } },
+            { id: 'berg_1', fullName: 'Patrick Berg', name: 'Berg', position: 'DM', height: '178', foot: 'Right', club: 'Bodø/Glimt', country: 'Norway', imgBase: 'berg.png', statsBase: { spe: 70, acc: 71, sta: 93, str: 75, con: 85, pas: 90, sho: 78, tac: 85 } },
+            { id: 'anderson_1', fullName: 'Elliot Anderson', name: 'Anderson', position: 'DM', height: '179', foot: 'Right', club: 'Nottingham Forest', country: 'England', imgBase: 'anderson.png', statsBase: { spe: 76, acc: 77, sta: 90, str: 77, con: 87, pas: 90, sho: 70, tac: 82 } },
+            { id: 'ryerson_1', fullName: 'Julian Ryerson', name: 'Ryerson', position: 'RB', height: '183', foot: 'Right', club: 'Borussia Dortmund', country: 'Norway', imgBase: 'ryerson.png', statsBase: { spe: 83, acc: 83, sta: 88, str: 74, con: 80, pas: 91, sho: 64, tac: 81 } },
+            { id: 'vuskovic_1', fullName: 'Luka Vušković', name: 'Vušković', position: 'CB', height: '193', foot: 'Right', club: 'Hamburger SV', country: 'Croatia', imgBase: 'vuskovic.png', statsBase: { spe: 76, acc: 71, sta: 77, str: 94, con: 75, pas: 77, sho: 72, tac: 89 } },
+            { id: 'arrascaeta_1', fullName: 'Giorgian de Arrascaeta', name: 'De Arrascaeta', position: 'AM', height: '174', foot: 'Right', club: 'Flamengo', country: 'Uruguay', imgBase: 'arrascaeta.png', statsBase: { spe: 79, acc: 87, sta: 84, str: 66, con: 90, pas: 90, sho: 90, tac: 56 } },
+            { id: 'tzolis_1', fullName: 'Christos Tzolis', name: 'Tzolis', position: 'LM', height: '179', foot: 'Right', club: 'Club Brugge', country: 'Greece', imgBase: 'tzolis.png', statsBase: { spe: 84, acc: 84, sta: 87, str: 72, con: 88, pas: 89, sho: 89, tac: 39 } },
+            { id: 'sarr_1', fullName: 'Malang Sarr', name: 'Sarr', position: 'CB', height: '183', foot: 'Left', club: 'RC Lens', country: 'France', imgBase: 'sarr.png', statsBase: { spe: 80, acc: 79, sta: 80, str: 87, con: 76, pas: 79, sho: 52, tac: 91 } },
+            { id: 'paz_1', fullName: 'Nico Paz', name: 'Paz', position: 'AM', height: '186', foot: 'Left', club: 'Como', country: 'Argentina', imgBase: 'paz.png', statsBase: { spe: 82, acc: 80, sta: 79, str: 72, con: 88, pas: 84, sho: 83, tac: 57 } },
+            { id: 'mctominay_1', fullName: 'Scott McTominay', name: 'McTominay', position: 'CM', height: '191', foot: 'Right', club: 'Napoli', country: 'Scotland', imgBase: 'mctominay.png', statsBase: { spe: 79, acc: 68, sta: 91, str: 87, con: 81, pas: 80, sho: 84, tac: 80 } },
+            { id: 'huijsen_1', fullName: 'Dean Huijsen', name: 'Huijsen', position: 'CB', height: '195', foot: 'Both', club: 'Real Madrid', country: 'Spain', imgBase: 'huijsen.png', statsBase: { spe: 82, acc: 77, sta: 79, str: 86, con: 77, pas: 79, sho: 53, tac: 90 } },
+            { id: 'cherki_1', fullName: 'Rayan Cherki', name: 'Cherki', position: 'RW', height: '177', foot: 'Both', club: 'Manchester City', country: 'France', imgBase: 'cherki.png', statsBase: { spe: 80, acc: 86, sta: 77, str: 70, con: 92, pas: 87, sho: 81, tac: 38 } },
+            { id: 'santos_1', fullName: 'Andrey Santos', name: 'Santos', position: 'CM', height: '180', foot: 'Right', club: 'Chelsea', country: 'Brazil', imgBase: 'santos.png', statsBase: { spe: 75, acc: 75, sta: 87, str: 80, con: 81, pas: 81, sho: 79, tac: 83 } },
+            { id: 'robinson_1', fullName: 'Antonee Robinson', name: 'Robinson', position: 'LB', height: '183', foot: 'Left', club: 'Fulham', country: 'USA', imgBase: 'robinson.png', statsBase: { spe: 88, acc: 85, sta: 93, str: 80, con: 80, pas: 84, sho: 46, tac: 82 } },
+            { id: 'steijn_1', fullName: 'Sem Steijn', name: 'Steijn', position: 'AM', height: '173', foot: 'Right', club: 'Feyenoord', country: 'Netherlands', imgBase: 'steijn.png', statsBase: { spe: 79, acc: 82, sta: 93, str: 75, con: 83, pas: 82, sho: 87, tac: 50 } },
+            { id: 'wood_1', fullName: 'Chris Wood', name: 'Wood', position: 'CF', height: '191', foot: 'Right', club: 'Nottingham Forest', country: 'New Zealand', imgBase: 'wood.png', statsBase: { spe: 77, acc: 70, sta: 86, str: 94, con: 85, pas: 76, sho: 92, tac: 51 } },
+            { id: 'trafford_1', fullName: 'James Trafford', name: 'Trafford', position: 'GK', height: '197', foot: 'Right', club: 'Manchester City', country: 'England', imgBase: 'trafford.png', statsBase: { spe: 62, acc: 59, sta: 81, str: 58, con: 60, pas: 62, sho: 79, tac: 48 } },
+            { id: 'baena_1', fullName: 'Álex Baena', name: 'Baena', position: 'LM', height: '175', foot: 'Right', club: 'Atlético Madrid', country: 'Spain', imgBase: 'baena.png', statsBase: { spe: 82, acc: 83, sta: 85, str: 69, con: 86, pas: 92, sho: 81, tac: 64 } },
+            { id: 'vivian_1', fullName: 'Dani Vivian', name: 'Vivian', position: 'CB', height: '183', foot: 'Right', club: 'Athletic Club', country: 'Spain', imgBase: 'vivian.png', statsBase: { spe: 82, acc: 75, sta: 81, str: 86, con: 77, pas: 81, sho: 54, tac: 90 } },
+            { id: 'alvarez_1', fullName: 'Julián Álvarez', name: 'Alvarez', position: 'CF', height: '170', foot: 'Right', club: 'Atlético Madrid', country: 'Argentina', imgBase: 'alvarez.png', statsBase: { spe: 83, acc: 85, sta: 83, str: 71, con: 86, pas: 82, sho: 88, tac: 52 } },
+            { id: 'raphinha_1', fullName: 'Raphinha', name: 'Raphinha', position: 'LW', height: '176', foot: 'Left', club: 'Barcelona', country: 'Brazil', imgBase: 'raphinha.png', statsBase: { spe: 86, acc: 87, sta: 86, str: 71, con: 89, pas: 89, sho: 90, tac: 50 } },
+            { id: 'fernando_torres', fullName: 'Fernando Torres', name: 'Torres', position: 'CF', height: '186', foot: 'Right', club: 'Free Agent', country: 'Spain', imgBase: 'fernando torres.png', statsBase: { spe: 92, acc: 94, sta: 83, str: 81, con: 89, pas: 76, sho: 90, tac: 32 } },
+            { id: 'andy_cole_1', fullName: 'Andy Cole', name: 'Cole', position: 'CF', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'andy cole 1.png', statsBase: { spe: 88, acc: 88, sta: 85, str: 80, con: 83, pas: 79, sho: 92, tac: 30 } },
+            { id: 'rivaldo_2', fullName: 'Rivaldo', name: 'Rivaldo', position: 'LW', height: '186', foot: 'Left', club: 'Free Agent', country: 'Brazil', imgBase: 'rivaldo 2.png', statsBase: { spe: 86, acc: 84, sta: 84, str: 82, con: 92, pas: 88, sho: 90, tac: 42 } },
+            { id: 'david_trezeguet', fullName: 'David Trezeguet', name: 'Trezeguet', position: 'CF', height: '190', foot: 'Both', club: 'Free Agent', country: 'France', imgBase: 'david trezeguet.png', statsBase: { spe: 86, acc: 82, sta: 83, str: 90, con: 85, pas: 74, sho: 93, tac: 33 } }
+
+            ,{ id: 'hernan_crespo_1', fullName: 'Hernán Crespo', name: 'Crespo', position: 'CF', height: '184', foot: 'Right', club: 'Free Agent', country: 'Argentina', imgBase: 'hernan crespo 1.png', statsBase: { spe: 85, acc: 84, sta: 84, str: 86, con: 84, pas: 75, sho: 93, tac: 37 } },
+            { id: 'gianfranco_zola', fullName: 'Gianfranco Zola', name: 'Zola', position: 'CF', height: '168', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'gianfranco zola.png', statsBase: { spe: 85, acc: 90, sta: 84, str: 66, con: 91, pas: 84, sho: 84, tac: 50 } },
+            { id: 'andy_cole_2', fullName: 'Andy Cole', name: 'Cole', position: 'CF', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'andy cole 2.png', statsBase: { spe: 85, acc: 85, sta: 83, str: 80, con: 83, pas: 76, sho: 89, tac: 40 } },
+            { id: 'hernan_crespo_2', fullName: 'Hernán Crespo', name: 'Crespo', position: 'CF', height: '184', foot: 'Right', club: 'Free Agent', country: 'Argentina', imgBase: 'hernan crespo 2.png', statsBase: { spe: 85, acc: 83, sta: 82, str: 86, con: 84, pas: 73, sho: 87, tac: 44 } },
+            { id: 'gabriel_batistuta_2', fullName: 'Gabriel Batistuta', name: 'Batistuta', position: 'CF', height: '185', foot: 'Both', club: 'Free Agent', country: 'Argentina', imgBase: 'gabriel batistuta 2.png', statsBase: { spe: 84, acc: 82, sta: 85, str: 90, con: 85, pas: 79, sho: 92, tac: 43 } },
+            { id: 'robert_pires', fullName: 'Robert Pires', name: 'Pires', position: 'LM', height: '187', foot: 'Right', club: 'Free Agent', country: 'France', imgBase: 'robert pires.png', statsBase: { spe: 84, acc: 86, sta: 83, str: 77, con: 89, pas: 87, sho: 80, tac: 50 } },
+            { id: 'paul_gascoigne_1', fullName: 'Paul Gascoigne', name: 'Gascoigne', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'paul gascoigne 1.png', statsBase: { spe: 84, acc: 84, sta: 83, str: 74, con: 92, pas: 85, sho: 85, tac: 53 } },
+            { id: 'gabriel_batistuta_1', fullName: 'Gabriel Batistuta', name: 'Batistuta', position: 'CF', height: '185', foot: 'Both', club: 'Free Agent', country: 'Argentina', imgBase: 'gabriel batistuta 1.png', statsBase: { spe: 83, acc: 82, sta: 83, str: 90, con: 87, pas: 78, sho: 93, tac: 41 } },
+            { id: 'rivaldo_1', fullName: 'Rivaldo', name: 'Rivaldo', position: 'AM', height: '186', foot: 'Left', club: 'Free Agent', country: 'Brazil', imgBase: 'rivaldo 1.png', statsBase: { spe: 83, acc: 82, sta: 79, str: 83, con: 91, pas: 87, sho: 87, tac: 49 } },
+            { id: 'chiellini_1', fullName: 'Giorgio Chiellini', name: 'Chiellini', position: 'CB', height: '187', foot: 'Left', club: 'Free Agent', country: 'Italy', imgBase: 'giorgio chiellini.png', statsBase: { spe: 82, acc: 75, sta: 83, str: 93, con: 80, pas: 80, sho: 57, tac: 92 } },
+            { id: 'davor_suker', fullName: 'Davor Šuker', name: 'Šuker', position: 'CF', height: '183', foot: 'Left', club: 'Free Agent', country: 'Croatia', imgBase: 'davor suker.png', statsBase: { spe: 82, acc: 82, sta: 83, str: 78, con: 85, pas: 76, sho: 89, tac: 44 } },
+            { id: 'lothar_matthaus_1', fullName: 'Lothar Matthäus', name: 'Matthäus', position: 'DM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Germany', imgBase: 'lothar matthäus 1.png', statsBase: { spe: 82, acc: 83, sta: 91, str: 82, con: 81, pas: 83, sho: 82, tac: 85 } },
+            { id: 'fabio_cannavaro', fullName: 'Fabio Cannavaro', name: 'Cannavaro', position: 'CB', height: '176', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'fabio cannavaro.png', statsBase: { spe: 81, acc: 82, sta: 88, str: 89, con: 80, pas: 80, sho: 53, tac: 95 } },
+            { id: 'dennis_bergkamp_1', fullName: 'Dennis Bergkamp', name: 'Bergkamp', position: 'CF', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 1.png', statsBase: { spe: 81, acc: 81, sta: 83, str: 83, con: 92, pas: 83, sho: 90, tac: 46 } },
+            { id: 'marcel_desailly_1', fullName: 'Marcel Desailly', name: 'Desailly', position: 'CB', height: '188', foot: 'Right', club: 'Free Agent', country: 'France', imgBase: 'marcel desailly 1.png', statsBase: { spe: 81, acc: 75, sta: 86, str: 94, con: 80, pas: 80, sho: 53, tac: 92 } },
+            { id: 'lothar_matthaus_2', fullName: 'Lothar Matthäus', name: 'Matthäus', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Germany', imgBase: 'lothar matthäus 2.png', statsBase: { spe: 81, acc: 81, sta: 91, str: 81, con: 82, pas: 84, sho: 85, tac: 84 } },
+            { id: 'dennis_bergkamp_2', fullName: 'Dennis Bergkamp', name: 'Bergkamp', position: 'SS', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 2.png', statsBase: { spe: 80, acc: 80, sta: 83, str: 83, con: 92, pas: 84, sho: 85, tac: 51 } },
+            { id: 'gaizka_mendieta', fullName: 'Gaizka Mendieta', name: 'Mendieta', position: 'RM', height: '173', foot: 'Right', club: 'Free Agent', country: 'Spain', imgBase: 'gaizka mendieta.png', statsBase: { spe: 80, acc: 83, sta: 90, str: 67, con: 82, pas: 82, sho: 80, tac: 70 } },
+            { id: 'marcel_desailly_2', fullName: 'Marcel Desailly', name: 'Desailly', position: 'DM', height: '188', foot: 'Right', club: 'Free Agent', country: 'France', imgBase: 'marcel desailly 2.png', statsBase: { spe: 80, acc: 75, sta: 89, str: 92, con: 80, pas: 80, sho: 52, tac: 90 } },
+            { id: 'emmanuel_petit_2', fullName: 'Emmanuel Petit', name: 'Petit', position: 'DM', height: '185', foot: 'Left', club: 'Free Agent', country: 'France', imgBase: 'emmanuel petit 2.png', statsBase: { spe: 80, acc: 77, sta: 90, str: 84, con: 81, pas: 83, sho: 70, tac: 84 } },
+            { id: 'emmanuel_petit_1', fullName: 'Emmanuel Petit', name: 'Petit', position: 'DM', height: '185', foot: 'Left', club: 'Free Agent', country: 'France', imgBase: 'emmanuel petit 1.png', statsBase: { spe: 79, acc: 77, sta: 90, str: 84, con: 81, pas: 82, sho: 72, tac: 85 } },
+            { id: 'tony_adams', fullName: 'Tony Adams', name: 'Adams', position: 'CB', height: '191', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'tony adams.png', statsBase: { spe: 77, acc: 72, sta: 85, str: 93, con: 74, pas: 77, sho: 58, tac: 92 } },
+            { id: 'michael_essien', fullName: 'Michael Essien', name: 'Essien', position: 'DM', height: '178', foot: 'Right', club: 'Free Agent', country: 'Ghana', imgBase: 'michael essien.png', statsBase: { spe: 77, acc: 78, sta: 91, str: 82, con: 81, pas: 83, sho: 75, tac: 86 } },
+            { id: 'graeme_souness', fullName: 'Graeme Souness', name: 'Souness', position: 'CM', height: '180', foot: 'Right', club: 'Free Agent', country: 'Scotland', imgBase: 'graeme souness.png', statsBase: { spe: 76, acc: 75, sta: 91, str: 84, con: 80, pas: 83, sho: 75, tac: 90 } },
+            { id: 'dennis_bergkamp_3', fullName: 'Dennis Bergkamp', name: 'Bergkamp', position: 'SS', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 3.png', statsBase: { spe: 75, acc: 74, sta: 80, str: 81, con: 90, pas: 82, sho: 81, tac: 49 } },
+            { id: 'paul_gascoigne_2', fullName: 'Paul Gascoigne', name: 'Gascoigne', position: 'AM', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'paul gascoigne 2.png', statsBase: { spe: 75, acc: 80, sta: 69, str: 80, con: 89, pas: 82, sho: 82, tac: 50 } },
+            { id: 'walter_zenga', fullName: 'Walter Zenga', name: 'Zenga', position: 'GK', height: '188', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'walter zenga.png', statsBase: { spe: 70, acc: 67, sta: 82, str: 66, con: 60, pas: 61, sho: 79, tac: 56 } },
+            { id: 'carlos_valderrama', fullName: 'Carlos Valderrama', name: 'Valderrama', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Colombia', imgBase: 'carlos valderrama.png', statsBase: { spe: 70, acc: 83, sta: 82, str: 76, con: 86, pas: 85, sho: 76, tac: 67 } }
+        ];
+
+        function getShortName(fName) {
+            let p = fName.trim().split(/\s+/);
+            if(p.length === 1) return p[0];
+            return p[0].charAt(0) + '. ' + p.slice(1).join(' ');
+        }
+
+        function applyLanguage() {
+            const dict = langDict[currentLang];
+            document.getElementById('titleText').textContent = dict.title;
+            document.getElementById('search-p1').placeholder = dict.searchP1;
+            document.getElementById('search-p2').placeholder = dict.searchP2;
+            document.getElementById('lblGenInfo').textContent = dict.genInfo;
+            document.getElementById('lblStats').textContent = dict.statsInfo;
+            document.getElementById('lblDownload').textContent = dict.downloadText;
+            initPlayers();
+        }
+
+        function populateSelect(selectId, data) {
+            const sel = document.getElementById(selectId);
+            const currentVal = sel.value;
+            sel.innerHTML = '';
+            data.forEach(p => {
+                let dispName = getShortName(p.fullName);
+                let opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = dispName;
+                sel.appendChild(opt);
+            });
+            if (currentVal && data.some(p => p.id === currentVal)) {
+                sel.value = currentVal;
+            } else if (data.length > 0) {
+                sel.selectedIndex = 0;
+            }
+        }
+
+        function initPlayers() {
+            playersData.sort((a, b) => a.fullName.localeCompare(b.fullName));
+            populateSelect('p1-select', playersData);
+            populateSelect('p2-select', playersData);
+            if(playersData.length > 1) { 
+                document.getElementById('p1-select').selectedIndex = 0; 
+                document.getElementById('p2-select').selectedIndex = 1; 
+            }
+            updateComparison();
+        }
+
+        function handleSearch(playerSide) {
+            let sName = document.getElementById('search-' + playerSide).value.toLowerCase().trim();
+            let suggBox = document.getElementById('sugg-' + playerSide);
+            
+            if (!sName) {
+                suggBox.style.display = 'none';
+                return;
+            }
+
+            let filtered = playersData.filter(p => {
+                const fullWords = (p.fullName || '').toLowerCase().split(/[\s-]+/);
+                const shortWords = (p.name || '').toLowerCase().split(/[\s-]+/);
+                const matchFull = fullWords.some(word => word.startsWith(sName));
+                const matchShort = shortWords.some(word => word.startsWith(sName));
+                return matchFull || matchShort;
+            });
+
+            if(filtered.length === 0) {
+                suggBox.innerHTML = `<div class="ac-empty">No player found</div>`;
+            } else {
+                let html = '';
+                filtered.forEach(p => {
+                    html += `
+                        <div class="autocomplete-item" onclick="selectFromSearch('${p.id}', '${playerSide}')">
+                            <img src="${p.imgBase}" class="ac-img" onerror="this.src='fallback.png'">
+                            <div class="ac-details">
+                                <span class="ac-name">${p.fullName}</span>
+                                <span class="ac-pos">${p.position}</span>
+                            </div>
+                        </div>`;
+                });
+                suggBox.innerHTML = html;
+            }
+            suggBox.style.display = 'flex';
+        }
+
+        function selectFromSearch(playerId, playerSide) {
+            document.getElementById(playerSide + '-select').value = playerId;
+            document.getElementById('search-' + playerSide).value = '';
+            document.getElementById('sugg-' + playerSide).style.display = 'none';
+            updateComparison();
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.p1-search')) document.getElementById('sugg-p1').style.display = 'none';
+            if (!e.target.closest('.p2-search')) document.getElementById('sugg-p2').style.display = 'none';
+        });
+
+        function getRadarPoint(val, index, maxR) { const angle = index * 45 * Math.PI / 180; const r = (val / 100) * maxR; return `${125 + r * Math.sin(angle)},${125 - r * Math.cos(angle)}`; }
+        
+        function generateDualRadar(stats1, stats2) {
+            const labels = ['SPE', 'ACC', 'STA', 'STR', 'CON', 'PAS', 'SHO', 'TAC'];
+            const v1 = [stats1.spe, stats1.acc, stats1.sta, stats1.str, stats1.con, stats1.pas, stats1.sho, stats1.tac];
+            const v2 = [stats2.spe, stats2.acc, stats2.sta, stats2.str, stats2.con, stats2.pas, stats2.sho, stats2.tac];
+            let c1 = 'rgba(0, 240, 255, 0.4)'; let b1 = '#00f0ff';
+            let c2 = 'rgba(249, 115, 22, 0.4)'; let b2 = '#f97316';
+            
+            let bgWeb = ''; for(let r=25; r<=75; r+=25) bgWeb += `<polygon points="${[0,1,2,3,4,5,6,7].map(i=>getRadarPoint(100,i,r)).join(' ')}" fill="none" stroke="rgba(255,255,255,0.05)"/>`;
+            let lines = ''; for(let i=0; i<8; i++) lines += `<line x1="125" y1="125" x2="${getRadarPoint(100,i,75).split(',')[0]}" y2="${getRadarPoint(100,i,75).split(',')[1]}" stroke="rgba(255,255,255,0.05)"/>`;
+            let poly1 = v1.map((v, i) => getRadarPoint(v, i, 75)).join(' '); let poly2 = v2.map((v, i) => getRadarPoint(v, i, 75)).join(' ');
+            
+            let texts = ''; labels.forEach((lbl, i) => {
+                let pt = getRadarPoint(100, i, 90); let [x,y] = pt.split(',');
+                texts += `<text x="${x}" y="${y}" fill="rgba(255,255,255,0.7)" font-size="10" font-weight="700" text-anchor="middle" dominant-baseline="middle">${lbl}</text>`;
+            });
+            return `<svg viewBox="0 0 250 250" width="100%" height="100%">${bgWeb} ${lines} <polygon points="${poly1}" fill="${c1}" stroke="${b1}" stroke-width="2"/> <polygon points="${poly2}" fill="${c2}" stroke="${b2}" stroke-width="2"/> ${texts}</svg>`;
+        }
+
+        function downloadComparison() {
+            const dlArea = document.getElementById('download-area');
+            const clone = dlArea.cloneNode(true);
+            clone.classList.add('export-mode');
+            
+            const wrapBox = document.createElement('div');
+            wrapBox.style.position = 'fixed';
+            wrapBox.style.top = '-9999px';
+            wrapBox.style.left = '-9999px';
+            wrapBox.style.width = '1000px'; 
+            wrapBox.appendChild(clone);
+            document.body.appendChild(wrapBox);
+
+            setTimeout(() => {
+                html2canvas(clone, { backgroundColor: '#0a0e17', scale: 2, useCORS: true }).then(canvas => {
+                    let link = document.createElement('a');
+                    link.download = 'NextGen_DLS_Comparison.png';
+                    link.href = canvas.toDataURL('image/png'); link.click();
+                    document.body.removeChild(wrapBox); 
+                });
+            }, 100);
+        }
+
+        function updateComparison() {
+            const val1 = document.getElementById('p1-select').value;
+            const val2 = document.getElementById('p2-select').value;
+            if(!val1 || !val2) return;
+            
+            const p1 = playersData.find(p => p.id === val1);
+            const p2 = playersData.find(p => p.id === val2);
+            if(!p1 || !p2) return;
+
+            document.getElementById('c1-img').src = p1.imgBase;
+            document.getElementById('c2-img').src = p2.imgBase;
+            
+            let n1 = getShortName(p1.fullName); let n2 = getShortName(p2.fullName);
+            document.getElementById('c1-name').innerText = n1; 
+            document.getElementById('c2-name').innerText = n2;
+            document.getElementById('rad-name-1').innerText = n1; 
+            document.getElementById('rad-name-2').innerText = n2;
+            
+            document.getElementById('radar-box').innerHTML = generateDualRadar(p1.statsBase, p2.statsBase);
+
+            const dict = langDict[currentLang];
+            const genFields = [
+                { label: dict.height, v1: (p1.height || '--') + ' CM', v2: (p2.height || '--') + ' CM' },
+                { label: dict.foot, v1: p1.foot || '--', v2: p2.foot || '--' },
+                { label: dict.position, v1: p1.position || '--', v2: p2.position || '--' },
+                { label: dict.club, v1: p1.club || '--', v2: p2.club || '--' },
+                { label: dict.nation, v1: p1.country || '--', v2: p2.country || '--' }
+            ];
+            let genHtml = ''; genFields.forEach(f => { genHtml += `<div class="info-row"><div class="info-val left">${f.v1}</div><div class="info-label">${f.label}</div><div class="info-val right">${f.v2}</div></div>`; });
+            document.getElementById('general-info-box').innerHTML = genHtml;
+
+            const statsOrder = [
+                { key: 'spe', label: 'SPE' }, { key: 'acc', label: 'ACC' }, { key: 'sta', label: 'STA' }, { key: 'str', label: 'STR' },
+                { key: 'con', label: 'CON' }, { key: 'pas', label: 'PAS' }, { key: 'sho', label: 'SHO' }, { key: 'tac', label: 'TAC' }
+            ];
+
+            let statHtml = '';
+            let total1 = 0, total2 = 0;
+            
+            setTimeout(() => {
+                statsOrder.forEach(st => {
+                    let v1 = p1.statsBase[st.key]; let v2 = p2.statsBase[st.key];
+                    total1 += v1; total2 += v2;
+                    let diff1 = v1 - v2; let d1Class = diff1 > 0 ? 'win' : (diff1 < 0 ? 'loss' : 'tie');
+                    let diff2 = v2 - v1; let d2Class = diff2 > 0 ? 'win' : (diff2 < 0 ? 'loss' : 'tie');
+                    let d1Text = diff1 > 0 ? `+${diff1}` : (diff1 < 0 ? diff1 : '-');
+                    let d2Text = diff2 > 0 ? `+${diff2}` : (diff2 < 0 ? diff2 : '-');
+
+                    let d1Html = `<div class="diff ${d1Class}">${d1Text}</div>`;
+                    let d2Html = `<div class="diff ${d2Class}">${d2Text}</div>`;
+
+                    statHtml += `
+                        <div class="stat-comp-row">
+                            <div class="stat-val-box left">${v1}</div>
+                            <div class="stat-diff-box">${d1Html}</div>
+                            <div class="stat-bars-container">
+                                <div class="bar-wrap bar-left"><div class="bar-fill" style="width: ${v1}%"></div></div>
+                                <div class="stat-label">${st.label}</div>
+                                <div class="bar-wrap bar-right"><div class="bar-fill" style="width: ${v2}%"></div></div>
+                            </div>
+                            <div class="stat-diff-box">${d2Html}</div>
+                            <div class="stat-val-box right">${v2}</div>
+                        </div>`;
+                });
+
+                // 🔥 FIXED LAYOUT: Total Stats Row 🔥
+                let diffT1 = total1 - total2; let dT1Class = diffT1 > 0 ? 'win' : (diffT1 < 0 ? 'loss' : 'tie');
+                let diffT2 = total2 - total1; let dT2Class = diffT2 > 0 ? 'win' : (diffT2 < 0 ? 'loss' : 'tie');
+                let dT1Text = diffT1 > 0 ? `+${diffT1}` : (diffT1 < 0 ? diffT1 : '-');
+                let dT2Text = diffT2 > 0 ? `+${diffT2}` : (diffT2 < 0 ? diffT2 : '-');
+
+                statHtml += `
+                    <div class="stat-comp-row" style="margin-top: 15px; padding-top: 15px; border-top: 2px dashed rgba(255,255,255,0.1);">
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                            <div class="stat-val-box left" style="font-size: 18px; width: auto; text-shadow: 0 0 10px var(--p1-glow);">${total1}</div>
+                            <div class="diff ${dT1Class}">${dT1Text}</div>
+                        </div>
+                        
+                        <div class="stat-label" style="font-size: 13px; color: var(--text-main); letter-spacing: 1px; text-align: center; width: 100px;">${dict.totalStats}</div>
+                        
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end;">
+                            <div class="diff ${dT2Class}">${dT2Text}</div>
+                            <div class="stat-val-box right" style="font-size: 18px; width: auto; text-shadow: 0 0 10px var(--p2-glow);">${total2}</div>
+                        </div>
+                    </div>`;
+
+                document.getElementById('stats-box').innerHTML = statHtml;
+            }, 50);
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</body>
+</html>

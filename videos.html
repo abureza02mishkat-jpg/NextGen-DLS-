@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NEXTGEN DLS - Coaching Videos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            // 🔥 জাভাস্ক্রিপ্ট দিয়ে জুম আটকানোর ম্যাজিক 🔥
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); }
+            }, { passive: false });
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey) event.preventDefault();
+            }, { passive: false });
+        })();
+    </script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
+        :root {
+            --bg-main: #0b1120; 
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --accent: #f97316;
+            --input-bg: #0b1121;
+        }
+
+        html[data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --input-bg: #f8fafc;
+        }
+
+        html, body { 
+            background-color: var(--bg-main); 
+            color: var(--text-color); 
+            font-family: 'Poppins', sans-serif; 
+            height: 100vh; 
+            transition: background-color 0.2s, color 0.2s;
+            visibility: hidden; 
+            width: 100vw;
+            max-width: 100%;
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .fixed-top-section { flex-shrink: 0; width: 100%; z-index: 10; background: var(--bg-main); }
+
+        .header { 
+            background: var(--card-bg); padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;
+        }
+        
+        .header-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+        .page-title { font-size: 20px; font-weight: 700; color: var(--accent); text-transform: uppercase; text-align: center; }
+
+        .search-container { width: 100%; max-width: 400px; position: relative; }
+        .search-input {
+            width: 100%; padding: 12px 15px 12px 40px; border-radius: 25px; border: 1px solid var(--border-color);
+            background: var(--input-bg); color: var(--text-color); font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; outline: none; transition: 0.3s;
+        }
+        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(249, 115, 22, 0.2); }
+        .search-icon { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: #94a3b8; font-size: 14px; }
+
+        .main-player-section {
+            background: var(--card-bg); padding: 15px; border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: none; width: 100%;
+        }
+        .main-iframe-wrapper {
+            position: relative; width: 100%; padding-bottom: 56.25%; height: 0; border-radius: 12px; overflow: hidden; background: #000;
+        }
+        .main-iframe-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .main-player-title {
+            margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--text-color); line-height: 1.4; display: flex; align-items: center; gap: 8px;
+        }
+        .playing-badge { background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; flex-shrink: 0; }
+
+        .scrollable-playlist-section { 
+            flex-grow: 1; overflow-y: auto; width: 100%; padding-bottom: 20px; scroll-behavior: smooth; touch-action: pan-y;
+        }
+        .playlist-header {
+            padding: 15px 15px 10px 15px; font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;
+            position: sticky; top: 0; background: var(--bg-main); z-index: 5;
+        }
+        .playlist-container { padding: 0 15px; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        
+        .playlist-item {
+            display: flex; gap: 12px; padding: 10px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.3s; align-items: center; width: 100%;
+        }
+        .playlist-item:active { transform: scale(0.98); }
+        
+        .playlist-thumb { position: relative; width: 120px; height: 68px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: #000; }
+        .playlist-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: 0.3s; }
+        
+        .play-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.8); font-size: 18px; transition: 0.3s; background: rgba(0,0,0,0); }
+        .playlist-item:hover .play-overlay { color: #fff; }
+        
+        .playlist-info { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .playlist-title {
+            font-size: 12px; font-weight: 600; color: var(--text-color); line-height: 1.4;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; word-wrap: break-word; transition: 0.3s;
+        }
+
+        .no-result-msg { text-align: center; padding: 20px; color: #ef4444; font-weight: 600; font-size: 14px; display: none; width: 100%; }
+
+        .playlist-item.active-text .playlist-title { color: var(--accent); }
+        .playlist-item.is-playing-eq .playlist-thumb img { opacity: 0.4; }
+        .playlist-item.is-playing-eq .play-overlay { background: rgba(0,0,0,0.5); }
+        .playlist-item.is-playing-eq .play-icon-fa { display: none; }
+        
+        .equalizer { display: none; align-items: flex-end; gap: 3px; height: 20px; }
+        .playlist-item.is-playing-eq .equalizer { display: flex; }
+        .equalizer .bar { width: 4px; background-color: var(--accent); border-radius: 2px; animation: bounceBar 0.8s infinite ease-in-out alternate; }
+        .equalizer .bar:nth-child(1) { animation-delay: 0.1s; }
+        .equalizer .bar:nth-child(2) { animation-delay: 0.3s; }
+        .equalizer .bar:nth-child(3) { animation-delay: 0.0s; }
+        .equalizer .bar:nth-child(4) { animation-delay: 0.2s; }
+
+        @keyframes bounceBar { 0% { height: 5px; } 100% { height: 20px; } }
+    </style>
+    <style>
+    body {
+        -webkit-touch-callout: none; 
+        -webkit-user-select: none;   
+        -moz-user-select: none;      
+        -ms-user-select: none;       
+        user-select: none;           
+        -webkit-tap-highlight-color: transparent; 
+    }
+    
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+</head>
+<body>
+    <div class="fixed-top-section">
+        <div class="header">
+            <div class="header-title-wrapper">
+                <i class="fa-brands fa-youtube" style="color: var(--accent); font-size: 22px;"></i>
+                <div class="page-title">
+                    <span data-bn="কোচিং ভিডিও" data-en="COACHING VIDEOS">কোচিং ভিডিও</span>
+                </div>
+            </div>
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="videoSearch" class="search-input" placeholder="Search Player Name..." onkeyup="filterVideos()">
+            </div>
+        </div>
+
+        <div class="main-player-section" id="mainPlayerArea">
+            <div class="main-iframe-wrapper" id="videoWrapper">
+                <div id="ytplayer"></div>
+            </div>
+            <div class="main-player-title">
+                <span class="playing-badge">PLAYING</span> 
+                <span id="titleText" style="flex: 1;"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="scrollable-playlist-section" id="scrollArea">
+        <div class="playlist-header">
+            <i class="fa-solid fa-video"></i> 
+            <span id="dynamicHeaderText" data-bn="সকল ভিডিও" data-en="ALL VIDEOS">সকল ভিডিও</span>
+        </div>
+
+        <div class="playlist-container" id="videoList">
+            <div id="no-result" class="no-result-msg">
+                <i class="fa-solid fa-circle-exclamation"></i> <span data-bn="দুঃখিত, কোনো ভিডিও পাওয়া যায়নি!" data-en="Sorry, no video found!">দুঃখিত, কোনো ভিডিও পাওয়া যায়নি!</span>
+            </div>
+
+            <div class="playlist-item" data-player-name="BRUNO FERNANDES" onclick="playVideo('jr2k6JhME94', 'BRUNO FERNANDES MAXED OUT! 🇵🇹 THE MCU HEART OF MIDFIELD', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/jr2k6JhME94/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">BRUNO FERNANDES MAXED OUT! 🇵🇹 THE MCU HEART OF MIDFIELD</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="JULIYAN RYERSON" onclick="playVideo('vAFEUJKGYq8', 'JULIYAN RYERSON MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/vAFEUJKGYq8/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">JULIYAN RYERSON MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="MILE SVILAR" onclick="playVideo('XfmN91DJvFQ', 'MILE SVILAR MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/XfmN91DJvFQ/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">MILE SVILAR MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="LAMINE YAMAL" onclick="playVideo('tUCc_Gbd4Pc', 'LAMINE YAMAL MAXED DLS 26| YAMAL FULL UPGRADE IN DLS 26!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/tUCc_Gbd4Pc/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">LAMINE YAMAL MAXED DLS 26| YAMAL FULL UPGRADE IN DLS 26!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="DAVID TREZEGUET" onclick="playVideo('fYhaE33LmRU', 'DAVID TREZEGUET FULL UPGRADE IN DLS 2026!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/fYhaE33LmRU/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">DAVID TREZEGUET FULL UPGRADE IN DLS 2026!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="GABRIEL BATISTUTA" onclick="playVideo('6Hv0gXTYWgc', 'GABRIEL BATISTUTA FULL UPGRADE IN DLS 2026!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/6Hv0gXTYWgc/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">GABRIEL BATISTUTA FULL UPGRADE IN DLS 2026!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="BRYAN MBEUMO" onclick="playVideo('dgmxl2gsByk', 'BRYAN MBEUMO FULL UPGRADE IN DLS 26!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/dgmxl2gsByk/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">BRYAN MBEUMO FULL UPGRADE IN DLS 26!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="KENAN YILDIZ" onclick="playVideo('lZqfD8uBtLk', 'KENAN YILDIZ MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/lZqfD8uBtLk/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">KENAN YILDIZ MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="GIORGIAN DE ARRASCAETA" onclick="playVideo('U-Q6Nmzi1Gg', 'GIORGIAN DE ARRASCAETA MAXED CARD | DLS 26 DREAM STAR TOP EXCLUSIVE CARDS!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/U-Q6Nmzi1Gg/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">GIORGIAN DE ARRASCAETA MAXED CARD | DLS 26 DREAM STAR TOP EXCLUSIVE CARDS!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="CHRISTOS TZOLIS" onclick="playVideo('3Nty2yqJ05s', 'CHRISTOS TZOLIS MAXED CARD | DLS 26 DREAM STAR TOP EXCLUSIVE CARDS!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/3Nty2yqJ05s/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">CHRISTOS TZOLIS MAXED CARD | DLS 26 DREAM STAR TOP EXCLUSIVE CARDS!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="PATRICK BERG" onclick="playVideo('IspUIg4U0Z8', 'PATRICK BERG CARD | DLS 26 DREAM STARS TOP EXCLUSIVE MAXED!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/IspUIg4U0Z8/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">PATRICK BERG CARD | DLS 26 DREAM STARS TOP EXCLUSIVE MAXED!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="IGOR THIAGO" onclick="playVideo('bQv5nfStBWk', 'IGOR THIAGO MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/bQv5nfStBWk/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">IGOR THIAGO MAXED CARD | DLS 26 DREAM STARS TOP EXCLUSIVE CARDS!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="VITINHA & FLORIAN WIRTZ" onclick="playVideo('5ZrR53H6pcE', 'VITINHA & FLORIAN WIRTZ MAXED DLS26| VITINHA & FLORIAN WIRTZ FULL UPGRADE IN DLS26! NextGen DLS!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/5ZrR53H6pcE/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">VITINHA & FLORIAN WIRTZ MAXED DLS26| VITINHA & FLORIAN WIRTZ FULL UPGRADE IN DLS26! NextGen DLS!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="GABRIEL BATISTUTA" onclick="playVideo('N5GiVRf8XaI', 'GABRIEL BATISTUTA MAXED OUT!THE ULTIMATE GABRIEL BATISTUTA MAXED OUT!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/N5GiVRf8XaI/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">GABRIEL BATISTUTA MAXED OUT!THE ULTIMATE GABRIEL BATISTUTA MAXED OUT!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="ANGEL DI MARIA" onclick="playVideo('M7AwmnCuR3I', 'ANGEL DI MARIA MAXED! ANGEL DI MARIA FULL UPGRADE!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/M7AwmnCuR3I/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">ANGEL DI MARIA MAXED! ANGEL DI MARIA FULL UPGRADE!</div></div>
+            </div>
+
+            <div class="playlist-item" data-player-name="BREMER & PEDRO" onclick="playVideo('9CBZifk4HAA', 'BREMER & PEDRO MAXED OUT AFTER SUMMER SPOTLIGHT!', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/9CBZifk4HAA/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">BREMER & PEDRO MAXED OUT AFTER SUMMER SPOTLIGHT!</div></div>
+            </div>
+<div class="playlist-item" data-player-name="THIBAUT COURTOIS MAXED OUT IN DLS 26" onclick="playVideo('48QpUcaGrkc', 'THIBAUT COURTOIS MAXED OUT IN DLS 26', this)">
+    <div class="playlist-thumb">
+        <img src="https://i.ytimg.com/vi/48QpUcaGrkc/mqdefault.jpg">
+        <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+    </div>
+    <div class="playlist-info"><div class="playlist-title">THIBAUT COURTOIS MAXED OUT IN DLS 26</div></div>
+</div>
+
+            <div class="playlist-item" data-player-name="LOTHAR MATTHÄUS" onclick="playVideo('ll0X010Yi28', 'LOTHAR MATTHÄUS MAXED OUT| LOTHAR MATTHÄUS FULL UPGRADE IN DLS 26|', this)">
+                <div class="playlist-thumb">
+                    <img src="https://i.ytimg.com/vi/ll0X010Yi28/mqdefault.jpg">
+                    <div class="play-overlay"><i class="fa-solid fa-play play-icon-fa"></i><div class="equalizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
+                </div>
+                <div class="playlist-info"><div class="playlist-title">LOTHAR MATTHÄUS MAXED OUT| LOTHAR MATTHÄUS FULL UPGRADE IN DLS 26|</div></div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        var isApiReady = false;
+        var currentActiveItem = null;
+
+        function onYouTubeIframeAPIReady() {
+            isApiReady = true;
+        }
+
+        function playVideo(videoId, videoTitle, element) {
+            const playerArea = document.getElementById('mainPlayerArea');
+            playerArea.style.display = 'block';
+            document.getElementById('titleText').innerText = videoTitle;
+
+            const dynamicHeader = document.getElementById('dynamicHeaderText');
+            dynamicHeader.setAttribute('data-bn', 'আরও ভিডিও');
+            dynamicHeader.setAttribute('data-en', 'MORE VIDEOS');
+            applyTranslations(); 
+
+            document.querySelectorAll('.playlist-item').forEach(item => {
+                item.classList.remove('active-text');
+                item.classList.remove('is-playing-eq');
+            });
+            
+            currentActiveItem = element;
+            currentActiveItem.classList.add('active-text');
+
+            if (isApiReady) {
+                if (!player) {
+                    player = new YT.Player('ytplayer', {
+                        videoId: videoId,
+                        playerVars: { 'autoplay': 1, 'playsinline': 1, 'rel': 0 },
+                        events: {
+                            'onStateChange': onPlayerStateChange
+                        }
+                    });
+                } else {
+                    player.loadVideoById(videoId);
+                }
+            }
+
+            document.getElementById('scrollArea').scrollTop = 0;
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                if(currentActiveItem) currentActiveItem.classList.add('is-playing-eq');
+            } else {
+                if(currentActiveItem) currentActiveItem.classList.remove('is-playing-eq');
+            }
+        }
+
+        // 🔥 ১০০% নিখুঁত সার্চ ফিল্টার (যেকোনো নামের ফার্স্ট নেম বা লাস্ট নেম দিয়ে খুঁজলেই কাজ করবে) 🔥
+        function filterVideos() {
+            let input = document.getElementById('videoSearch').value.toUpperCase().trim();
+            let playlistItems = document.getElementsByClassName('playlist-item');
+            let noResultMsg = document.getElementById('no-result');
+            let count = 0;
+
+            for (let i = 0; i < playlistItems.length; i++) {
+                // প্লেয়ারের নাম টার্গেট করা
+                let playerName = playlistItems[i].getAttribute('data-player-name');
+                if (!playerName) {
+                    playerName = playlistItems[i].getElementsByClassName('playlist-title')[0].innerText;
+                }
+                
+                // নামের ভেতরের &, -, বা অন্যান্য চিহ্নগুলোকে স্পেস দিয়ে রিপ্লেস করে ক্লিন করা
+                let cleanName = playerName.toUpperCase().replace(/[&\-,\.]/g, ' ').replace(/\s+/g, ' ');
+                
+                // নামটাকে আলাদা আলাদা শব্দে ভাগ করা (যেমন: ["VITINHA", "FLORIAN", "WIRTZ"])
+                let words = cleanName.split(' ');
+                
+                // চেক করা ইনপুট ফাঁকা কিনা, অথবা কোনো শব্দ ইনপুট দিয়ে শুরু হয়েছে কিনা
+                let isMatch = false;
+                if (input === "") {
+                    isMatch = true;
+                } else {
+                    for (let j = 0; j < words.length; j++) {
+                        if (words[j].startsWith(input)) {
+                            isMatch = true;
+                            break; // একটা শব্দ মিলে গেলেই আর খোঁজার দরকার নেই
+                        }
+                    }
+                }
+
+                // রেজাল্ট অনুযায়ী ভিডিও শো বা হাইড করা
+                if (isMatch) {
+                    playlistItems[i].style.display = "flex"; 
+                    count++;
+                } else {
+                    playlistItems[i].style.display = "none"; 
+                }
+            }
+            noResultMsg.style.display = count === 0 ? "block" : "none";
+        }
+
+        function applyTranslations() {
+            const lang = document.documentElement.getAttribute('data-lang');
+            document.querySelectorAll('[data-bn]').forEach(el => {
+                const translatedText = el.getAttribute('data-' + lang);
+                if (translatedText) el.innerText = translatedText;
+            });
+            
+            let searchInput = document.getElementById('videoSearch');
+            if (searchInput) {
+                searchInput.placeholder = lang === 'bn' ? "খেলোয়াড়ের নাম দিয়ে খুঁজুন..." : "Search Player Name...";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations();
+            document.body.style.visibility = 'visible';
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS App</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        let initTheme = localStorage.getItem('savedTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', initTheme);
+        let initLang = localStorage.getItem('savedLang') || 'bn';
+        document.documentElement.setAttribute('data-lang', initLang);
+    </script>
+
+    <style>
+        :root {
+            --bg-main: radial-gradient(circle at top center, #1e293b 0%, #0a0f1c 100%); 
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --accent-start: #f97316; 
+            --accent-end: #ea580c;   
+            --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+            --accent-glow: rgba(249, 115, 22, 0.4);
+        }
+
+        :root[data-theme="light"] {
+            --bg-main: #f1f4f9;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-start: #f97316;
+            --accent-end: #ea580c;
+            --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+            --accent-glow: rgba(249, 115, 22, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            background: var(--bg-main); color: var(--text-color); display: flex; justify-content: center; min-height: 100vh; 
+            transition: background 0.3s ease, color 0.3s ease; 
+            width: 100vw; max-width: 100%; overflow-x: hidden; touch-action: pan-y; 
+            -webkit-user-select: none; user-select: none;
+        }
+
+        a { -webkit-user-drag: none; }
+        
+        .app-container { width: 100%; max-width: 480px; position: relative; padding-bottom: 130px; overflow-x: hidden; }
+
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px; }
+        .theme-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; }
+        .lang-switch { display: flex; background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-color); padding: 2px; }
+        .lang-switch button { background: transparent; border: none; color: var(--text-color); padding: 5px 15px; font-size: 12px; font-weight: bold; cursor: pointer; border-radius: 15px; transition: 0.3s; }
+        .lang-switch button.active { background: var(--accent-gradient); color: white; }
+
+        .header-profile { text-align: center; padding: 10px 0; }
+        .app-logo { width: 90px; height: 90px; border-radius: 20px; border: 3px solid var(--accent-start); object-fit: cover; background: #000; margin-bottom: 10px; box-shadow: 0 0 15px var(--accent-glow); }
+        .app-title { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 800; text-transform: uppercase; color: var(--accent-start); text-shadow: 0 0 10px var(--accent-glow); }
+        .app-subtitle { font-size: 12px; opacity: 0.7; margin-top: 3px; }
+
+        .main-content { padding: 20px 15px; }
+        .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; align-items: start; }
+        .service-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; width: 100%; text-decoration: none; color: inherit; transition: 0.3s; }
+        
+        .icon-box { width: 55px; height: 55px; flex-shrink: 0; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 20px; background: var(--card-bg); border: 1px solid var(--border-color); transition: all 0.3s ease; }
+        .service-item:hover .icon-box, .service-item:active .icon-box { transform: scale(0.95); border-color: var(--accent-start); box-shadow: 0 0 18px var(--accent-glow); }
+
+        .c1 { color: #10b981; } .c2 { color: #3b82f6; } .c3 { color: #ef4444; } .c4 { color: #8b5cf6; }
+        .c5 { color: #f59e0b; } .c6 { color: #06b6d4; } .c7 { color: #ec4899; } .c8 { color: #22c55e; }
+        .c9 { color: #eab308; } .c10 { color: #ff0000; } .c11 { color: #14b8a6; } .c12 { color: #64748b; } .c13 { color: #0ea5e9; } 
+        .c14 { color: #f43f5e; } .c15 { color: #d946ef; } .c16 { color: #00cec9; }
+        
+        .label { font-size: 9.5px; text-align: center; font-weight: 600; line-height: 1.2; display: block; width: 100%; height: 26px; word-wrap: break-word; }
+
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: transparent; display: flex; justify-content: center; align-items: center; height: 60px; z-index: 100; pointer-events: none; }
+        @keyframes ripple-pulse { 0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(249, 115, 22, 0); } 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); } }
+        .home-fab { background: var(--accent-gradient); color: #fff; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; transform: translateY(-15px); border: 5px solid var(--card-bg); animation: ripple-pulse 2s infinite; pointer-events: none; }
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+
+<body>
+
+<div class="app-container">
+    <div class="top-nav">
+        <div class="theme-btn" onclick="toggleT()"><i id="t-icon" class="fa-solid fa-moon"></i></div>
+        <div class="lang-switch">
+            <button id="bn-b" class="active" onclick="setL('bn')">BN</button>
+            <button id="en-b" onclick="setL('en')">EN</button>
+        </div>
+    </div>
+
+    <div class="header-profile">
+        <img src="nextgen.jpg" class="app-logo" alt="NextGen Logo" onerror="this.style.display='none'">
+        <h1 class="app-title">NEXTGEN DLS</h1>
+        <p class="app-subtitle" id="sub-t">গেমিং হাব বাংলাদেশ</p>
+    </div>
+
+    <div class="main-content">
+        <div class="services-grid">
+            <a href="news.html" class="service-item">
+                <div class="icon-box c6"><i class="fa-solid fa-newspaper"></i></div>
+                <span class="label" data-bn="DLS নিউজ" data-en="DLS News">DLS নিউজ</span>
+            </a>
+            <a href="tips-tricks.html" class="service-item">
+                <div class="icon-box c5"><i class="fa-solid fa-lightbulb"></i></div>
+                <span class="label" data-bn="টিপস ও ট্রিকস" data-en="Tips & Tricks">টিপস ও ট্রিকস</span>
+            </a>
+            <a href="coaching-guide.html" class="service-item">
+                <div class="icon-box c7"><i class="fa-solid fa-chalkboard-user"></i></div>
+                <span class="label" data-bn="কোচিং গাইড" data-en="Coaching Guide">কোচিং গাইড</span>
+            </a>
+            <a href="live-events.html" class="service-item">
+                <div class="icon-box c3"><i class="fa-solid fa-calendar-check"></i></div>
+                <span class="label" data-bn="লাইভ ইভেন্ট" data-en="Live Events">লাইভ ইভেন্ট</span>
+            </a>
+            <a href="formations-guide.html" class="service-item">
+                <div class="icon-box c8"><i class="fa-solid fa-people-group"></i></div>
+                <span class="label" data-bn="ফরমেশন গাইড" data-en="Formations Guide">ফরমেশন গাইড</span>
+            </a>
+            <a href="best-cards.html" class="service-item">
+                <div class="icon-box c9"><i class="fa-solid fa-shield-halved"></i></div>
+                <span class="label" data-bn="সেরা কার্ড" data-en="Best Cards">সেরা কার্ড</span>
+            </a>
+            <a href="videos.html" class="service-item">
+                <div class="icon-box c10"><i class="fa-brands fa-youtube"></i></div>
+                <span class="label" data-bn="কোচিং ভিডিও" data-en="Coaching Videos">কোচিং ভিডিও</span>
+            </a>
+            <a href="kits-logo.html" class="service-item">
+                <div class="icon-box c4"><i class="fa-solid fa-shirt"></i></div>
+                <span class="label" data-bn="কিটস ও লোগো" data-en="Kits & Logo">কিটস ও লোগো</span>
+            </a>
+            <a href="uploader.html" class="service-item">
+                <div class="icon-box c13"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <span class="label" data-bn="আপলোডার" data-en="Uploader">আপলোডার</span>
+            </a>
+            <a href="compare.html" class="service-item">
+                <div class="icon-box c14"><i class="fa-solid fa-scale-balanced"></i></div>
+                <span class="label" data-bn="প্লেয়ার কম্পেয়ার" data-en="Player Compare">প্লেয়ার কম্পেয়ার</span>
+            </a>
+            <a href="card-maker.html" class="service-item">
+                <div class="icon-box c2"><i class="fa-solid fa-id-card"></i></div>
+                <span class="label" data-bn="কার্ড মেকার" data-en="Card Maker">কার্ড মেকার</span>
+            </a>
+            <a href="squad-builder.html" class="service-item">
+                <div class="icon-box c15"><i class="fa-solid fa-users-gear"></i></div>
+                <span class="label" data-bn="স্কোয়াড বিল্ডার" data-en="Squad Builder">স্কোয়াড বিল্ডার</span>
+            </a>
+            <a href="stat-analyzer.html" class="service-item">
+                <div class="icon-box c16"><i class="fa-solid fa-chart-column"></i></div>
+                <span class="label" data-bn="স্ট্যাট অ্যানালাইজার" data-en="Stats Analyzer">স্ট্যাট অ্যানালাইজার</span>
+            </a>
+            <a href="store.html" class="service-item">
+                <div class="icon-box c1"><i class="fa-solid fa-cart-shopping"></i></div>
+                <span class="label" data-bn="DLS স্টোর" data-en="DLS Store">DLS স্টোর</span>
+            </a>
+            <a href="social.html" class="service-item">
+                <div class="icon-box c11"><i class="fa-solid fa-link"></i></div>
+                <span class="label" data-bn="সোশ্যাল মিডিয়া" data-en="Social Media">সোশ্যাল মিডিয়া</span>
+            </a>
+            <a href="settings.html" class="service-item">
+                <div class="icon-box c12"><i class="fa-solid fa-gear"></i></div>
+                <span class="label" data-bn="সেটিংস" data-en="Settings">সেটিংস</span>
+            </a>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="home-fab"><i class="fa-solid fa-house"></i></div>
+    </nav>
+</div>
+
+<script>
+    function toggleT() {
+        let currentTheme = document.documentElement.getAttribute('data-theme');
+        let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.getElementById('t-icon').className = newTheme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        localStorage.setItem('savedTheme', newTheme);
+    }
+
+    function setL(l) {
+        localStorage.setItem('savedLang', l);
+        document.getElementById('bn-b').className = (l === 'bn' ? 'active' : '');
+        document.getElementById('en-b').className = (l === 'en' ? 'active' : '');
+        document.getElementById('sub-t').innerText = (l === 'bn' ? 'গেমিং হাব বাংলাদেশ' : 'GAMING HUB BD');
+        document.querySelectorAll('[data-bn]').forEach(e => {
+            const text = e.getAttribute('data-' + l);
+            if(text) e.innerText = text;
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        let theme = localStorage.getItem('savedTheme') || 'dark';
+        document.getElementById('t-icon').className = theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        let lang = localStorage.getItem('savedLang') || 'bn';
+        setL(lang);
+    });
+</script>
+
+</body>
+</html>
+

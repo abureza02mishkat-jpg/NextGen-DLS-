@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXTGEN DLS STORE</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <style>
+        .preload * { transition: none !important; }
+
+        :root {
+            --bg-main: #0a0f1c; 
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --accent: #f97316; 
+            --btn-blue: #3b82f6; 
+            --chat-bg: rgba(10, 15, 28, 0.95);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f1f4f9;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent: #f97316;
+            --btn-blue: #3b82f6;
+            --chat-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body { 
+            margin:0; 
+            background: var(--bg-main); 
+            font-family: 'Poppins', sans-serif; 
+            color: var(--text-color); 
+            text-align: center; 
+            padding-bottom: 120px;
+            max-width: 100%;
+            overflow-x: hidden; 
+            position: relative;
+            touch-action: pan-y;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .header { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-bottom: 3px solid var(--accent); 
+            transition: background 0.3s; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+
+        .store-title { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); text-shadow: 0 0 10px rgba(249, 115, 22, 0.3); }
+        .store-sub { font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-top: 5px; font-weight: 600; letter-spacing: 0.5px; }
+
+        .payment-box { background: var(--card-bg); width: 92%; margin: 20px auto; border-radius: 15px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 8px 25px rgba(0,0,0,0.1); box-sizing: border-box; transition: background 0.3s, border-color 0.3s; }
+        
+        .pay-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .pay-card { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; position: relative; overflow: hidden; transition: background 0.3s, border-color 0.3s; text-align: center; }
+        .pay-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+        .pay-title { font-size: 14px; font-weight: bold; color: var(--text-color); margin-bottom: 12px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; text-transform: uppercase; text-align: left; }
+        
+        .brand-logo-row { display: flex; justify-content: center; gap: 12px; margin-bottom: 15px; }
+        .brand-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .brand-img { width: 35px; height: 35px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color); background: #fff; }
+        .brand-name { font-size: 9px; font-weight: 800; text-transform: uppercase; }
+        
+        .personal-alert {
+            display: inline-block; margin: 0 auto 15px auto; padding: 8px 12px;
+            background: rgba(249, 115, 22, 0.05); border: 1px solid rgba(249, 115, 22, 0.2);
+            color: var(--text-color); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 6px;
+        }
+        .hl-personal { color: #f59e0b; font-weight: 900; } 
+        .hl-send { color: #10b981; font-weight: 900; } 
+
+        .bank-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .bank-header img { width: 32px; height: 32px; border-radius: 6px; background: #fff; border: 1px solid var(--border-color); }
+
+        .num-row { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 10px 12px; border-radius: 8px; border: 1px dashed var(--border-color); margin-bottom: 8px; transition: 0.3s; width: 100%; box-sizing: border-box; }
+        .num-val { font-size: 15px; font-weight: 800; color: var(--text-color); letter-spacing: 0.5px; word-break: break-all; text-align: left; margin-right: 10px; flex: 1; }
+        
+        .copy-btn { background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; flex-shrink: 0; }
+        .copy-btn:active { transform: scale(0.9); background: var(--accent); color: #fff; }
+
+        /* 🔥 কপি হওয়ার পরের স্থায়ী সবুজ কালার 🔥 */
+        .copy-btn.copied {
+            background: rgba(16, 185, 129, 0.15) !important;
+            color: #10b981 !important;
+            border: 1px solid rgba(16, 185, 129, 0.4) !important;
+        }
+
+        .section-title { background: var(--card-bg); color: #ffffff; padding: 12px; margin: 25px 0 10px; font-weight: 800; border-left: 5px solid var(--accent); text-align: left; padding-left: 15px; text-transform: uppercase; font-size: 15px; }
+        [data-theme="light"] .section-title { color: #1e293b; } 
+        
+        .pack-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px; }
+        .card { background: var(--card-bg); border-radius: 12px; width: 45%; padding: 8px; border: 1px solid var(--border-color); box-sizing: border-box; transition: 0.3s; }
+        .card img { width: 100%; border-radius: 8px; height: auto; display: block; }
+        
+        .order-btn { background: var(--btn-blue); color: white; text-decoration: none; padding: 10px; display: block; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 8px; text-transform: uppercase; cursor: pointer; border: none; width: 100%; transition: 0.2s; }
+        .order-btn:active { transform: scale(0.95); }
+        
+        #adminSelection { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; }
+        .selection-box { background: var(--card-bg); width: 85%; padding: 25px; border-radius: 20px; border: 2px solid var(--accent); position: relative; color: var(--text-color); transition: 0.3s; }
+        .selection-box h3 { margin-top: 0; color: var(--accent); font-size: 18px; margin-bottom: 20px; text-transform: uppercase; }
+        .sel-btn { display: block; padding: 15px; margin: 10px 0; border-radius: 10px; text-decoration: none; color: white; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        .sel-mishkat { background: linear-gradient(135deg, #10b981, #059669); } 
+        .sel-ashik { background: linear-gradient(135deg, #0d9488, #0f766e); } 
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; color: #94a3b8; cursor: pointer; }
+        
+        .floating-chat-area { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--chat-bg); backdrop-filter: blur(10px); padding: 15px 0; border-top: 2px solid var(--accent); z-index: 2000; transition: 0.3s; }
+        .chat-container { display: flex; flex-direction: column; gap: 10px; width: 92%; margin: 0 auto; }
+        .admin-row { display: flex; gap: 10px; width: 100%; }
+        .chat-btn { flex: 1; padding: 12px 5px; border-radius: 12px; font-weight: bold; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .chat-btn:active { transform: scale(0.95); }
+        .btn-mishkat { background: linear-gradient(135deg, #10b981, #059669); } 
+        .btn-ashik { background: linear-gradient(135deg, #0d9488, #0f766e); } 
+        .status-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+    </head>
+<body class="preload">
+
+    <div id="adminSelection">
+        <div class="selection-box">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h3 data-bn="অর্ডারটি কার কাছে করবেন?" data-en="WHO TO ORDER FROM?">অর্ডারটি কার কাছে করবেন?</h3>
+            <a id="linkMishkat" href="#" class="sel-btn sel-mishkat" data-bn="অ্যাডমিন (MISHKAT)" data-en="ADMIN (MISHKAT)">অ্যাডমিন (MISHKAT)</a>
+            <a id="linkAshik" href="#" class="sel-btn sel-ashik" data-bn="অ্যাডমিন (ASHIK)" data-en="ADMIN (ASHIK)">অ্যাডমিন (ASHIK)</a>
+            <p style="font-size: 11px; color: #94a3b8; margin-top: 15px;" data-bn="যেকোনো একজনকে সিলেক্ট করুন" data-en="SELECT ANY ONE ADMIN">যেকোনো একজনকে সিলেক্ট করুন</p>
+        </div>
+    </div>
+
+    <header class="header">
+        <h1 class="store-title">NEXTGEN DLS STORE</h1>
+        <p class="store-sub" data-bn="সেরা দামে বিশ্বস্ত ইন-গেম টপ-আপ" data-en="TRUSTED IN-GAME TOP-UP AT BEST PRICE">সেরা দামে বিশ্বস্ত ইন-গেম টপ-আপ</p>
+    </header>
+
+    <div class="payment-box">
+        <h2 style="color: var(--accent); font-size: 16px; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; text-align: left;"><i class="fa-solid fa-wallet"></i> <span data-bn="পেমেন্ট মেথড" data-en="Payment Methods">পেমেন্ট মেথড</span></h2>
+        
+        <div class="pay-grid">
+            <div class="pay-card">
+                <div class="pay-title"><i class="fa-solid fa-mobile-screen-button"></i> <span data-bn="মোবাইল ব্যাংকিং" data-en="Mobile Banking">Mobile Banking</span></div>
+                
+                <div class="brand-logo-row">
+                    <div class="brand-item"><img src="bkash.png" class="brand-img"><span class="brand-name" style="color:#df146e">BKASH</span></div>
+                    <div class="brand-item"><img src="nagad.jpg" class="brand-img"><span class="brand-name" style="color:#ed1c24">NAGAD</span></div>
+                    <div class="brand-item"><img src="rocket.png" class="brand-img"><span class="brand-name" style="color:#8c1595">ROCKET</span></div>
+                    <div class="brand-item"><img src="upay.png" class="brand-img"><span class="brand-name" style="color:#006cb7">UPAY</span></div>
+                </div>
+                
+                <div class="personal-alert" data-bn='সবগুলো অ্যাকাউন্ট <span class="hl-personal">পার্সোনাল</span> অবশ্যই <span class="hl-send">সেন্ড মানি</span> করতে হবে' data-en='ALL ACCOUNTS ARE <span class="hl-personal">PERSONAL</span> MUST USE <span class="hl-send">SEND MONEY</span>'>
+                    ALL ACCOUNTS ARE <span class="hl-personal">PERSONAL</span> MUST USE <span class="hl-send">SEND MONEY</span>
+                </div>
+                
+                <div class="num-row">
+                    <span class="num-val">01625037334</span>
+                    <button class="copy-btn" onclick="copyNum('01625037334', 't1')"><span id="t1" data-bn="কপি" data-en="COPY">কপি</span></button>
+                </div>
+                <div class="num-row">
+                    <span class="num-val">01774937056</span>
+                    <button class="copy-btn" onclick="copyNum('01774937056', 't2')"><span id="t2" data-bn="কপি" data-en="COPY">কপি</span></button>
+                </div>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-title"><i class="fa-solid fa-building-columns"></i> <span data-bn="ব্যাংক ট্রান্সফার" data-en="Bank Transfer">Bank Transfer</span></div>
+                <div class="bank-header">
+                    <img src="islamibank.jpg">
+                    <span style="color:#16a34a; font-size:12px; font-weight:800">ISLAMI BANK BD PLC</span>
+                </div>
+                <div class="num-row">
+                    <span class="num-val">20507770232757914</span>
+                    <button class="copy-btn" onclick="copyNum('20507770232757914', 't3')"><span id="t3" data-bn="কপি" data-en="COPY">কপি</span></button>
+                </div>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-title"><i class="fa-solid fa-globe"></i> <span data-bn="বাইন্যান্স (বিদেশীদের জন্য)" data-en="Binance (For Global)">Binance (For Global)</span></div>
+                <div class="bank-header"><img src="binance.png"><span style="color:#f59e0b; font-size:12px; font-weight:800">BINANCE PAY ID</span></div>
+                <div class="num-row">
+                    <span class="num-val">1239257352</span>
+                    <button class="copy-btn" onclick="copyNum('1239257352', 't4')"><span id="t4" data-bn="কপি" data-en="COPY">কপি</span></button>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px; text-align: left; line-height: 1.6;">
+            <div style="background: var(--accent); color: white; padding: 8px; border-radius: 5px; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 16px; text-transform: uppercase;" data-bn="📝 কিভাবে অর্ডার করবেন?" data-en="📝 HOW TO ORDER?">📝 কিভাবে অর্ডার করবেন?</div>
+            <div style="font-size: 13px; color: var(--text-color);">
+                <p><b data-bn="১." data-en="1.">১.</b> <span data-bn="ওয়েবসাইট থেকে আপনার পছন্দের প্যাকটি বেছে নিন এবং সেটির গায়ে লেখা মূল্যটি দেখে নিন।" data-en="CHOOSE YOUR FAVORITE PACK FROM THE WEBSITE AND CHECK ITS PRICE.">ওয়েবসাইট থেকে আপনার পছন্দের প্যাকটি বেছে নিন এবং সেটির গায়ে লেখা মূল্যটি দেখে নিন।</span></p>
+                <p><b data-bn="২." data-en="2.">২.</b> <span data-bn="প্যাকের সমপরিমাণ টাকা আমাদের দেওয়া বিকাশ, নগদ, রকেট, উপায়, ব্যাংক অথবা বাইন্যান্স নাম্বারের যেকোনো একটিতে পাঠান।" data-en="SEND THE EXACT AMOUNT TO ANY OF OUR GIVEN BKASH, NAGAD, ROCKET, UPAY, BANK OR BINANCE NUMBERS.">প্যাকের সমপরিমাণ টাকা আমাদের দেওয়া বিকাশ, নগদ, রকেট, উপায়, ব্যাংক অথবা বাইন্যান্স নাম্বারের যেকোনো একটিতে পাঠান।</span></p>
+                <p><b data-bn="৩." data-en="3.">৩.</b> <span data-bn="টাকা পাঠানো সফল হলে সেই পেজের একটি স্ক্রিনশট নিন অথবা আপনার নাম্বারের শেষ ৪টি ডিজিট নিশ্চিত করুন।" data-en="ONCE SENT, TAKE A SCREENSHOT OR CONFIRM THE LAST 4 DIGITS OF YOUR NUMBER.">টাকা পাঠানো সফল হলে সেই পেজের একটি স্ক্রিনশট নিন অথবা আপনার নাম্বারের শেষ ৪টি ডিজিট নিশ্চিত করুন।</span></p>
+                <p><b data-bn="৪." data-en="4.">৪.</b> <span data-bn='এবার আপনার পছন্দের প্যাকটির নিচে থাকা "ORDER NOW" বাটনে ক্লিক করুন। এটি আপনাকে সরাসরি আমাদের হোয়াটসঅ্যাপে নিয়ে যাবে।' data-en='NOW CLICK THE "ORDER NOW" BUTTON BELOW YOUR SELECTED PACK. THIS WILL TAKE YOU TO OUR WHATSAPP.'>এবার আপনার পছন্দের প্যাকটির নিচে থাকা "ORDER NOW" বাটনে ক্লিক করুন। এটি আপনাকে সরাসরি আমাদের হোয়াটসঅ্যাপে নিয়ে যাবে।</span></p>
+                <p><b data-bn="৫." data-en="5.">৫.</b> <span data-bn="আমাদের হোয়াটসঅ্যাপে পৌঁছানোর পর, আপনার পেমেন্টের সেই স্ক্রিনশটটি দিবেন অথবা শেষ ৪টি ডিজিট বলবেন।" data-en="UPON REACHING WHATSAPP, PROVIDE THE PAYMENT SCREENSHOT OR THE LAST 4 DIGITS OF YOUR NUMBER.">আমাদের হোয়াটসঅ্যাপে পৌঁছানোর পর, আপনার পেমেন্টের সেই স্ক্রিনশটটি দিবেন অথবা শেষ ৪টি ডিজিট বলবেন।</span></p>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: rgba(59, 130, 246, 0.08); border: 2px dashed var(--btn-blue); border-radius: 12px; text-align: center;">
+                <p style="color: #10b981; font-size: 14px; margin: 0; font-weight: bold;" data-bn="সবকিছু ঠিক থাকলে ১ থেকে ৫ মিনিটের মধ্যে সফলভাবে ডেলিভারি সম্পন্ন করা হবে ইনশাল্লাহ" data-en="IF EVERYTHING IS OKAY, IT WILL BE DELIVERED SUCCESSFULLY WITHIN 1 TO 5 MINUTES INSHA'ALLAH">সবকিছু ঠিক থাকলে ১ থেকে ৫ মিনিটের মধ্যে সফলভাবে ডেলিভারি সম্পন্ন করা হবে ইনশাল্লাহ</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">SEASON PASS</div>
+    <div class="pack-container">
+        <div class="card"><img src="s1.png" loading="eager" fetchpriority="high"><button onclick="openOrder('NORMAL PRICE SEASON PASS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="s2.png" loading="eager" fetchpriority="high"><button onclick="openOrder('DISCOUNTED SEASON PASS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="s3.png" loading="eager" fetchpriority="high"><button onclick="openOrder('PREMIUM SEASON PASS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+    </div>
+
+    <div class="section-title">DREAM CLUB</div>
+    <div class="pack-container">
+        <div class="card"><img src="dc1.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('500 COINS & 100 GEMS (EVERY DAY FOR 10 DAYS)')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="dc2.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder ('500 COINS & 100 GEMS (EVERY DAY FOR 30 DAYS)')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+    </div>
+
+    <div class="section-title">GEMS</div>
+    <div class="pack-container">
+        <div class="card"><img src="g1.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('90 GEMS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="g2.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('400 GEMS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="g3.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('910 GEMS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="g4.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('2700 GEMS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="g5.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('6000 GEMS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+    </div>
+    <div class="section-title">COINS</div>
+    <div class="pack-container">
+        <div class="card"><img src="c1.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('900 COINS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="c2.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('1750 COINS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="c3.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('3000 COINS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="c4.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('5000 COINS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="c5.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('9000 COINS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="c6.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('22000 COINS')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+    </div>
+
+    <div class="section-title">PACKS</div>
+    <div class="pack-container">
+        <div class="card"><img src="p1.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('EMOJI PACK 1')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p2.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('EMOJI PACK 2')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p3.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('EMOJI PACK 3')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p4.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('EMOJI PACK 4')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p5.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('LARGE COACH PACK')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p6.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('LARGE AGENT PACK')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p7.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('PERFORMANCE PACK (AGENT & SCOUT)')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p8.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('SQUAD BOOST PACK')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p9.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('PERFORMANCE PACK (SPECIAL)')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p10.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('STADE DES ETOILES')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p11.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('CENTURY PARK')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+        <div class="card"><img src="p12.jpg" loading="eager" fetchpriority="high"><button onclick="openOrder('CHAMPHIONS ARENA')" class="order-btn" data-bn="অর্ডার করুন" data-en="ORDER NOW">ORDER NOW</button></div>
+    </div>
+
+
+
+    <div class="floating-chat-area">
+        <div class="chat-container">
+            <div class="admin-row">
+                <a href="https://wa.me/8801743450499" class="chat-btn btn-mishkat">
+                    <span><span class="status-dot"></span> ABU REZA MISHKAT</span>
+                    <span style="font-size: 9px; opacity: 0.8;" data-bn="অনলাইন চ্যাট" data-en="ONLINE CHAT">অনলাইন চ্যাট</span>
+                </a>
+                <a href="https://wa.me/8801774937056" class="chat-btn btn-ashik">
+                    <span><span class="status-dot"></span> ASHIK AHMED</span>
+                    <span style="font-size: 9px; opacity: 0.8;" data-bn="অনলাইন চ্যাট" data-en="ONLINE CHAT">অনলাইন চ্যাট</span>
+                </a>
+            </div>
+        </div>
+    </div>
+       <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.remove("preload");
+            let lang = localStorage.getItem('savedLang') || 'bn';
+            document.querySelectorAll('[data-bn]').forEach(e => {
+                const text = e.getAttribute('data-' + lang);
+                if(text) e.innerHTML = text; 
+            });
+        });
+
+        document.getElementById("year").textContent = new Date().getFullYear();
+        
+        function openOrder(packName) {
+            const popup = document.getElementById('adminSelection');
+            const fullMessage = "I WANT TO BUY " + packName;
+            const encodedMessage = encodeURIComponent(fullMessage);
+            document.getElementById('linkMishkat').href = "https://wa.me/8801743450499?text=" + encodedMessage;
+            document.getElementById('linkAshik').href = "https://wa.me/8801774937056?text=" + encodedMessage;
+            popup.style.display = 'flex';
+        }
+
+        function closePopup() { document.getElementById('adminSelection').style.display = 'none'; }
+        
+        window.onclick = function(event) {
+            const popup = document.getElementById('adminSelection');
+            if (event.target == popup) popup.style.display = "none";
+        }
+
+        // 🔥 আপডেট করা জাভাস্ক্রিপ্ট - কপি বাটনের স্থায়ী ম্যাজিক 🔥
+        function copyNum(text, textId) {
+            navigator.clipboard.writeText(text).then(() => {
+                let btnText = document.getElementById(textId);
+                let btnElement = btnText.closest('.copy-btn');
+                let lang = localStorage.getItem('savedLang') || 'bn';
+                
+                // লেখাকে "Copied" এবং কালার "সবুজ" করা হলো (স্থায়ীভাবে)
+                btnText.innerText = lang === 'en' ? 'COPIED!' : 'কপি হয়েছে!';
+                btnElement.classList.add('copied');
+                
+                // টাইমআউট রিমুভ করা হয়েছে, তাই এখন পেজে থাকা অবস্থায় সবুজই থাকবে!
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Uploader</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Poppins ফন্ট যুক্ত করা হয়েছে যাতে টাইটেল নিউজ হাবের মতো বোল্ড হয় -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); }
+            }, { passive: false });
+        })();
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --bg-main: #0b1120;
+            --card-bg: #1e293b;
+            --card-hover: #27354c;
+            --text-title: #ffffff;
+            --text-body: #94a3b8;
+            --border-color: #334155;
+            --accent-orange: #f97316;
+            --accent-cyan: #00F0FF;
+            --success: #10b981;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        html[data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --card-bg: #ffffff;
+            --card-hover: #f8fafc;
+            --text-title: #0f172a;
+            --text-body: #475569;
+            --border-color: #cbd5e1;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        body { background-color: var(--bg-main); color: var(--text-title); overflow-x: hidden; width: 100vw; max-width: 100%; transition: 0.3s; margin: 0;}
+        
+        /* ভাষা চেঞ্জ করার সিএসএস */
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        /* নিউজ হাবের মতো হেডার (পিওর সেন্টারে) */
+        .sticky-wrapper {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 1000;
+            padding: 25px 20px 20px 20px;
+            border-bottom: 2px solid var(--accent-orange);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+        
+        .header-title-wrapper { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 10px; 
+        }
+        
+        .page-title { 
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--accent-orange); 
+            text-transform: uppercase; 
+            margin: 0;
+        }
+
+        .type-toggle { display: flex; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 5px; width: 100%; max-width: 350px; margin: 0 auto 25px auto; border: 1px solid var(--border-color); }
+        html[data-theme="light"] .type-toggle { background: #f8fafc; }
+        .type-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-body); font-weight: 600; font-size: 14px; border-radius: 10px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .type-btn.active { background: linear-gradient(135deg, var(--accent-orange), #ea580c); color: #fff; box-shadow: 0 4px 10px rgba(249,115,22,0.3); }
+
+        .container { max-width: 500px; margin: 0 auto; padding: 25px 15px 50px 15px; }
+
+        .bg-remover-wrapper { text-align: center; margin-bottom: 25px; }
+        .bg-remover-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: #fff; background: linear-gradient(135deg, #f97316, #d97706); padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2); transition: 0.2s; }
+        .bg-remover-link:active { transform: scale(0.97); }
+
+        .upload-zone { background: var(--card-bg); border: 2px dashed var(--border-color); border-radius: 20px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; position: relative; overflow: hidden; }
+        .upload-zone:hover { border-color: var(--accent-orange); background: rgba(249, 115, 22, 0.05); }
+        .upload-icon { font-size: 45px; color: var(--accent-orange); filter: drop-shadow(0 0 10px rgba(249,115,22,0.3)); }
+        .upload-text { font-size: 15px; font-weight: 600; color: var(--text-title); }
+        .upload-sub { font-size: 12px; color: var(--text-body); }
+        #fileInput { display: none; }
+
+        .preview-section { display: none; text-align: center; animation: fadeIn 0.5s ease; }
+        .preview-card { background: var(--card-bg); padding: 20px; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: var(--shadow); margin-bottom: 25px; position: relative; }
+        .preview-card::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: linear-gradient(45deg, var(--accent-orange), var(--accent-cyan)); z-index: -1; border-radius: 26px; opacity: 0.3; }
+        
+        .shape-toggle { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .shape-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-body); padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px;}
+        .shape-btn.active { border-color: var(--accent-orange); color: var(--accent-orange); background: rgba(249, 115, 22, 0.1); }
+
+        .img-container { width: 180px; height: 180px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; position: relative; }
+        .img-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4)); transition: 0.3s;}
+        
+        .badge { position: absolute; top: -10px; right: -10px; background: var(--accent-orange); color: #fff; font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 8px; letter-spacing: 1px; z-index: 10; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4);}
+
+        .btn-group { display: flex; gap: 12px; }
+        .btn { flex: 1; padding: 14px; border-radius: 14px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Poppins', sans-serif;}
+        .btn-primary { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
+        .btn-primary:active { transform: scale(0.96); }
+        .btn-secondary { background: var(--card-hover); color: var(--text-title); border: 1px solid var(--border-color); }
+        .btn-secondary:active { transform: scale(0.96); }
+
+        .result-box { display: none; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-top: 20px; text-align: left; animation: slideUp 0.4s ease; border-left: 4px solid var(--success); width: 100%; box-sizing: border-box;}
+        .result-title { font-size: 13px; color: var(--success); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .link-wrapper { display: flex; gap: 8px; width: 100%; box-sizing: border-box;}
+        .link-input { flex: 1 1 auto; min-width: 0; background: rgba(0,0,0,0.1); border: 1px solid var(--border-color); color: var(--text-title); padding: 12px; border-radius: 10px; font-size: 13px; outline: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+        html[data-theme="light"] .link-input { background: #f8fafc; }
+        
+        .btn-copy { flex: 0 0 auto; background: var(--text-title); color: var(--bg-main); border: none; padding: 0 15px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s;}
+
+        .guide-section { margin-top: 40px; }
+        .guide-header { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 800; color: var(--accent-orange); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .guide-card { background: var(--card-bg); border-radius: 18px; border: 1px solid var(--border-color); padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        
+        .step { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 16px; }
+        .step:last-child { margin-bottom: 0; }
+        .step-num { width: 28px; height: 28px; min-width: 28px; background: rgba(249, 115, 22, 0.15); color: var(--accent-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; border: 1px solid rgba(249, 115, 22, 0.3); }
+        .step-text { font-size: 14px; font-weight: 500; color: var(--text-title); line-height: 1.5; padding-top: 3px; }
+        .highlight-text { color: var(--accent-orange); font-weight: 700; }
+
+        .loader { display: none; font-size: 18px; margin-right: 5px; color: #fff; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #hiddenCanvas { display: none; }
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+<body>
+    <div class="sticky-wrapper">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent-orange); font-size: 22px;"></i>
+            <div class="page-title">
+                <span class="lang-bn">আপলোডার</span>
+                <span class="lang-en">UPLOADER</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        
+        <div class="type-toggle">
+            <button class="type-btn active" id="btnLogo" onclick="setType('logo')">
+                <i class="fa-solid fa-shield-halved"></i> <span class="lang-bn">লোগো</span><span class="lang-en">Logo</span>
+            </button>
+            <button class="type-btn" id="btnKit" onclick="setType('kit')">
+                <i class="fa-solid fa-shirt"></i> <span class="lang-bn">কিট</span><span class="lang-en">Kit</span>
+            </button>
+        </div>
+
+        <div class="bg-remover-wrapper" id="bgRemoverDiv">
+            <a href="https://www.remove.bg/upload" target="_blank" class="bg-remover-link">
+                <span class="lang-bn">ব্যাকগ্রাউন্ড রিমুভ করুন</span>
+                <span class="lang-en">Remove Background</span>
+            </a>
+        </div>
+
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+            <i class="fa-cloud-arrow-up fa-solid upload-icon"></i>
+            <div>
+                <div class="upload-text lang-bn" id="uploadTextBn">লোগো বা ছবি সিলেক্ট করুন</div>
+                <div class="upload-text lang-en" id="uploadTextEn">Select Logo or Image</div>
+                <div class="upload-sub">JPG, JPEG, PNG (Max 5MB)</div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+        </div>
+
+        <div class="preview-section" id="previewSection">
+            <div class="preview-card">
+                
+                <div class="shape-toggle" id="shapeToggleDiv">
+                    <button class="shape-btn active" id="btnOriginal" onclick="setShape('original')">
+                        <i class="fa-regular fa-image"></i> <span class="lang-bn">অরিজিনাল</span><span class="lang-en">Original</span>
+                    </button>
+                    <button class="shape-btn" id="btnSquare" onclick="setShape('square')">
+                        <i class="fa-regular fa-square"></i> <span class="lang-bn">চারকোনা</span><span class="lang-en">Square</span>
+                    </button>
+                    <button class="shape-btn" id="btnRounded" onclick="setShape('rounded')">
+                        <i class="fa-regular fa-circle"></i> <span class="lang-bn">গোল</span><span class="lang-en">Circle</span>
+                    </button>
+                </div>
+
+                <div class="img-container">
+                    <span class="badge" id="sizeBadge">512x512</span>
+                    <img id="previewImage" src="" alt="Preview">
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="resetUpload()">
+                        <i class="fa-solid fa-trash-can"></i> <span class="lang-bn">বাতিল</span><span class="lang-en">Discard</span>
+                    </button>
+                    <button class="btn btn-primary" id="uploadBtn" onclick="uploadToImgBB()">
+                        <i class="fa-solid fa-rocket" id="rocketIcon"></i>
+                        <i class="fa-solid fa-spinner fa-spin loader" id="loader"></i>
+                        <span class="lang-bn" id="btnTextBn">লিংক তৈরি করুন</span>
+                        <span class="lang-en" id="btnTextEn">Upload & Get Link</span>
+                    </button>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-title lang-bn" id="successTextBn"><i class="fa-solid fa-check-circle"></i> লোগো লিংক রেডি!</div>
+                    <div class="result-title lang-en" id="successTextEn"><i class="fa-solid fa-check-circle"></i> Logo Link Ready!</div>
+                    <div class="link-wrapper">
+                        <input type="text" id="finalLink" class="link-input" readonly>
+                        <button class="btn-copy" onclick="copyToClipboard()" id="copyBtn">
+                            <span class="lang-bn">কপি</span><span class="lang-en">Copy</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-header">
+                <i class="fa-solid fa-circle-info"></i>
+                <span class="lang-bn">কীভাবে ইমপোর্ট করবেন?</span>
+                <span class="lang-en">How to Import?</span>
+            </div>
+            
+            <div class="guide-card" id="guideLogo">
+                <div class="lang-bn">
+                    <div class="step"><div class="step-num">১</div><div class="step-text">প্রথমে এই টুল ব্যবহার করে আপনার লোগো আপলোড করুন এবং তৈরি হওয়া লিংকটি কপি করে নিন।</div></div>
+                    <div class="step"><div class="step-num">২</div><div class="step-text">এরপর ড্রিম লিগ সকার (DLS) গেমটি ওপেন করে <span class="highlight-text">"MY CLUB"</span> অপশনে যান।</div></div>
+                    <div class="step"><div class="step-num">৩</div><div class="step-text"><span class="highlight-text">"CUSTOMISE"</span> অপশনটিতে ক্লিক করুন।</div></div>
+                    <div class="step"><div class="step-num">৪</div><div class="step-text">মেনু থেকে <span class="highlight-text">"LOGO"</span> বাটনে ক্লিক করুন।</div></div>
+                    <div class="step"><div class="step-num">৫</div><div class="step-text">কপি করা লিংকটি গেমের <span class="highlight-text">"ENTER LOGO URL"</span> বক্সে পেস্ট করুন।</div></div>
+                    <div class="step"><div class="step-num">৬</div><div class="step-text">সবশেষে, <span class="highlight-text">"CONFIRM"</span> বাটনে ক্লিক করলেই সেটি সফলভাবে ডাউনলোড হয়ে গেমে যুক্ত হয়ে যাবে।</div></div>
+                </div>
+                <div class="lang-en">
+                    <div class="step"><div class="step-num">1</div><div class="step-text">First, upload your logo using this tool and copy the generated link.</div></div>
+                    <div class="step"><div class="step-num">2</div><div class="step-text">Open the Dream League Soccer (DLS) game and go to the <span class="highlight-text">"MY CLUB"</span> section.</div></div>
+                    <div class="step"><div class="step-num">3</div><div class="step-text">Tap on the <span class="highlight-text">"CUSTOMISE"</span> option.</div></div>
+                    <div class="step"><div class="step-num">4</div><div class="step-text">Tap on the <span class="highlight-text">"LOGO"</span> button.</div></div>
+                    <div class="step"><div class="step-num">5</div><div class="step-text">Paste the copied URL into the <span class="highlight-text">"ENTER LOGO URL"</span> box.</div></div>
+                    <div class="step"><div class="step-num">6</div><div class="step-text">Finally, tap on <span class="highlight-text">"CONFIRM"</span> to successfully download and apply it.</div></div>
+                </div>
+            </div>
+
+            <div class="guide-card" id="guideKit" style="display: none;">
+                <div class="lang-bn">
+                    <div class="step"><div class="step-num">১</div><div class="step-text">প্রথমে এই টুল ব্যবহার করে আপনার কিট আপলোড করুন এবং তৈরি হওয়া লিংকটি কপি করে নিন।</div></div>
+                    <div class="step"><div class="step-num">২</div><div class="step-text">এরপর ড্রিম লিগ সকার (DLS) গেমটি ওপেন করে <span class="highlight-text">"MY CLUB"</span> অপশনে যান।</div></div>
+                    <div class="step"><div class="step-num">৩</div><div class="step-text"><span class="highlight-text">"CUSTOMISE"</span> অপশনটিতে ক্লিক করুন।</div></div>
+                    <div class="step"><div class="step-num">৪</div><div class="step-text">মেনু থেকে <span class="highlight-text">"KIT"</span> বাটনে ক্লিক করুন।</div></div>
+                    <div class="step"><div class="step-num">৫</div><div class="step-text">কপি করা লিংকটি গেমের <span class="highlight-text">"ENTER KIT URL"</span> বক্সে পেস্ট করুন।</div></div>
+                    <div class="step"><div class="step-num">৬</div><div class="step-text">সবশেষে, <span class="highlight-text">"CONFIRM"</span> বাটনে ক্লিক করলেই সেটি সফলভাবে ডাউনলোড হয়ে গেমে যুক্ত হয়ে যাবে।</div></div>
+                </div>
+                <div class="lang-en">
+                    <div class="step"><div class="step-num">1</div><div class="step-text">First, upload your kit using this tool and copy the generated link.</div></div>
+                    <div class="step"><div class="step-num">2</div><div class="step-text">Open the Dream League Soccer (DLS) game and go to the <span class="highlight-text">"MY CLUB"</span> section.</div></div>
+                    <div class="step"><div class="step-num">3</div><div class="step-text">Tap on the <span class="highlight-text">"CUSTOMISE"</span> option.</div></div>
+                    <div class="step"><div class="step-num">4</div><div class="step-text">Tap on the <span class="highlight-text">"KIT"</span> button.</div></div>
+                    <div class="step"><div class="step-num">5</div><div class="step-text">Paste the copied URL into the <span class="highlight-text">"ENTER KIT URL"</span> box.</div></div>
+                    <div class="step"><div class="step-num">6</div><div class="step-text">Finally, tap on <span class="highlight-text">"CONFIRM"</span> to successfully download and apply it.</div></div>
+                </div>
+            </div>
+
+        </div>
+
+        <canvas id="hiddenCanvas"></canvas>
+    </div>
+    <script>
+        const IMGBB_API_KEY = '6d3e3d664b52a94c27f5f921df776714'; 
+        
+        let currentType = 'logo'; 
+        let currentShape = 'original'; 
+        let rawImage = null;
+        let processedImageDataObj = null;
+
+        function hideLinkBoxAndShowUploadBtn() {
+            if(document.getElementById('resultBox').style.display === 'block') {
+                document.getElementById('resultBox').style.display = 'none';
+                document.getElementById('uploadBtn').style.display = 'flex';
+                document.getElementById('finalLink').value = '';
+                
+                const copyBtn = document.getElementById('copyBtn');
+                copyBtn.innerHTML = '<span class="lang-bn">কপি</span><span class="lang-en">Copy</span>';
+                copyBtn.style.background = "var(--text-title)";
+                copyBtn.style.color = "var(--bg-main)";
+            }
+        }
+
+        function setType(type) {
+            currentType = type;
+            document.getElementById('btnLogo').classList.toggle('active', type === 'logo');
+            document.getElementById('btnKit').classList.toggle('active', type === 'kit');
+            
+            hideLinkBoxAndShowUploadBtn();
+
+            if (type === 'kit') {
+                document.getElementById('shapeToggleDiv').style.display = 'none';
+                // 🔥 কিটের সাইজ আপডেট করে 512x512 করা হয়েছে 🔥
+                document.getElementById('sizeBadge').innerText = '512x512';
+                document.getElementById('bgRemoverDiv').style.display = 'none'; 
+                document.getElementById('uploadTextBn').innerText = 'কিট ইমেজ সিলেক্ট করুন';
+                document.getElementById('uploadTextEn').innerText = 'Select Kit Image';
+                document.getElementById('successTextBn').innerHTML = '<i class="fa-solid fa-check-circle"></i> কিট লিংক রেডি!';
+                document.getElementById('successTextEn').innerHTML = '<i class="fa-solid fa-check-circle"></i> Kit Link Ready!';
+                
+                document.getElementById('guideLogo').style.display = 'none';
+                document.getElementById('guideKit').style.display = 'block';
+            } else {
+                document.getElementById('shapeToggleDiv').style.display = 'flex';
+                document.getElementById('sizeBadge').innerText = '512x512';
+                document.getElementById('bgRemoverDiv').style.display = 'block';
+                document.getElementById('uploadTextBn').innerText = 'লোগো বা ছবি সিলেক্ট করুন';
+                document.getElementById('uploadTextEn').innerText = 'Select Logo or Image';
+                document.getElementById('successTextBn').innerHTML = '<i class="fa-solid fa-check-circle"></i> লোগো লিংক রেডি!';
+                document.getElementById('successTextEn').innerHTML = '<i class="fa-solid fa-check-circle"></i> Logo Link Ready!';
+                
+                document.getElementById('guideLogo').style.display = 'block';
+                document.getElementById('guideKit').style.display = 'none';
+            }
+
+            if (rawImage) { processImage(); }
+        }
+
+        function setShape(shape) {
+            currentShape = shape;
+            document.getElementById('btnOriginal').classList.toggle('active', shape === 'original');
+            document.getElementById('btnSquare').classList.toggle('active', shape === 'square');
+            document.getElementById('btnRounded').classList.toggle('active', shape === 'rounded');
+            
+            hideLinkBoxAndShowUploadBtn();
+
+            if (rawImage) { processImage(); }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                rawImage = new Image();
+                rawImage.onload = function() {
+                    document.getElementById('uploadZone').style.display = 'none';
+                    document.getElementById('previewSection').style.display = 'block';
+                    processImage();
+                }
+                rawImage.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function processImage() {
+            const canvas = document.getElementById('hiddenCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            if (currentType === 'kit') {
+                // 🔥 কিটের ক্যানভাস সাইজ 1280 থেকে 512 করা হয়েছে 🔥
+                canvas.width = 512;
+                canvas.height = 512;
+                ctx.clearRect(0, 0, 512, 512);
+                ctx.drawImage(rawImage, 0, 0, 512, 512); 
+            } else {
+                canvas.width = 512;
+                canvas.height = 512;
+                ctx.clearRect(0, 0, 512, 512);
+
+                ctx.save();
+                if (currentShape === 'rounded') {
+                    ctx.beginPath();
+                    ctx.arc(256, 256, 256, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.clip();
+                }
+
+                if (currentShape === 'original') {
+                    let ratio = Math.min(512 / rawImage.width, 512 / rawImage.height);
+                    let w = rawImage.width * ratio;
+                    let h = rawImage.height * ratio;
+                    let x = (512 - w) / 2;
+                    let y = (512 - h) / 2;
+                    ctx.drawImage(rawImage, x, y, w, h);
+                } else {
+                    ctx.drawImage(rawImage, 0, 0, 512, 512);
+                }
+                ctx.restore();
+            }
+            
+            const pngDataUrl = canvas.toDataURL('image/png');
+            document.getElementById('previewImage').src = pngDataUrl;
+            processedImageDataObj = pngDataUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+        }
+
+        function uploadToImgBB() {
+            if (!processedImageDataObj) return;
+
+            const btn = document.getElementById('uploadBtn');
+            const rocket = document.getElementById('rocketIcon');
+            const loader = document.getElementById('loader');
+            const textBn = document.getElementById('btnTextBn');
+            const textEn = document.getElementById('btnTextEn');
+            
+            btn.style.opacity = '0.7';
+            btn.style.cursor = 'not-allowed';
+            rocket.style.display = 'none';
+            textBn.style.display = 'none';
+            textEn.style.display = 'none';
+            
+            loader.style.display = 'inline-block'; 
+
+            const formData = new FormData();
+            formData.append('image', processedImageDataObj);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const directUrl = data.data.url;
+                    document.getElementById('finalLink').value = directUrl;
+                    document.getElementById('resultBox').style.display = 'block';
+                    btn.style.display = 'none'; 
+                } else {
+                    alert("Upload Failed! Check your internet connection.");
+                }
+            })
+            .catch(error => {
+                alert("Error connecting to server!");
+                console.error(error);
+            })
+            .finally(() => {
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                rocket.style.display = 'inline-block';
+                loader.style.display = 'none';
+                
+                if (document.documentElement.getAttribute('data-lang') === 'bn') {
+                    textBn.style.display = 'inline-block';
+                } else {
+                    textEn.style.display = 'inline-block';
+                }
+            });
+        }
+
+        function copyToClipboard() {
+            const copyText = document.getElementById('finalLink');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            document.execCommand("copy");
+            
+            copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            copyBtn.style.background = "var(--success)";
+            copyBtn.style.color = "#fff";
+        }
+
+        function resetUpload() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewImage').src = '';
+            document.getElementById('finalLink').value = '';
+            rawImage = null;
+            processedImageDataObj = null;
+            
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('uploadBtn').style.display = 'flex';
+            document.getElementById('uploadZone').style.display = 'flex';
+            
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.innerHTML = '<span class="lang-bn">কপি</span><span class="lang-en">Copy</span>';
+            copyBtn.style.background = "var(--text-title)";
+            copyBtn.style.color = "var(--bg-main)";
+        }
+    </script>
+</body>
+</html>

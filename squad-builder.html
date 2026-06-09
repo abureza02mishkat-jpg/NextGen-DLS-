@@ -1,0 +1,576 @@
+    <!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Squad Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+
+    <script>
+        (function() {
+            let initTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', initTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+            document.addEventListener('touchstart', function(event) { if (event.touches.length > 1) { event.preventDefault(); } }, { passive: false });
+        })();
+    </script>
+    <style>
+        :root { 
+            --bg-main: #0a0e17; --bg-panel: #111827; --bg-inner: #06090f;
+            --text-main: #f1f2f6; --text-muted: #808e9b; --primary: #f97316; 
+            --border-light: rgba(255,255,255,0.05); 
+        }
+        :root[data-theme="light"] {
+            --bg-main: #f1f4f9; --bg-panel: #ffffff; --bg-inner: #e5e7eb;
+            --text-main: #1e293b; --text-muted: #4b5563; --border-light: rgba(0,0,0,0.1);
+        }
+
+        /* Anti-Copy and Native App Feel */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+        input, textarea { -webkit-user-select: auto; user-select: auto; font-size: 16px !important; }
+        
+        html, body { 
+            width: 100vw; max-width: 100%; overflow-x: hidden; 
+            touch-action: manipulation; 
+            background-color: var(--bg-main); color: var(--text-main); 
+            padding-bottom: 30px; transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Language Toggle Logic */
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        .sticky-top-section {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background-color: var(--bg-main); border-bottom: 2px solid var(--primary); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .header { display: flex; justify-content: center; align-items: center; padding: 20px 20px 15px 20px; position: relative;}
+        .header-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .header h1 { font-family: 'Montserrat', sans-serif; color: var(--primary); font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 0;}
+
+        .main-content { max-width: 1000px; margin: 0 auto; padding: 70px 10px 20px 10px; }
+
+        .formation-selector {
+            background: var(--bg-panel); border: 1px solid var(--border-light); 
+            border-radius: 15px; padding: 12px 15px; margin-bottom: 20px; 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: 0.3s;
+        }
+        .formation-selector label { font-size: 13px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;}
+        .formation-selector select { 
+            background: var(--bg-inner); color: var(--text-main); border: 1px solid var(--border-light); 
+            border-radius: 8px; padding: 8px 15px; font-family: 'Montserrat', sans-serif; font-weight: 800; 
+            font-size: 14px; outline: none; cursor: pointer; transition: 0.2s;
+        }
+        .formation-selector select:focus { border-color: var(--primary); }
+
+        .pitch-container { 
+            width: 96%;
+            max-width: 480px; 
+            margin: 0 auto; 
+            aspect-ratio: 3/4.2; 
+            background: 
+                radial-gradient(circle at 50% 30%, rgba(255,255,255,0.12) 0%, transparent 70%),
+                linear-gradient(to bottom, 
+                    #11361c 0%, #11361c 12.5%, #154223 12.5%, #154223 25%, 
+                    #11361c 25%, #11361c 37.5%, #154223 37.5%, #154223 50%, 
+                    #11361c 50%, #11361c 62.5%, #154223 62.5%, #154223 75%, 
+                    #11361c 75%, #11361c 87.5%, #154223 87.5%, #154223 100%);
+            position: relative; 
+            border-radius: 15px; 
+            border: 4px solid rgba(255,255,255,0.5); 
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; padding: 15px 5px;
+            justify-content: space-between;
+        }
+        
+        .pitch-container::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.35); transform: translateY(-50%); z-index: 1; }
+        .pitch-container::after { content: ''; position: absolute; top: 50%; left: 50%; width: 90px; height: 90px; border: 3px solid rgba(255,255,255,0.35); border-radius: 50%; transform: translate(-50%, -50%); z-index: 1; }
+        .penalty-box-top { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 55%; height: 16%; border: 3px solid rgba(255,255,255,0.35); border-top: none; z-index: 1; background: rgba(255,255,255,0.03); }
+        .penalty-box-bottom { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 55%; height: 16%; border: 3px solid rgba(255,255,255,0.35); border-bottom: none; z-index: 1; background: rgba(255,255,255,0.03); }
+        .center-dot { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; background: rgba(255,255,255,0.6); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2; }
+
+        .formation-row { position: relative; display: flex; justify-content: space-around; align-items: center; z-index: 10; width: 100%; height: 22%;}
+        
+        .player-slot { 
+            height: 100%; aspect-ratio: 2/3; background: rgba(0,0,0,0.5); 
+            border: 1.5px dashed rgba(255,255,255,0.4); border-radius: 8px; 
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            cursor: pointer; position: relative; transition: 0.3s;
+            backdrop-filter: blur(3px); z-index: 15;
+        }
+        .player-slot:active { transform: scale(0.95); }
+        .player-slot i { font-size: 24px; color: rgba(255,255,255,0.6); }
+        .player-slot img { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.3s; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); z-index: 2;}
+        .player-slot.filled { border: none; background: transparent; backdrop-filter: none; }
+        .player-slot.filled i { display: none; }
+        .player-slot.filled img { opacity: 1; }
+
+        #team-logo-slot { 
+            position: absolute; bottom: 12px; left: 12px; width: 48px; height: 60px; 
+            background: rgba(0,0,0,0.5); border: 1.5px dashed rgba(255,255,255,0.4); border-radius: 8px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            cursor: pointer; z-index: 15; backdrop-filter: blur(3px); transition: 0.3s;
+        }
+        #team-logo-slot:active { transform: scale(0.95); }
+        #team-logo-slot.filled { border: none; background: transparent; backdrop-filter: none; }
+        #team-logo-slot.filled i, #team-logo-slot.filled span { display: none; }
+        #teamLogoDisplay { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); position: absolute; top: 0; left: 0; z-index: 2; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; display: flex; align-items: flex-end; justify-content: center; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content { width: 100%; max-width: 500px; height: 85vh; background: var(--bg-main); border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 20px; transform: translateY(100%); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; border-top: 2px solid var(--primary); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .modal-header h3 { font-family: 'Montserrat', sans-serif; font-size: 16px; color: var(--primary); }
+        .close-btn { background: transparent; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
+        
+        .search-box { position: relative; margin-bottom: 10px; }
+        .search-box input { width: 100%; padding: 12px 15px 12px 40px; border-radius: 12px; border: 1px solid var(--border-light); background: var(--bg-inner); color: var(--text-main); outline: none; font-weight: 600; font-size: 16px; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        
+        .filter-row { 
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 5px; 
+            scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y !important;
+        }
+        .filter-row::-webkit-scrollbar { display: none; }
+        .filter-row select { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 12px; font-size: 11px; font-weight: 600; outline: none; cursor: pointer; white-space: nowrap; appearance: none; }
+        
+        .player-list { flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding-bottom: 20px; align-content: start;}
+        .list-item { background: var(--bg-panel); border: 1px solid var(--border-light); border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center;}
+        .list-item:active { transform: scale(0.95); border-color: var(--primary); }
+        .list-item img { width: 100%; height: 85px; object-fit: contain; margin-bottom: 8px; }
+        .list-item span { width: 100%; font-size: 11px; font-weight: 700; color: var(--text-main); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        
+        .dl-btn { 
+            display: flex; align-items: center; justify-content: center; gap: 8px; 
+            width: 100%; max-width: 250px; 
+            margin: 20px auto 0 auto; 
+            background: var(--primary); color: #fff; border: none; 
+            padding: 12px 20px; 
+            border-radius: 12px; font-size: 13px; font-weight: 800; 
+            cursor: pointer; text-transform: uppercase; 
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); transition: 0.3s; letter-spacing: 1px;
+        }
+        .dl-btn:active { transform: scale(0.95); }
+        #dl-watermark { 
+    display: none; 
+    text-align: center; 
+    font-size: 6.5px; /* সাইজ আরও ছোট ও পারফেক্ট করা হলো */
+    color: rgba(255,255,255,0.6); 
+    font-weight: 900; 
+    letter-spacing: 2px; 
+    text-transform: uppercase; 
+    text-shadow: 0 2px 5px rgba(0,0,0,0.8); 
+    position: absolute; 
+    bottom: 5px; /* একদম নিচে নামানো হলো */
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 20; 
+    width: 100%;
+}
+
+        .export-mode #dl-watermark { display: block !important; }
+        .export-mode .player-slot, .export-mode #team-logo-slot { background: rgba(0,0,0,0.4) !important; backdrop-filter: none !important; border: none !important; }
+        .export-mode .player-slot.filled, .export-mode #team-logo-slot.filled { background: transparent !important; }
+        .export-mode .player-slot i, .export-mode #team-logo-slot i, .export-mode #team-logo-slot span { display: none !important; }
+    </style>
+</head>
+
+<body>
+    <div class="sticky-top-section">
+        <header class="header">
+            <div class="header-title-wrapper">
+                <i class="fa-solid fa-users-gear" style="color: var(--primary); font-size: 22px;"></i>
+                <h1 id="titleText">
+                    <span class="lang-bn">স্কোয়াড বিল্ডার</span>
+                    <span class="lang-en">SQUAD BUILDER</span>
+                </h1>
+            </div>
+        </header>
+    </div>
+
+    <div class="main-content">
+        <div class="formation-selector">
+            <label id="lblFormation">
+                <span class="lang-en">Select Formation:</span>
+                <span class="lang-bn">ফরমেশন নির্বাচন:</span>
+            </label>
+            <select id="formationSelect" onchange="renderFormation()"></select>
+        </div>
+
+        <div id="export-area">
+            <div class="pitch-container" id="pitch">
+                <div class="penalty-box-top"></div>
+                <div class="penalty-box-bottom"></div>
+                <div class="center-dot"></div>
+                <div id="formation-layout" style="display: contents;"></div>
+                
+                <div id="team-logo-slot" onclick="document.getElementById('logoInput').click()">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 16px; color: rgba(255,255,255,0.6);"></i>
+                    <span style="font-size: 9px; margin-top: 4px; font-weight: 700; color: rgba(255,255,255,0.6);">LOGO</span>
+                    <img id="teamLogoDisplay" alt="Team Logo" style="display: none;">
+                </div>
+                
+                <div id="dl-watermark">CREATED VIA NEXTGEN DLS</div>
+            </div>
+        </div>
+        
+        <button class="dl-btn" onclick="downloadSquad()">
+            <i class="fa-solid fa-download"></i> 
+            <span id="lblDownload">ডাউনলোড স্কোয়াড</span>
+        </button>
+        
+        <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="loadTeamLogo(event)">
+    </div>
+
+    <div class="modal-overlay" id="playerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">
+                    <span class="lang-en">SELECT PLAYER</span>
+                    <span class="lang-bn">প্লেয়ার নির্বাচন করুন</span>
+                </h3>
+                <button class="close-btn" onclick="closeModal('playerModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Search Player..." onkeyup="filterModal()">
+            </div>
+            <div class="filter-row">
+                <select id="filterCategory" onchange="filterModal()"><option value="all">All Categories</option></select>
+                <select id="filterPosition" onchange="filterModal()"><option value="all">All Positions</option></select>
+                <select id="filterClub" onchange="filterModal()"><option value="all">All Clubs</option></select>
+                <select id="filterCountry" onchange="filterModal()"><option value="all">All Countries</option></select>
+            </div>
+            <div class="player-list" id="modalList"></div>
+        </div>
+    </div>
+
+    <script>
+        const langDict = {
+            en: { title: "SQUAD BUILDER", search: "Search Player...", save: "DOWNLOAD SQUAD", select: "SELECT PLAYER", formation: "Select Formation:"},
+            bn: { title: "স্কোয়াড বিল্ডার", search: "প্লেয়ার খুঁজুন...", save: "ডাউনলোড স্কোয়াড", select: "প্লেয়ার নির্বাচন করুন", formation: "ফরমেশন নির্বাচন:"}
+        };
+        
+        let currentEditingSlot = null;
+
+        const playersData = [
+            { id: 'dimaria_1', fullName: 'Ángel Di María', category: 'Champion', position: 'AM', club: 'Free Agent', country: 'Argentina', imgBase: 'di maria.png' },
+            { id: 'ronaldo_1', fullName: 'Cristiano Ronaldo', category: 'Champion', position: 'LW', club: 'Al Nassr', country: 'Portugal', imgBase: 'ronaldo.png' },
+            { id: 'vidal_1', fullName: 'Arturo Vidal', category: 'Champion', position: 'CM', club: 'Free Agent', country: 'Chile', imgBase: 'vidal.png' },
+            { id: 'ronaldo_2', fullName: 'Cristiano Ronaldo (RM)', category: 'Champion', position: 'RM', club: 'Al Nassr', country: 'Portugal', imgBase: 'ronaldo 2.png' },
+            { id: 'dimaria_2', fullName: 'Ángel Di María (RW)', category: 'Champion', position: 'RW', club: 'Free Agent', country: 'Argentina', imgBase: 'di maria 2.png' },
+            { id: 'kante_1', fullName: "N'Golo Kanté", category: 'Champion', position: 'DM', club: 'Fenerbahçe', country: 'France', imgBase: 'kante.png' },
+            { id: 'modric_1', fullName: 'Luka Modrić', category: 'Champion', position: 'CM', club: 'AC Milan', country: 'Croatia', imgBase: 'modric.png' },
+            { id: 'messi_2', fullName: 'Lionel Messi (RW)', category: 'Champion', position: 'RW', club: 'Inter Miami', country: 'Argentina', imgBase: 'messi 2.png' },
+            { id: 'messi_1', fullName: 'Lionel Messi', category: 'Champion', position: 'CF', club: 'Inter Miami', country: 'Argentina', imgBase: 'messi.png' },
+            { id: 'balotelli_1', fullName: 'Mario Balotelli', category: 'Champion', position: 'CF', club: 'Free Agent', country: 'Italy', imgBase: 'balotelli.png' },
+            { id: 'sanchez_1', fullName: 'Alexis Sánchez', category: 'Champion', position: 'CF', club: 'Free Agent', country: 'Chile', imgBase: 'sanchez.png' },
+            { id: 'vardy_1', fullName: 'Jamie Vardy', category: 'Champion', position: 'CF', club: 'Cremonese', country: 'England', imgBase: 'vardy.png' },
+            { id: 'dembele_1', fullName: 'Ousmane Dembélé', category: 'Team of 25', position: 'RW', club: 'PSG', country: 'France', imgBase: 'demble.png' },
+            { id: 'mendes_1', fullName: 'Nuno Mendes', category: 'Team of 25', position: 'LB', club: 'PSG', country: 'Portugal', imgBase: 'nuno.png' },
+            { id: 'hakimi_1', fullName: 'Achraf Hakimi', category: 'Team of 25', position: 'RB', club: 'PSG', country: 'Morocco', imgBase: 'hakimi.png' },
+            { id: 'salah_1', fullName: 'Mohamed Salah', category: 'Team of 25', position: 'RW', club: 'Liverpool', country: 'Egypt', imgBase: 'salah.png' },
+            { id: 'gabriel_1', fullName: 'Gabriel Magalhães', category: 'Team of 25', position: 'CB', club: 'Arsenal', country: 'Brazil', imgBase: 'gabriel.png' },
+            { id: 'pedri_1', fullName: 'Pedri', category: 'Team of 25', position: 'CM', club: 'Barcelona', country: 'Spain', imgBase: 'pedri.png' },
+            { id: 'kane_1', fullName: 'Harry Kane', category: 'Team of 25', position: 'CF', club: 'Bayern Munich', country: 'England', imgBase: 'kane.png' },
+            { id: 'vitinha_1', fullName: 'Vitinha', category: 'Team of 25', position: 'CM', club: 'PSG', country: 'Portugal', imgBase: 'vitinha.png' },
+            { id: 'yamal_1', fullName: 'Lamine Yamal', category: 'Team of 25', position: 'RW', club: 'Barcelona', country: 'Spain', imgBase: 'yamal.png' },
+            { id: 'donnarumma_1', fullName: 'Gianluigi Donnarumma', category: 'Team of 25', position: 'GK', club: 'Manchester City', country: 'Italy', imgBase: 'donnarumma.png' },
+            { id: 'mbappe_1', fullName: 'Kylian Mbappé', category: 'Team of 25', position: 'CF', club: 'Real Madrid', country: 'France', imgBase: 'mbappe.png' },
+            { id: 'yildiz_1', fullName: 'Kenan Yildiz', category: 'Dream Stars 26', position: 'SS', club: 'Juventus', country: 'Turkey', imgBase: 'yildiz.png' },
+            { id: 'thiago_1', fullName: 'Igor Thiago', category: 'Dream Stars 26', position: 'CF', club: 'Brentford', country: 'Brazil', imgBase: 'thiago.png' },
+            { id: 'suarez_1', fullName: 'Luis Suárez', category: 'Dream Stars 26', position: 'CF', club: 'Sporting CP', country: 'Colombia', imgBase: 'suarez.png' },
+            { id: 'svilar_1', fullName: 'Mile Svilar', category: 'Dream Stars 26', position: 'GK', club: 'AS Roma', country: 'Serbia', imgBase: 'svilar.png' },
+            { id: 'el_karouani_1', fullName: 'Souffian El Karouani', category: 'Dream Stars 26', position: 'LB', club: 'FC Utrecht', country: 'Morocco', imgBase: 'el karouani.png' },
+            { id: 'berg_1', fullName: 'Patrick Berg', category: 'Dream Stars 26', position: 'DM', club: 'Bodø/Glimt', country: 'Norway', imgBase: 'berg.png' },
+            { id: 'anderson_1', fullName: 'Elliot Anderson', category: 'Dream Stars 26', position: 'DM', club: 'Nottingham Forest', country: 'England', imgBase: 'anderson.png' },
+            { id: 'ryerson_1', fullName: 'Julian Ryerson', category: 'Dream Stars 26', position: 'RB', club: 'Borussia Dortmund', country: 'Norway', imgBase: 'ryerson.png' },
+            { id: 'vuskovic_1', fullName: 'Luka Vušković', category: 'Dream Stars 26', position: 'CB', club: 'Hamburger SV', country: 'Croatia', imgBase: 'vuskovic.png' },
+            { id: 'arrascaeta_1', fullName: 'Giorgian de Arrascaeta', category: 'Dream Stars 26', position: 'AM', club: 'Flamengo', country: 'Uruguay', imgBase: 'arrascaeta.png' },
+            { id: 'tzolis_1', fullName: 'Christos Tzolis', category: 'Dream Stars 26', position: 'LM', club: 'Club Brugge', country: 'Greece', imgBase: 'tzolis.png' },
+            { id: 'sarr_1', fullName: 'Malang Sarr', category: 'Dream Stars 26', position: 'CB', club: 'RC Lens', country: 'France', imgBase: 'sarr.png' },
+            { id: 'paz_1', fullName: 'Nico Paz', category: 'Dream Stars 25', position: 'AM', club: 'Como', country: 'Argentina', imgBase: 'paz.png' },
+            { id: 'mctominay_1', fullName: 'Scott McTominay', category: 'Dream Stars 25', position: 'CM', club: 'Napoli', country: 'Scotland', imgBase: 'mctominay.png' },
+            { id: 'huijsen_1', fullName: 'Dean Huijsen', category: 'Dream Stars 25', position: 'CB', club: 'Real Madrid', country: 'Spain', imgBase: 'huijsen.png' },
+            { id: 'cherki_1', fullName: 'Rayan Cherki', category: 'Dream Stars 25', position: 'RW', club: 'Manchester City', country: 'France', imgBase: 'cherki.png' },
+            { id: 'santos_1', fullName: 'Andrey Santos', category: 'Dream Stars 25', position: 'CM', club: 'Chelsea', country: 'Brazil', imgBase: 'santos.png' },
+            { id: 'robinson_1', fullName: 'Antonee Robinson', category: 'Dream Stars 25', position: 'LB', club: 'Fulham', country: 'USA', imgBase: 'robinson.png' },
+            { id: 'steijn_1', fullName: 'Sem Steijn', category: 'Dream Stars 25', position: 'AM', club: 'Feyenoord', country: 'Netherlands', imgBase: 'steijn.png' },
+            { id: 'wood_1', fullName: 'Chris Wood', category: 'Dream Stars 25', position: 'CF', club: 'Nottingham Forest', country: 'New Zealand', imgBase: 'wood.png' },
+            { id: 'trafford_1', fullName: 'James Trafford', category: 'Dream Stars 25', position: 'GK', club: 'Manchester City', country: 'England', imgBase: 'trafford.png' },
+            { id: 'baena_1', fullName: 'Álex Baena', category: 'Dream Stars 25', position: 'LM', club: 'Atlético Madrid', country: 'Spain', imgBase: 'baena.png' },
+            { id: 'vivian_1', fullName: 'Dani Vivian', category: 'Dream Stars 25', position: 'CB', club: 'Athletic Club', country: 'Spain', imgBase: 'vivian.png' },
+            { id: 'alvarez_1', fullName: 'Julián Álvarez', category: 'Kickoff Star', position: 'CF', club: 'Atlético Madrid', country: 'Argentina', imgBase: 'alvarez.png' },
+            { id: 'raphinha_1', fullName: 'Raphinha', category: 'Kickoff Star', position: 'LW', club: 'Barcelona', country: 'Brazil', imgBase: 'raphinha.png' },
+            { id: 'fernando_torres', fullName: 'Fernando Torres', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Spain', imgBase: 'fernando torres.png' },
+            { id: 'andy_cole_1', fullName: 'Andy Cole', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'England', imgBase: 'andy cole 1.png' },
+            { id: 'rivaldo_2', fullName: 'Rivaldo', category: 'Classic', position: 'LW', club: 'Free Agent', country: 'Brazil', imgBase: 'rivaldo 2.png' },
+            { id: 'david_trezeguet', fullName: 'David Trezeguet', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'France', imgBase: 'david trezeguet.png' },
+            { id: 'hernan_crespo_1', fullName: 'Hernán Crespo', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Argentina', imgBase: 'hernan crespo 1.png' },
+            { id: 'gianfranco_zola', fullName: 'Gianfranco Zola', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Italy', imgBase: 'gianfranco zola.png' },
+            { id: 'andy_cole_2', fullName: 'Andy Cole', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'England', imgBase: 'andy cole 2.png' },
+            { id: 'hernan_crespo_2', fullName: 'Hernán Crespo', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Argentina', imgBase: 'hernan crespo 2.png' },
+            { id: 'gabriel_batistuta_2', fullName: 'Gabriel Batistuta', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Argentina', imgBase: 'gabriel batistuta 2.png' },
+            { id: 'robert_pires', fullName: 'Robert Pires', category: 'Classic', position: 'LM', club: 'Free Agent', country: 'France', imgBase: 'robert pires.png' },
+            { id: 'paul_gascoigne_1', fullName: 'Paul Gascoigne', category: 'Classic', position: 'AM', club: 'Free Agent', country: 'England', imgBase: 'paul gascoigne 1.png' },
+            { id: 'gabriel_batistuta_1', fullName: 'Gabriel Batistuta', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Argentina', imgBase: 'gabriel batistuta 1.png' },
+            { id: 'rivaldo_1', fullName: 'Rivaldo', category: 'Classic', position: 'AM', club: 'Free Agent', country: 'Brazil', imgBase: 'rivaldo 1.png' },
+            { id: 'chiellini_1', fullName: 'Giorgio Chiellini', category: 'Classic', position: 'CB', club: 'Free Agent', country: 'Italy', imgBase: 'giorgio chiellini.png' },
+            { id: 'davor_suker', fullName: 'Davor Šuker', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Croatia', imgBase: 'davor suker.png' },
+            { id: 'lothar_matthaus_1', fullName: 'Lothar Matthäus', category: 'Classic', position: 'DM', club: 'Free Agent', country: 'Germany', imgBase: 'lothar matthäus 1.png' },
+            { id: 'fabio_cannavaro', fullName: 'Fabio Cannavaro', category: 'Classic', position: 'CB', club: 'Free Agent', country: 'Italy', imgBase: 'fabio cannavaro.png' },
+            { id: 'dennis_bergkamp_1', fullName: 'Dennis Bergkamp', category: 'Classic', position: 'CF', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 1.png' },
+            { id: 'marcel_desailly_1', fullName: 'Marcel Desailly', category: 'Classic', position: 'CB', club: 'Free Agent', country: 'France', imgBase: 'marcel desailly 1.png' },
+            { id: 'lothar_matthaus_2', fullName: 'Lothar Matthäus', category: 'Classic', position: 'AM', club: 'Free Agent', country: 'Germany', imgBase: 'lothar matthäus 2.png' },
+            { id: 'dennis_bergkamp_2', fullName: 'Dennis Bergkamp', category: 'Classic', position: 'SS', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 2.png' },
+            { id: 'gaizka_mendieta', fullName: 'Gaizka Mendieta', category: 'Classic', position: 'RM', club: 'Free Agent', country: 'Spain', imgBase: 'gaizka mendieta.png' },
+            { id: 'marcel_desailly_2', fullName: 'Marcel Desailly', category: 'Classic', position: 'DM', club: 'Free Agent', country: 'France', imgBase: 'marcel desailly 2.png' },
+            { id: 'emmanuel_petit_2', fullName: 'Emmanuel Petit', category: 'Classic', position: 'DM', club: 'Free Agent', country: 'France', imgBase: 'emmanuel petit 2.png' },
+            { id: 'emmanuel_petit_1', fullName: 'Emmanuel Petit', category: 'Classic', position: 'DM', club: 'Free Agent', country: 'France', imgBase: 'emmanuel petit 1.png' },
+            { id: 'tony_adams', fullName: 'Tony Adams', category: 'Classic', position: 'CB', club: 'Free Agent', country: 'England', imgBase: 'tony adams.png' },
+            { id: 'michael_essien', fullName: 'Michael Essien', category: 'Classic', position: 'DM', club: 'Free Agent', country: 'Ghana', imgBase: 'michael essien.png' },
+            { id: 'graeme_souness', fullName: 'Graeme Souness', category: 'Classic', position: 'CM', club: 'Free Agent', country: 'Scotland', imgBase: 'graeme souness.png' },
+            { id: 'dennis_bergkamp_3', fullName: 'Dennis Bergkamp', category: 'Classic', position: 'SS', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 3.png' },
+            { id: 'paul_gascoigne_2', fullName: 'Paul Gascoigne', category: 'Classic', position: 'AM', club: 'Free Agent', country: 'England', imgBase: 'paul gascoigne 2.png' },
+            { id: 'walter_zenga', fullName: 'Walter Zenga', category: 'Classic', position: 'GK', club: 'Free Agent', country: 'Italy', imgBase: 'walter zenga.png' },
+            { id: 'carlos_valderrama', fullName: 'Carlos Valderrama', category: 'Classic', position: 'AM', club: 'Free Agent', country: 'Colombia', imgBase: 'carlos valderrama.png' }
+        ];
+
+        const formationsConfig = {
+            "4-4-2": [2, 4, 4, 1], "4-1-2-1-2": [2, 1, 2, 1, 4, 1], "4-3-1-2": [2, 1, 3, 4, 1], 
+            "4-2-2-2": [2, 2, 2, 4, 1], "4-4-1-1": [1, 1, 4, 4, 1], "4-1-3-2": [2, 3, 1, 4, 1],
+            "4-5-1": [1, 5, 4, 1], "4-1-4-1": [1, 4, 1, 4, 1], "4-2-3-1": [1, 3, 2, 4, 1], 
+            "4-3-2-1": [1, 2, 3, 4, 1], "4-3-3": [3, 3, 4, 1], "4-1-2-3": [3, 2, 1, 4, 1],
+            "4-2-1-3": [3, 1, 2, 4, 1], "5-3-2": [2, 3, 5, 1], "5-2-1-2": [2, 1, 2, 5, 1], 
+            "5-2-3": [3, 2, 5, 1], "5-2-2-1": [1, 2, 2, 5, 1], "5-4-1": [1, 4, 5, 1],
+            "5-1-2-1-1": [1, 1, 2, 1, 5, 1], "3-5-2": [2, 5, 3, 1], "3-2-3-2": [2, 3, 2, 3, 1], 
+            "3-1-4-2": [2, 4, 1, 3, 1], "3-4-1-2": [2, 1, 4, 3, 1], "3-5-1-1": [1, 1, 5, 3, 1],
+            "3-4-3": [3, 4, 3, 1], "3-4-2-1": [1, 2, 4, 3, 1], "3-1-2-1-3": [3, 1, 2, 1, 3, 1], 
+            "3-3-1-3": [3, 1, 3, 3, 1]
+        };
+
+        function getShortName(fName) {
+            let p = fName.trim().split(/\s+/);
+            if(p.length === 1) return p[0];
+            return p[0].charAt(0) + '. ' + p.slice(1).join(' ');
+        }
+
+        function applyLanguage() {
+            let currentLang = localStorage.getItem('savedLang') || 'bn';
+            document.getElementById('searchInput').placeholder = currentLang === 'en' ? "Search Player..." : "প্লেয়ার খুঁজুন...";
+            document.getElementById('lblDownload').textContent = langDict[currentLang].save;
+            
+            document.querySelector('#filterCategory option[value="all"]').textContent = currentLang === 'en' ? 'All Categories' : 'সব ক্যাটাগরি';
+            document.querySelector('#filterPosition option[value="all"]').textContent = currentLang === 'en' ? 'All Positions' : 'সব পজিশন';
+            document.querySelector('#filterClub option[value="all"]').textContent = currentLang === 'en' ? 'All Clubs' : 'সব ক্লাব';
+            document.querySelector('#filterCountry option[value="all"]').textContent = currentLang === 'en' ? 'All Countries' : 'সব দেশ';
+        }
+
+        function populateFilters() {
+            const categories = [...new Set(playersData.map(p => p.category))].filter(Boolean).sort();
+            const positions = [...new Set(playersData.map(p => p.position))].filter(Boolean).sort();
+            const clubs = [...new Set(playersData.map(p => p.club))].filter(Boolean).sort();
+            const countries = [...new Set(playersData.map(p => p.country))].filter(Boolean).sort();
+            
+            const catSel = document.getElementById('filterCategory');
+            categories.forEach(cat => catSel.add(new Option(cat, cat)));
+            
+            const posSel = document.getElementById('filterPosition');
+            positions.forEach(pos => posSel.add(new Option(pos, pos)));
+            
+            const clubSel = document.getElementById('filterClub');
+            clubs.forEach(club => clubSel.add(new Option(club, club)));
+            
+            const natSel = document.getElementById('filterCountry');
+            countries.forEach(nat => natSel.add(new Option(nat, nat)));
+        }
+
+        function populateFormationDropdown() {
+            const select = document.getElementById('formationSelect');
+            Object.keys(formationsConfig).forEach(f => {
+                let opt = document.createElement('option');
+                opt.value = f; opt.textContent = f;
+                select.appendChild(opt);
+            });
+            select.value = "4-3-3"; 
+        }
+
+        function renderFormation() {
+            const selectedForm = document.getElementById('formationSelect').value;
+            const layout = document.getElementById('formation-layout');
+            layout.innerHTML = ''; 
+            
+            const rowCounts = formationsConfig[selectedForm];
+            let slotIndex = 1;
+            
+            rowCounts.forEach(count => {
+                let rowDiv = document.createElement('div');
+                rowDiv.className = 'formation-row';
+                for(let i=0; i<count; i++) {
+                    rowDiv.innerHTML += `
+                        <div class="player-slot" id="slot-${slotIndex}" onclick="openModal('slot-${slotIndex}')">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>`;
+                    slotIndex++;
+                }
+                layout.appendChild(rowDiv);
+            });
+        }
+
+        function openModal(slotId) {
+            currentEditingSlot = slotId;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterCategory').value = 'all';
+            document.getElementById('filterPosition').value = 'all';
+            document.getElementById('filterClub').value = 'all';
+            document.getElementById('filterCountry').value = 'all';
+            renderModalList(playersData);
+            document.getElementById('playerModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            if(modalId === 'playerModal') currentEditingSlot = null;
+        }
+
+        function renderModalList(data) {
+            const listObj = document.getElementById('modalList');
+            listObj.innerHTML = '';
+            data.forEach(p => {
+                let dispName = getShortName(p.fullName);
+                let item = document.createElement('div');
+                item.className = 'list-item';
+                item.onclick = () => selectPlayer(p.imgBase);
+                item.innerHTML = `<img crossorigin="anonymous" src="${p.imgBase}" alt="${dispName}" onerror="this.src='fallback.png'"><span>${dispName}</span>`;
+                listObj.appendChild(item);
+            });
+        }
+
+        function filterModal() {
+            let sName = document.getElementById('searchInput').value.toLowerCase().trim();
+            let selCat = document.getElementById('filterCategory').value;
+            let selPos = document.getElementById('filterPosition').value;
+            let selClub = document.getElementById('filterClub').value;
+            let selNat = document.getElementById('filterCountry').value;
+
+            let escapedSearch = sName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            let regex = new RegExp('(^|\\s|-)' + escapedSearch, 'i');
+
+            let filtered = playersData.filter(p => {
+                let match = true;
+                if (sName && !regex.test(p.fullName)) match = false;
+                if (selCat && selCat !== 'all' && p.category !== selCat) match = false;
+                if (selPos && selPos !== 'all' && p.position !== selPos) match = false;
+                if (selClub && selClub !== 'all' && p.club !== selClub) match = false;
+                if (selNat && selNat !== 'all' && p.country !== selNat) match = false;
+                return match;
+            });
+            renderModalList(filtered);
+        }
+
+        function selectPlayer(imgSrc) {
+            if (currentEditingSlot) {
+                const slot = document.getElementById(currentEditingSlot);
+                let imgTag = slot.querySelector('img');
+                
+                if (!imgTag) {
+                    imgTag = document.createElement('img');
+                    imgTag.crossOrigin = "anonymous";
+                    slot.appendChild(imgTag);
+                }
+                
+                imgTag.src = imgSrc;
+                slot.classList.add('filled');
+            }
+            closeModal('playerModal');
+        }
+
+        function loadTeamLogo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('teamLogoDisplay');
+                    const slot = document.getElementById('team-logo-slot');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    slot.classList.add('filled');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function downloadSquad() {
+            let currentLang = localStorage.getItem('savedLang') || 'bn';
+            
+            // Validation: Check if all slots are filled
+            const emptySlots = document.querySelectorAll('.player-slot:not(.filled)');
+            if (emptySlots.length > 0) {
+                alert(currentLang === 'en' ? "You must fill all the slots to download the squad!" : "এখানে সম্পূর্ণ সব ঘর পূরণ করতে হবে, তবেই এটি ডাউনলোড করা যাবে!");
+                return; // Stop the download process
+            }
+
+            const dlBtn = document.getElementById('lblDownload');
+            const originalContent = dlBtn.textContent;
+            
+            dlBtn.textContent = currentLang === 'en' ? 'DOWNLOADING...' : 'ডাউনলোড হচ্ছে...'; 
+            dlBtn.parentElement.style.pointerEvents = 'none';
+
+            const pitchArea = document.getElementById('pitch');
+            pitchArea.classList.add('export-mode');
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 150));
+const dataUrl = await htmlToImage.toPng(pitchArea, { 
+    backgroundColor: "#0a0e17", 
+    pixelRatio: 6, // 4 হলো মোবাইলের জন্য একদম পারফেক্ট HD কোয়ালিটি
+    width: pitchArea.offsetWidth, 
+    height: pitchArea.offsetHeight, 
+    style: { 
+        margin: '0' // scale(1) মুছে দেওয়া হয়েছে যাতে ছবি আর না ফাটে
+    }
+});
+                
+                pitchArea.classList.remove('export-mode');
+
+                let link = document.createElement('a');
+                link.download = 'My_NextGen_Squad.png';
+                link.href = dataUrl; 
+                link.click();
+
+                dlBtn.textContent = originalContent;
+                dlBtn.parentElement.style.pointerEvents = 'all';
+
+            } catch (err) {
+                console.error("Export Error: ", err);
+                pitchArea.classList.remove('export-mode');
+                dlBtn.textContent = originalContent;
+                dlBtn.parentElement.style.pointerEvents = 'all';
+                alert(currentLang === 'en' ? "Ops! Something went wrong while downloading. Please try again." : "দুঃখিত! ডাউনলোড করার সময় একটি সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            playersData.sort((a, b) => a.fullName.localeCompare(b.fullName));
+            populateFormationDropdown();
+            renderFormation(); 
+            populateFilters(); 
+            applyLanguage();
+        });
+
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) closeModal(this.id);
+            });
+        });
+    </script>
+</body>
+</html>

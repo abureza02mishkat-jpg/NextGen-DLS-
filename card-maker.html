@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXTGEN DLS - Premium Card Maker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg-deep: #0a0e17; 
+            --card-surface: #111827;
+            --input-bg: #1f2937;
+            --border-line: #374151;
+            --nextgen-orange: #f97316; 
+            --orange-glow: rgba(249, 115, 22, 0.25);
+            --text-light: #f3f4f6;
+            --text-dim: #9ca3af;
+        }
+
+        /* === ১. মেইন বডি লেআউট === */
+        body { 
+            background-color: var(--bg-deep); 
+            color: var(--text-light); 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100svh; 
+            overflow: hidden; 
+        }
+
+        /* === ২. ফিক্সড টপ এরিয়া === */
+        .fixed-top-area {
+            flex-shrink: 0; 
+            background-color: var(--card-surface);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            z-index: 100;
+        }
+
+        .brand-title { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 21px; 
+            font-weight: 900; 
+            color: var(--nextgen-orange); 
+            margin: 0; 
+            padding: 18px 15px;
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px;
+            border-bottom: 2px solid var(--nextgen-orange);
+        }
+
+        .category-scroll-wrapper { 
+            display: flex; 
+            overflow-x: auto; 
+            gap: 12px; 
+            padding: 12px 15px; 
+            scrollbar-width: none; 
+            background-color: var(--card-surface);
+        }
+        .category-scroll-wrapper::-webkit-scrollbar { display: none; }
+        
+        .cat-box { 
+            flex: 0 0 auto; 
+            padding: 10px 18px; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            font-size: 13.5px; 
+            cursor: pointer; 
+            color: #9ca3af; 
+            background: #1f2937; 
+            border: 1px solid var(--border-line); 
+            border-bottom: 3px solid var(--border-line); 
+            transition: all 0.3s ease; 
+            font-family: 'Poppins', sans-serif; 
+            letter-spacing: 0.5px;
+        }
+        
+        .cat-box.active { 
+            color: #ffffff; 
+            background: #111827; 
+            border: 1px solid rgba(var(--cat-rgb), 0.35); 
+            border-bottom: 3px solid rgb(var(--cat-rgb)); 
+            box-shadow: 0 6px 18px rgba(var(--cat-rgb), 0.35);
+        }
+
+        /* === ৩. স্ক্রলযোগ্য কন্টেন্ট এরিয়া === */
+        .scrollable-content {
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding: 15px;
+            padding-bottom: 50px;
+        }
+
+        .main-container { max-width: 500px; margin: 0 auto; }
+
+        .preview-zone { background: transparent; border: none; box-shadow: none; position: static; margin: 0 0 25px 0; padding: 0; width: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center;}
+        .card-canvas-area { position: relative; width: 100%; max-width: 450px; margin: 0 auto; }
+        .photo-controls-inline { width: 100%; max-width: 450px; margin-top: 15px; background: rgba(31, 41, 55, 0.6); border-radius: 12px; padding: 10px; display: none; }
+
+        .btn-upload { width: 100%; padding: 14px; background: var(--nextgen-orange); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 5px 15px var(--orange-glow); transition: 0.3s; margin-bottom: 15px; }
+        .btn-upload:active { transform: scale(0.97); }
+        .ctrl-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .ctrl-label { font-size: 12px; font-weight: 700; color: var(--text-dim); width: 80px;}
+        .ctrl-btn-group { display: flex; align-items: center; gap: 15px; }
+        .btn-sm { background: var(--input-bg); color: var(--nextgen-orange); border: 1px solid var(--nextgen-orange); width: 35px; height: 35px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-sm:active { background: var(--nextgen-orange); color: white; }
+        .ctrl-val { width: 40px; text-align: center; font-weight: 700; font-size: 14px; }
+        .btn-reset { width: 100%; padding: 10px; background: transparent; color: var(--text-dim); border: 1px solid var(--border-line); border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 5px; }
+
+        .module-box { background: var(--card-surface); border-radius: 18px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border-line); position: relative; }
+        .module-header { font-size: 14px; font-weight: 800; color: var(--nextgen-orange); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; text-transform: uppercase;}
+        .module-header i { font-size: 18px; background: rgba(249, 115, 22, 0.1); padding: 8px; border-radius: 8px;}
+        .input-wrap { margin-bottom: 15px; }
+        .input-wrap label { display: block; font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase;}
+        .custom-input { width: 100%; padding: 14px 16px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border-line); color: var(--text-light); font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; box-sizing: border-box; transition: 0.3s; appearance: none; }
+        .custom-input:focus { border-color: var(--nextgen-orange); box-shadow: 0 0 0 3px var(--orange-glow); outline: none; }
+        select.custom-input { cursor: pointer; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239ca3af%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 10px auto; }
+
+        .flex-row { display: flex; gap: 12px; }
+        .flex-row .input-wrap { flex: 1; margin-bottom: 0;}
+        .toggle-box { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border-line); margin-bottom: 12px;}
+        .toggle-text { font-size: 13px; font-weight: 600; color: var(--text-light); }
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4b5563; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--nextgen-orange); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .stat-row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; background: rgba(31, 41, 55, 0.4); padding: 8px 12px; border-radius: 10px;}
+        .stat-label { width: 40px; font-weight: 800; font-size: 14px; color: var(--text-dim); font-family: 'League Spartan', sans-serif; letter-spacing: 0.5px; }
+        .stat-range { flex: 1; height: 6px; border-radius: 5px; outline: none; transition: 0.2s; }
+        .stat-score { width: 35px; text-align: right; font-weight: 800; font-size: 20px; font-family: 'League Spartan', sans-serif; }
+        .btn-generate { width: 100%; padding: 12px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px var(--orange-glow); margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-generate:active { transform: scale(0.96); }
+
+        /* ========================================================
+           কার্ড কাস্টমাইজেশন জোন
+           ======================================================== */
+        img#base-bg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
+        img#card-img { position: absolute; z-index: 2; width: 51%; top: 49%; right: -3%; transform: translateY(-50%); }
+        #player-photo { position: absolute; z-index: 3; object-fit: contain; display: none; pointer-events: none; }
+        .c-text { position: absolute; font-family: 'Montserrat', sans-serif; color: #ffffff; white-space: nowrap; z-index: 4; }
+        .c-stat-val { position: absolute; font-family: 'League Spartan', sans-serif; font-size: clamp(17px, 4.5vw, 27px); font-weight: 600; transform: translate(-50%, -50%); z-index: 4; }
+
+        #c-fullname { top: 1.3%; left: 3.8%; font-size: clamp(21px, 3.5vw, 21px); text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: -0.5px; z-index: 4; word-spacing: 1.8px !important; }
+        #c-height-foot { bottom: 3%; left: 2.5%; font-size: clamp(15px, 3vw, 13px); color: #ffffff; font-family: 'League Spartan', sans-serif; z-index: 4; }
+        #c-height-foot span.val-num { font-weight: 700; }
+        #c-height-foot span.unit-cm { font-size: .7em; font-weight: 600; vertical-align: baseline; text-transform: lowercase; margin-right: 4px; }
+        #c-height-foot span.foot-side { font-weight: 700; color: #f3f4f6; text-transform: capitalize; margin-left: 2px; }
+        #c-ovr { top: 35%; left: 69%; transform: translate(-50%, -50%); font-size: clamp(15px, 3vw, 25px); font-weight: 650; font-family: 'League Spartan', sans-serif; }
+        #c-nickname { top: 57.5%; left: 77.3%; transform: translateX(-50%); font-size: clamp(16px, 3vw, 16px); color: #000000; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: -0.5px; z-index: 4; }
+        #c-year { position: absolute; top: 50.6%; left: 68.2%; transform: translate(-50%, -50%); font-family: 'Montserrat', sans-serif; font-size: 10.5px; font-weight: 800; color: #FACC15; background: transparent; z-index: 10; display: none; }
+        
+        .cat-dynamic #c-nickname { color: #FFFFFF !important; font-size: 14.2px !important; top: 57.3% !important; left: 77.1% !important; font-weight: 700 !important; }
+        .cat-dynamic #c-year { display: block; } 
+        .cat-champion #c-nickname, .cat-classic #c-nickname, .cat-ds25 #c-nickname, .cat-ds26 #c-nickname { color: #000000 !important; font-size: 14.2px !important; top: 57.3% !important; left: 77.1% !important; font-weight: 730 !important; }
+        .cat-classic #c-year, .cat-ds25 #c-year, .cat-ds26 #c-year { display: block; }
+        .cat-champion #c-fullname, .cat-champion #c-height-foot, .cat-champion #c-height-foot span.foot-side,
+        .cat-classic #c-fullname, .cat-classic #c-height-foot, .cat-classic #c-height-foot span.foot-side,
+        .cat-ds25 #c-fullname, .cat-ds25 #c-height-foot, .cat-ds25 #c-height-foot span.foot-side,
+        .cat-ds26 #c-fullname, .cat-ds26 #c-height-foot, .cat-ds26 #c-height-foot span.foot-side,
+        .cat-wch #c-fullname, .cat-wch #c-height-foot, .cat-wch #c-height-foot span.foot-side,
+        .cat-kickoff #c-fullname, .cat-kickoff #c-height-foot, .cat-kickoff #c-height-foot span.foot-side,
+        .cat-to25 #c-fullname, .cat-to25 #c-height-foot, .cat-to25 #c-height-foot span.foot-side,
+        .cat-dynamic #c-fullname, .cat-dynamic #c-height-foot, .cat-dynamic #c-height-foot span.foot-side { color: #000000 !important; }
+        .cat-wch #c-nickname, .cat-kickoff #c-nickname, .cat-to25 #c-nickname { color: #FFFFFF !important; font-size: 14.2px !important; top: 57.3% !important; left: 77.1% !important; font-weight: 700 !important; }
+        .cat-wch #c-year, .cat-kickoff #c-year, .cat-to25 #c-year { display: block; }
+
+        #c-pos { position: absolute; transform: translate(-50%, -50%); font-family: 'League Spartan', sans-serif; font-weight: 650; border-radius: 2px; box-shadow: none; z-index: 4; letter-spacing: 0px; display: flex; justify-content: center; align-items: center; box-sizing: border-box; padding-top: 2.6px; }
+        #c-flag { position: absolute; transform: translate(-50%, -50%); z-index: 4; border-radius: 0px; box-shadow: none; object-fit: cover; transition: left 0.3s ease-in-out !important; }
+        #c-pos { transition: left 0.3s ease-in-out !important; }
+        #c-price { bottom: 1%; right: 1%; font-size: clamp(18px, 3.5vw, 18px); font-weight: 690;}
+        
+        #c-spe { top: 38.5%; left: 8.5%; font-weight: 690; } #c-acc { top: 38.5%; left: 22%; font-weight: 690; } #c-sta { top: 38.5%; left: 35.9%; font-weight: 690; } #c-str { top: 38.5%; left: 49.5%; font-weight: 690; } #c-con { top: 72.2%; left: 8.5%; font-weight: 690; } #c-pas { top: 72.2%; left: 22%; font-weight: 690; } #c-sho { top: 72.2%; left: 35.9%; font-weight: 690; } #c-tac { top: 72.2%; left: 49.5%; font-weight: 690; }
+        #c-spe, #c-acc, #c-sta, #c-str, #c-con, #c-pas, #c-sho, #c-tac { font-size: 20px !important; }
+        .sp-theme #c-spe { top: 38.5%; left: 8.2%; } .sp-theme #c-acc { top: 38.5%; left: 21.7%; } .sp-theme #c-sta { top: 38.5%; left: 35.5%; } .sp-theme #c-str { top: 38.5%; left: 49%; } .sp-theme #c-con { top: 72.2%; left: 8.2%; } .sp-theme #c-pas { top: 72.2%; left: 21.7%; } .sp-theme #c-sho { top: 72.2%; left: 35.5%; } .sp-theme #c-tac { top: 72.2%; left: 49%; }
+
+        #c-energy { position: absolute; z-index: 5; top: 70.5%; left: 77.5%; transform: translate(-50%, -50%); width: 26px; height: auto; }
+
+        /* === ভাষার ঝলকানি বন্ধ ও ল্যাঙ্গুয়েজ সিস্টেম === */
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        /* === লাইট থিম ম্যাজিক (Light Mode) === */
+        html[data-theme="light"] {
+            --bg-deep: #f0f2f5; 
+            --card-surface: #ffffff;
+            --input-bg: #f8fafc;
+            --border-line: #e2e8f0;
+            --text-light: #0f172a;
+            --text-dim: #64748b;
+        }
+        
+        html[data-theme="light"] .preview-zone {
+            background: var(--card-surface) !important;
+            border-color: rgba(249, 115, 22, 0.2) !important;
+        }
+
+        /* ওয়াটারমার্ক ডিজাইন (শুধুমাত্র ডাউনলোডের সময় শো হবে) */
+        #dl-watermark {
+            display: none;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            position: absolute;
+            bottom: -35px; /* কার্ডের ঠিক নিচে বসবে */
+            left: 0;
+            right: 0;
+            z-index: 20;
+        }
+
+        /* ডাউনলোডের সময় ব্যাকগ্রাউন্ড কালো করার জন্য স্পেশাল ক্লাস */
+        .export-mode {
+            padding: 40px !important;
+            background-color: #0a0e17 !important;
+            border-radius: 15px !important;
+            margin-bottom: 0 !important;
+        }
+    </style>
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            // 🔥 জুম আটকানোর ম্যাজিক কোড 🔥
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); }
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+            
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey) event.preventDefault();
+            }, { passive: false });
+        })();
+    </script>
+    
+    <style>
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            user-select: auto;
+        }
+    </style>
+
+    <script>
+        window.oncontextmenu = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        };
+    </script>
+    </head>
+
+<body style="touch-action: pan-y;">
+
+    <div class="fixed-top-area">
+        <h1 class="brand-title">
+            <i class="fa-solid fa-id-card"></i> 
+            <span class="lang-en">CARD MAKER</span><span class="lang-bn">কার্ড মেকার</span>
+        </h1>
+        
+        <div class="category-scroll-wrapper">
+            <div class="cat-box active" style="--cat-rgb: 255, 195, 36;" onclick="setCategory('normal', this)">Normal</div>
+            <div class="cat-box" style="--cat-rgb: 255, 214, 107;" onclick="setCategory('champion', this)">Champion</div>
+            <div class="cat-box" style="--cat-rgb: 236, 232, 217;" onclick="setCategory('classic', this)">Classic</div>
+            <div class="cat-box" style="--cat-rgb: 24, 140, 75;" onclick="setCategory('to25', this)">Team of 2025</div>
+            <div class="cat-box" style="--cat-rgb: 175, 122, 255;" onclick="setCategory('ds25', this)">Dream Star 2025</div>
+            <div class="cat-box" style="--cat-rgb: 219, 56, 227;" onclick="setCategory('ds26', this)">Dream Star 2026</div>
+            <div class="cat-box" style="--cat-rgb: 232, 25, 104;" onclick="setCategory('kickoff', this)">Kickoff Star</div>
+            <div class="cat-box" style="--cat-rgb: 196, 18, 25;" onclick="setCategory('dynamic', this)">Dynamic Star</div>
+            <div class="cat-box" style="--cat-rgb: 218, 165, 32;" onclick="setCategory('wch', this)">World Cup Heroes</div>
+        </div>
+    </div>
+
+    <div class="scrollable-content">
+        <div class="main-container">
+            
+            <div class="preview-zone" id="export-card-box">
+                <div class="card-canvas-area" id="card-canvas-area">
+                    <img id="base-bg" src="stats_bg.png" alt="Base Background">
+                    <img id="card-img" src="leg_unmax.png" alt="DLS Card">
+                    <img id="player-photo" src="" alt="Player">
+
+                    <div id="c-fullname" class="c-text">NEXTGEN DLS</div>
+                    <div id="c-height-foot" class="c-text">178cm Right</div>
+                    <div id="c-ovr" class="c-text">82</div>
+                    <div id="c-nickname" class="c-text">NEXTGEN</div>
+                    <div id="c-pos" class="c-text">AM</div>
+                    <img id="c-flag" src="https://flagcdn.com/w80/bd.png" alt="Flag"> 
+                    <img id="c-energy" src="34287.png" alt="Energy" style="display: none; position: absolute; z-index: 5; top: 70.74%; left: 77.5%; transform: translate(-50%, -50%); width: 56.8px !important; height: 59px !important;">
+
+                    <div id="c-year" class="c-text"></div> <div id="c-price" class="c-text">2,085 🪙</div>
+
+                    <div id="c-spe" class="c-stat-val">99</div>
+                    <div id="c-acc" class="c-stat-val">99</div>
+                    <div id="c-sta" class="c-stat-val">99</div>
+                    <div id="c-str" class="c-stat-val">99</div>
+                    <div id="c-con" class="c-stat-val">99</div>
+                    <div id="c-pas" class="c-stat-val">99</div>
+                    <div id="c-sho" class="c-stat-val">99</div>
+                    <div id="c-tac" class="c-stat-val">99</div>
+                    
+                    <div id="dl-watermark">CREATED VIA NEXTGEN DLS</div>
+                </div>
+                
+                <div class="photo-controls-inline" id="photo-controls-inline">
+                    <div class="module-header" style="margin-bottom: 10px; font-size: 12px;">
+                        <i class="fa-solid fa-crop-simple"></i> <span class="lang-en">PHOTO CONTROLS</span><span class="lang-bn">ফটো কন্ট্রোলস</span>
+                    </div>
+                    <div class="ctrl-row">
+                        <span class="ctrl-label"><i class="fa-solid fa-arrows-left-right"></i> L/R</span>
+                        <div class="ctrl-btn-group">
+                            <button class="btn-sm" onclick="moveX(-2)">-</button><span class="ctrl-val" id="val-x">0</span><button class="btn-sm" onclick="moveX(2)">+</button>
+                        </div>
+                    </div>
+                    <div class="ctrl-row">
+                        <span class="ctrl-label"><i class="fa-solid fa-arrows-up-down"></i> U/D</span>
+                        <div class="ctrl-btn-group">
+                            <button class="btn-sm" onclick="moveY(-2)">-</button><span class="ctrl-val" id="val-y">0</span><button class="btn-sm" onclick="moveY(2)">+</button>
+                        </div>
+                    </div>
+                    <div class="ctrl-row">
+                        <span class="ctrl-label"><i class="fa-solid fa-magnifying-glass-plus"></i> Size</span>
+                        <div class="ctrl-btn-group">
+                            <button class="btn-sm" onclick="scaleImg(-0.02)">-</button><span class="ctrl-val" id="val-s">1.0</span><button class="btn-sm" onclick="scaleImg(0.02)">+</button>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; width: 100%;">
+                        <button class="btn-reset" style="background-color: #ff4d4d; color: white; flex: 1; padding: 10px 5px;" onclick="cancelPhotoUpload()">
+                            <i class="fa-solid fa-xmark"></i>
+                            <span class="lang-en">Cancel</span>
+                            <span class="lang-bn">বাতিল</span>
+                        </button>
+                        <button class="btn-reset" style="background-color: #6c757d; color: white; flex: 1; padding: 10px 5px;" onclick="resetPhotoPosition()">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span class="lang-en">Reset</span>
+                            <span class="lang-bn">রিসেট</span>
+                        </button>
+                        <button class="btn-reset" style="background-color: #4CAF50; color: white; flex: 1; padding: 10px 5px;" onclick="resetPhoto()">
+                            <i class="fa-solid fa-check"></i>
+                            <span class="lang-en">Done</span>
+                            <span class="lang-bn">সম্পন্ন</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 10px;">
+                <a href="https://www.remove.bg/upload" target="_blank" style="display: inline-block; background-color: #f26e22; color: white; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: bold; border: 1px solid #f26e22;">
+                    <i class="fa-solid fa-eraser"></i> 
+                    <span class="lang-en">Remove Background</span>
+                    <span class="lang-bn">ব্যাকগ্রাউন্ড রিমুভ</span>
+                </a>
+            </div>
+
+            <button class="btn-upload" onclick="document.getElementById('upload-img').click()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> <span class="lang-en">UPLOAD PLAYER PHOTO</span><span class="lang-bn">প্লেয়ার ছবি আপলোড করুন</span>
+            </button>
+            <input type="file" id="upload-img" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+
+            <div class="module-box">
+                <div class="module-header"><i class="fa-solid fa-fingerprint"></i> <span class="lang-en">PLAYER IDENTITY</span><span class="lang-bn">খেলোয়াড় পরিচিতি</span></div>
+                <div class="flex-row" style="margin-bottom: 15px;">
+                    <div class="input-wrap"><label><span class="lang-en">First Name</span><span class="lang-bn">নামের প্রথমাংশ</span></label><input type="text" class="custom-input" id="input-fname" value="NEXTGEN" oninput="updateDetails()"></div>
+                    <div class="input-wrap"><label><span class="lang-en">Last Name</span><span class="lang-bn">নামের শেষাংশ</span></label><input type="text" class="custom-input" id="input-lname" value="DLS" oninput="updateDetails()"></div>
+                </div>
+                <div class="flex-row">
+                    <div class="input-wrap"><label><span class="lang-en">Nickname (On Card)</span><span class="lang-bn">ডাকনাম (কার্ডে)</span></label><input type="text" class="custom-input" id="input-nickname" value="NEXTGEN" oninput="updateDetails()"></div>
+                    <div class="input-wrap">
+                        <label><span class="lang-en">Position</span><span class="lang-bn">পজিশন</span></label>
+                        <select class="custom-input" id="input-pos" onchange="updateDetails()">
+                            <option>CF</option><option>SS</option><option>RW</option><option>LW</option>
+                            <option selected>AM</option><option>RM</option><option>LM</option><option>CM</option>
+                            <option>DM</option><option>RWB</option><option>LWB</option><option>RB</option>
+                            <option>LB</option><option>CB</option><option>GK</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-wrap" style="margin-top: 15px; margin-bottom: 0;">
+                    <label><span class="lang-en">Overall Rating (OVR)</span><span class="lang-bn">ওভারঅল রেটিং (OVR)</span></label>
+                    <div class="stat-row" style="margin-bottom: 0;"><input type="range" class="stat-range" id="r-ovr" min="10" max="100" value="82" oninput="uOVR(this.value)"><span class="stat-score" id="v-ovr" style="font-size: 20px;">82</span></div>
+                </div>
+            </div>
+
+            <div class="module-box">
+                <div class="module-header"><i class="fa-solid fa-palette"></i> <span class="lang-en">CARD APPEARANCE</span><span class="lang-bn">কার্ডের আউটলুক</span></div>
+                <div class="toggle-box">
+                    <span class="toggle-text"><span class="lang-en">Max Card Design</span><span class="lang-bn">ম্যাক্স কার্ড ডিজাইন</span></span>
+                    <label class="switch"><input type="checkbox" id="max-toggle" onchange="updateCardBg()"><span class="slider"></span></label>
+                </div>
+                <div class="input-wrap" id="year-input-box" style="display: none; margin-bottom: 15px;">
+                    <label><span class="lang-en">Card Year (For Special Cards)</span><span class="lang-bn">কার্ডের সাল (স্পেশাল কার্ডের জন্য)</span></label>
+                    <input type="text" class="custom-input" id="input-year" placeholder="e.g. 2025 or 2026" oninput="updateDetails()">
+                </div>
+
+                <div class="flex-row" style="margin-top: 15px;">
+                    <div class="input-wrap"><label><span class="lang-en">Height (CM)</span><span class="lang-bn">উচ্চতা (CM)</span></label><input type="number" class="custom-input" id="input-height" value="178" oninput="updateDetails()"></div>
+                    <div class="input-wrap"><label><span class="lang-en">Foot</span><span class="lang-bn">পায়ের ধরন</span></label><select class="custom-input" id="input-foot" onchange="updateDetails()"><option selected>Right</option><option>Left</option><option>Both</option></select></div>
+                </div>
+                <div class="input-wrap" style="margin-top: 15px;">
+                    <label><span class="lang-en">Country (e.g. Bangladesh or BAN)</span><span class="lang-bn">দেশ (যেমন: Bangladesh বা BAN)</span></label>
+                    <input type="text" class="custom-input" id="input-country" value="Bangladesh" oninput="updateDetails()">
+                </div>
+            </div>
+
+            <div class="module-box">
+                <div class="module-header"><i class="fa-solid fa-chart-simple"></i> <span class="lang-en">ATTRIBUTES</span><span class="lang-bn">অ্যাট্রিবিউটস</span></div>
+                <div class="stat-row"><span class="stat-label">SPE</span><input type="range" class="stat-range" id="r-spe" min="10" max="100" value="74" oninput="uS('spe', this.value)"><span class="stat-score" id="v-spe">74</span></div>
+                <div class="stat-row"><span class="stat-label">ACC</span><input type="range" class="stat-range" id="r-acc" min="10" max="100" value="77" oninput="uS('acc', this.value)"><span class="stat-score" id="v-acc">77</span></div>
+                <div class="stat-row"><span class="stat-label">STA</span><input type="range" class="stat-range" id="r-sta" min="10" max="100" value="83" oninput="uS('sta', this.value)"><span class="stat-score" id="v-sta">83</span></div>
+                <div class="stat-row"><span class="stat-label">STR</span><input type="range" class="stat-range" id="r-str" min="10" max="100" value="69" oninput="uS('str', this.value)"><span class="stat-score" id="v-str">69</span></div>
+                <div class="stat-row"><span class="stat-label">CON</span><input type="range" class="stat-range" id="r-con" min="10" max="100" value="83" oninput="uS('con', this.value)"><span class="stat-score" id="v-con">83</span></div>
+                <div class="stat-row"><span class="stat-label">PAS</span><input type="range" class="stat-range" id="r-pas" min="10" max="100" value="86" oninput="uS('pas', this.value)"><span class="stat-score" id="v-pas">86</span></div>
+                <div class="stat-row"><span class="stat-label">SHO</span><input type="range" class="stat-range" id="r-sho" min="10" max="100" value="77" oninput="uS('sho', this.value)"><span class="stat-score" id="v-sho">77</span></div>
+                <div class="stat-row"><span class="stat-label">TAC</span><input type="range" class="stat-range" id="r-tac" min="10" max="100" value="74" oninput="uS('tac', this.value)"><span class="stat-score" id="v-tac">74</span></div>
+            </div>
+
+            <div class="module-box">
+                <div class="module-header"><i class="fa-solid fa-coins"></i> <span class="lang-en">ECONOMY DETAILS</span><span class="lang-bn">ইকোনোমি ডিটেইলস</span></div>
+                <div class="toggle-box" style="margin-bottom: 15px;">
+                    <span class="toggle-text"><span class="lang-en">Show Price on Card</span><span class="lang-bn">কার্ডে দাম দেখান</span></span>
+                    <label class="switch"><input type="checkbox" id="price-toggle" checked onchange="togglePrice()"><span class="slider"></span></label>
+                </div>
+                <div class="input-wrap"><label><span class="lang-en">Card Price</span><span class="lang-bn">কার্ডের দাম</span></label><input type="number" class="custom-input" id="input-price" value="2085" oninput="updateDetails()"></div>
+            </div>
+            
+            <div style="background: var(--input-bg); border: 1px solid var(--border-line); border-radius: 12px; padding: 15px; margin-top: 15px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: var(--text-light); font-size: 14px; font-weight: bold;">
+                        <i class="fa-solid fa-bolt" style="color: #f97316; margin-right: 8px;"></i>
+                        <span class="lang-en">Show Energy on Card</span><span class="lang-bn">কার্ডে এনার্জি দেখান</span>
+                    </span>
+                    <label class="switch" style="margin: 0;">
+                        <input type="checkbox" id="energy-toggle" onchange="toggleEnergy()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-generate" onclick="downloadCard()">
+                <i class="fa-solid fa-download"></i> <span class="lang-en">GENERATE HD CARD</span><span class="lang-bn">এইচডি কার্ড জেনারেট করুন</span>
+            </button>
+
+        </div>
+    </div>
+
+    <script>
+        const flagsDB = {
+            "Afghanistan": "af", "AFG": "af", "Albania": "al", "ALB": "al", "Algeria": "dz", "ALG": "dz",
+            "Andorra": "ad", "AND": "ad", "Angola": "ao", "ANG": "ao", "Antigua and Barbuda": "ag", "ATG": "ag",
+            "Argentina": "ar", "ARG": "ar", "Armenia": "am", "ARM": "am", "Australia": "au", "AUS": "au",
+            "Austria": "at", "AUT": "at", "Azerbaijan": "az", "AZE": "az", "Bahamas": "bs", "BAH": "bs",
+            "Bahrain": "bh", "BHR": "bh", "Bangladesh": "bd", "BAN": "bd", "Barbados": "bb", "BRB": "bb",
+            "Belarus": "by", "BLR": "by", "Belgium": "be", "BEL": "be", "Belize": "bz", "BLZ": "bz",
+            "Benin": "bj", "BEN": "bj", "Bhutan": "bt", "BHU": "bt", "Bolivia": "bo", "BOL": "bo",
+            "Bosnia and Herzegovina": "ba", "BIH": "ba", "Botswana": "bw", "BOT": "bw", "Brazil": "br", "BRA": "br",
+            "Brunei": "bn", "BRU": "bn", "Bulgaria": "bg", "BUL": "bg", "Burkina Faso": "bf", "BFA": "bf",
+            "Burundi": "bi", "BDI": "bi", "Cambodia": "kh", "CAM": "kh", "Cameroon": "cm", "CMR": "cm",
+            "Canada": "ca", "CAN": "ca", "Cape Verde": "cv", "CPV": "cv", "Central African Republic": "cf", "CTA": "cf",
+            "Chad": "td", "CHA": "td", "Chile": "cl", "CHI": "cl", "China": "cn", "CHN": "cn",
+            "Colombia": "co", "COL": "co", "Comoros": "km", "COM": "km", "Congo": "cg", "CGO": "cg",
+            "Costa Rica": "cr", "CRC": "cr", "Croatia": "hr", "CRO": "hr", "Cuba": "cu", "CUB": "cu",
+            "Cyprus": "cy", "CYP": "cy", "Czech Republic": "cz", "CZE": "cz", "Denmark": "dk", "DEN": "dk",
+            "Djibouti": "dj", "DJI": "dj", "Dominica": "dm", "DMA": "dm", "Dominican Republic": "do", "DOM": "do",
+            "Ecuador": "ec", "ECU": "ec", "Egypt": "eg", "EGY": "eg", "El Salvador": "sv", "SLV": "sv",
+            "Equatorial Guinea": "gq", "EQG": "gq", "Eritrea": "er", "ERI": "er", "Estonia": "ee", "EST": "ee",
+            "Eswatini": "sz", "SWZ": "sz", "Ethiopia": "et", "ETH": "et", "Fiji": "fj", "FIJ": "fj",
+            "Finland": "fi", "FIN": "fi", "France": "fr", "FRA": "fr", "Gabon": "ga", "GAB": "ga",
+            "Gambia": "gm", "GAM": "gm", "Georgia": "ge", "GEO": "ge", "Germany": "de", "GER": "de",
+            "Ghana": "gh", "GHA": "gh", "Greece": "gr", "GRE": "gr", "Grenada": "gd", "GRN": "gd",
+            "Guatemala": "gt", "GUA": "gt", "Guinea": "gn", "GUI": "gn", "Guinea-Bissau": "gw", "GNB": "gw",
+            "Guyana": "gy", "GUY": "gy", "Haiti": "ht", "HAI": "ht", "Honduras": "hn", "HON": "hn",
+            "Hungary": "hu", "HUN": "hu", "Iceland": "is", "ISL": "is", "India": "in", "IND": "in",
+            "Indonesia": "id", "IDN": "id", "Iran": "ir", "IRN": "ir", "Iraq": "iq", "IRQ": "iq",
+            "Ireland": "ie", "IRL": "ie", "Israel": "il", "ISR": "il", "Italy": "it", "ITA": "it",
+            "Ivory Coast": "ci", "CIV": "ci", "Jamaica": "jm", "JAM": "jm", "Japan": "jp", "JPN": "jp",
+            "Jordan": "jo", "JOR": "jo", "Kazakhstan": "kz", "KAZ": "kz", "Kenya": "ke", "KEN": "ke",
+            "Kiribati": "ki", "KIR": "ki", "Kosovo": "xk", "KOS": "xk", "Kuwait": "kw", "KUW": "kw",
+            "Kyrgyzstan": "kg", "KGZ": "kg", "Laos": "la", "LAO": "la", "Latvia": "lv", "LVA": "lv",
+            "Lebanon": "lb", "LBN": "lb", "Lesotho": "ls", "LES": "ls", "Liberia": "lr", "LBR": "lr",
+            "Libya": "ly", "LBY": "ly", "Liechtenstein": "li", "LIE": "li", "Lithuania": "lt", "LTU": "lt",
+            "Luxembourg": "lu", "LUX": "lu", "Madagascar": "mg", "MAD": "mg", "Malawi": "mw", "MAW": "mw",
+            "Malaysia": "my", "MAS": "my", "Maldives": "mv", "MDV": "mv", "Mali": "ml", "MLI": "ml",
+            "Malta": "mt", "MLT": "mt", "Marshall Islands": "mh", "MHL": "mh", "Mauritania": "mr", "MTN": "mr",
+            "Mauritius": "mu", "MRI": "mu", "Mexico": "mx", "MEX": "mx", "Micronesia": "fm", "FSM": "fm",
+            "Moldova": "md", "MDA": "md", "Monaco": "mc", "MON": "mc", "Mongolia": "mn", "MNG": "mn",
+            "Montenegro": "me", "MNE": "me", "Morocco": "ma", "MAR": "ma", "Mozambique": "mz", "MOZ": "mz",
+            "Myanmar": "mm", "MYA": "mm", "Namibia": "na", "NAM": "na", "Nauru": "nr", "NRU": "nr",
+            "Nepal": "np", "NEP": "np", "Netherlands": "nl", "NED": "nl", "HOL": "nl", "New Zealand": "nz", "NZL": "nz",
+            "Nicaragua": "ni", "NCA": "ni", "Niger": "ne", "NIG": "ne", "Nigeria": "ng", "NGA": "ng",
+            "North Korea": "kp", "PRK": "kp", "North Macedonia": "mk", "MKD": "mk", "Norway": "no", "NOR": "no",
+            "Oman": "om", "OMA": "om", "Pakistan": "pk", "PAK": "pk", "Palau": "pw", "PLW": "pw",
+            "Palestine": "ps", "PLE": "ps", "Panama": "pa", "PAN": "pa", "Papua New Guinea": "pg", "PNG": "pg",
+            "Paraguay": "py", "PAR": "py", "Peru": "pe", "PER": "pe", "Philippines": "ph", "PHI": "ph",
+            "Poland": "pl", "POL": "pl", "Portugal": "pt", "POR": "pt", "Qatar": "qa", "QAT": "qa",
+            "Romania": "ro", "ROU": "ro", "Russia": "ru", "RUS": "ru", "Rwanda": "rw", "RWA": "rw",
+            "Saint Kitts and Nevis": "kn", "SKN": "kn", "Saint Lucia": "lc", "LCA": "lc", "Saint Vincent": "vc", "VIN": "vc",
+            "Samoa": "ws", "SAM": "ws", "San Marino": "sm", "SMR": "sm", "Sao Tome and Principe": "st", "STP": "st",
+            "Saudi Arabia": "sa", "KSA": "sa", "Senegal": "sn", "SEN": "sn", "Serbia": "rs", "SRB": "rs",
+            "Seychelles": "sc", "SEY": "sc", "Sierra Leone": "sl", "SLE": "sl", "Singapore": "sg", "SIN": "sg",
+            "Slovakia": "sk", "SVK": "sk", "Slovenia": "si", "SVN": "si", "Solomon Islands": "sb", "SOL": "sb",
+            "Somalia": "so", "SOM": "so", "South Africa": "za", "RSA": "za", "South Korea": "kr", "KOR": "kr",
+            "South Sudan": "ss", "SSD": "ss", "Spain": "es", "ESP": "es", "Sri Lanka": "lk", "SRI": "lk",
+            "Sudan": "sd", "SDN": "sd", "Suriname": "sr", "SUR": "sr", "Sweden": "se", "SWE": "se",
+            "Switzerland": "ch", "SUI": "ch", "Syria": "sy", "SYR": "sy", "Taiwan": "tw", "TPE": "tw",
+            "Tajikistan": "tj", "TJK": "tj", "Tanzania": "tz", "TAN": "tz", "Thailand": "th", "THA": "th",
+            "Timor-Leste": "tl", "TLS": "tl", "Togo": "tg", "TOG": "tg", "Tonga": "to", "TGA": "to",
+            "Trinidad and Tobago": "tt", "TRI": "tt", "Tunisia": "tn", "TUN": "tn", "Turkey": "tr", "TUR": "tr",
+            "Turkmenistan": "tm", "TKM": "tm", "Tuvalu": "tv", "TUV": "tv", "Uganda": "ug", "UGA": "ug",
+            "Ukraine": "ua", "UKR": "ua", "United Arab Emirates": "ae", "UAE": "ae", 
+            "United States": "us", "USA": "us", "Uruguay": "uy", "URU": "uy", "Uzbekistan": "uz", "UZB": "uz",
+            "Vanuatu": "vu", "VAN": "vu", "Vatican City": "va", "VAT": "va", "Venezuela": "ve", "VEN": "ve",
+            "Vietnam": "vn", "VIE": "vn", "Yemen": "ye", "YEM": "ye", "Zambia": "zm", "ZAM": "zm",
+            "Zimbabwe": "zw", "ZIM": "zw",
+            "England": "gb-eng", "ENG": "gb-eng", "Wales": "gb-wls", "WAL": "gb-wls",
+            "Scotland": "gb-sct", "SCO": "gb-sct", "Northern Ireland": "gb-nir", "NIR": "gb-nir"
+        };
+
+        let currentCat = 'normal'; 
+
+        function setCategory(catName, el) {
+            currentCat = catName;
+            
+            document.querySelectorAll('.cat-box').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            
+            let yearInputBox = document.getElementById('year-input-box');
+            let cYear = document.getElementById('c-year');
+            let inputYear = document.getElementById('input-year');
+
+            if(catName === 'normal') {
+                if(yearInputBox) yearInputBox.style.display = 'none';
+                if(cYear) cYear.style.display = 'none';
+            } else {
+                if(yearInputBox) yearInputBox.style.display = 'block';
+                if(inputYear && cYear) {
+                    if(inputYear.value.trim() !== '') {
+                        cYear.style.display = 'block';
+                    } else {
+                        cYear.style.display = 'none';
+                    }
+                }
+            }
+            if(typeof updateCardBg === 'function') updateCardBg();
+        }
+
+        let pX = 80, pY = 35, pS = 1.0, pW = 35;
+        
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgEl = document.getElementById('player-photo');
+                    imgEl.src = e.target.result;
+                    imgEl.style.display = 'block';
+                    const inlineControls = document.getElementById('photo-controls-inline');
+                    if(inlineControls) inlineControls.style.display = 'block';
+                    applyPhotoTransform();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function applyPhotoTransform() {
+            const imgEl = document.getElementById('player-photo');
+            imgEl.style.left = pX + '%'; imgEl.style.top = pY + '%'; imgEl.style.width = pW + '%';
+            imgEl.style.transform = `translate(-50%, -50%) scale(${pS})`;
+            document.getElementById('val-x').innerText = (pX - 78);
+            document.getElementById('val-y').innerText = (pY - 35);
+            document.getElementById('val-s').innerText = pS.toFixed(2);
+        }
+        
+        function moveX(val) { pX += val; applyPhotoTransform(); }
+        function moveY(val) { pY += val; applyPhotoTransform(); }
+        function scaleImg(val) { pS += val; applyPhotoTransform(); }
+        
+        function resetPhoto() { 
+            const inlineControls = document.getElementById('photo-controls-inline');
+            if(inlineControls) inlineControls.style.display = 'none';
+        }
+
+        function resetPhotoPosition() {
+            pX = 80; pY = 35; pS = 1.0; 
+            if (typeof applyPhotoTransform === "function") { applyPhotoTransform(); }
+        }
+
+        function cancelPhotoUpload() {
+            resetPhotoPosition(); 
+            let inlineControls = document.getElementById('photo-controls-inline');
+            if(inlineControls) inlineControls.style.display = 'none';
+            let uploadInput = document.getElementById('upload-img');
+            if (uploadInput) uploadInput.value = '';
+            let playerImage = document.getElementById('player-photo'); 
+            if (playerImage) { playerImage.src = ''; playerImage.style.display = 'none'; }
+        }
+
+        document.addEventListener('click', function(event) {
+            if (event.target && event.target.id === 'player-photo') {
+                if (event.target.src && event.target.src !== '') {
+                    let inlineControls = document.getElementById('photo-controls-inline');
+                    if (inlineControls) { inlineControls.style.display = 'block'; }
+                }
+            }
+        });
+
+        function getHexColor(val) {
+            if(val >= 90) return '#00f2ea'; if(val >= 80) return '#22c55e';
+            if(val >= 70) return '#facc15'; if(val >= 60) return '#f97316'; return '#ef4444';
+        }
+
+        function togglePrice() {
+            let isChecked = document.getElementById('price-toggle').checked;
+            document.getElementById('c-price').style.display = isChecked ? 'block' : 'none';
+        }
+
+        function toggleEnergy() {
+            let isChecked = document.getElementById('energy-toggle').checked;
+            let energyEl = document.getElementById('c-energy');
+            let flagEl = document.getElementById('c-flag');
+            let posEl = document.getElementById('c-pos');
+
+            if(isChecked) {
+                if(energyEl) energyEl.style.display = 'block';
+                if(flagEl) flagEl.style.left = '68.6%'; 
+                if(posEl) posEl.style.left = '86.6%';  
+            } else {
+                if(energyEl) energyEl.style.display = 'none';
+                if(flagEl) flagEl.style.left = '73.5%'; 
+                if(posEl) posEl.style.left = '81.6%';  
+            }
+        }
+
+        function updateCardBg() {
+            let ovrEl = document.getElementById('r-ovr');
+            let ovr = ovrEl ? parseInt(ovrEl.value) : 82;
+            let maxToggle = document.getElementById('max-toggle');
+            let isMax = maxToggle ? maxToggle.checked : false;
+            let cardType = "com";
+            let fileName = "";
+            
+            let baseBgEl = document.getElementById('base-bg'); 
+            let pZone = document.querySelector('.preview-zone');
+            
+            const allCatClasses = ['cat-dynamic', 'cat-champion', 'cat-classic', 'cat-to25', 'cat-ds26', 'cat-ds25', 'cat-kickoff', 'cat-wch'];
+
+            if (currentCat === 'normal') {
+                if (isMax) {
+                    if (ovr >= 90) { cardType = "leg"; } 
+                    else if (ovr >= 80) { cardType = "rare"; } 
+                    else { cardType = "com"; }
+                } else {
+                    if (ovr >= 90) { cardType = "leg90"; } 
+                    else if (ovr >= 80) { cardType = "leg"; } 
+                    else if (ovr >= 70) { cardType = "rare"; } 
+                    else { cardType = "com"; }
+                }
+                fileName = cardType + "_" + (isMax ? "max" : "unmax") + ".png";
+                
+                if(pZone) {
+                    pZone.classList.remove('sp-theme'); 
+                    allCatClasses.forEach(cls => pZone.classList.remove(cls)); 
+                }
+                if(baseBgEl) baseBgEl.src = 'stats_bg.png'; 
+                
+            } else {
+                if (ovr >= 90) { cardType = "leg"; } 
+                else if (ovr >= 80) { cardType = "rare"; } 
+                else { cardType = "com"; }
+                
+                fileName = currentCat + "_" + cardType + "_" + (isMax ? "max" : "unmax") + ".png";
+                
+                if(pZone) {
+                    pZone.classList.add('sp-theme'); 
+                    allCatClasses.forEach(cls => pZone.classList.remove(cls));
+                    pZone.classList.add(`cat-${currentCat}`); 
+                }
+                
+                if(baseBgEl) baseBgEl.src = 'special_blank.png'; 
+            }
+            
+            let cardImgEl = document.getElementById('card-img');
+            if(cardImgEl) cardImgEl.src = fileName; 
+            
+            let ovrTextEl = document.getElementById('c-ovr');
+            if(ovrTextEl) {
+                if (isMax && currentCat === 'normal') {
+                    ovrTextEl.style.fontSize = 'clamp(16px, 2.3vw, 26px)'; 
+                    ovrTextEl.style.top = '29%';  
+                    ovrTextEl.style.left = '68.3%'; 
+                } else {
+                    ovrTextEl.style.fontSize = 'clamp(17px, 3.2vw, 27px)'; 
+                    ovrTextEl.style.top = '29.3%';  
+                    ovrTextEl.style.left = '68.3%'; 
+                }
+            }
+        }
+
+        function updateDetails() {
+            let fName = document.getElementById('input-fname').value;
+            let lName = document.getElementById('input-lname').value;
+            document.getElementById('c-fullname').innerText = fName + " " + lName;
+            document.getElementById('c-nickname').innerText = document.getElementById('input-nickname').value;
+            
+            let yearEl = document.getElementById('c-year');
+            let inputYearEl = document.getElementById('input-year');
+            if(yearEl && inputYearEl) {
+                yearEl.innerText = inputYearEl.value;
+                if(typeof currentCat !== 'undefined' && currentCat !== 'normal' && inputYearEl.value.trim() !== '') { 
+                    yearEl.style.display = 'block'; 
+                } else { 
+                    yearEl.style.display = 'none'; 
+                }
+            }
+
+            let inputCountry = document.getElementById('input-country').value.trim();
+            let matchKey = inputCountry.length === 3 ? inputCountry.toUpperCase() : 
+                           (inputCountry.charAt(0).toUpperCase() + inputCountry.slice(1).toLowerCase());
+            let flagCode = flagsDB[matchKey] || "un"; 
+            
+            let flagEl = document.getElementById('c-flag');
+            if(flagEl) flagEl.src = `https://flagcdn.com/w80/${flagCode}.png`;
+
+            let height = document.getElementById('input-height').value;
+            let foot = document.getElementById('input-foot').value;
+            let heightFootEl = document.getElementById('c-height-foot');
+            if(heightFootEl) {
+                heightFootEl.innerHTML = '<span class="val-num">' + height + '</span><span class="unit-cm">cm</span> <span class="foot-side">' + foot + '</span>';
+            }
+
+            let price = document.getElementById('input-price').value;
+            let priceEl = document.getElementById('c-price');
+            if(priceEl) {
+                priceEl.innerHTML = Number(price).toLocaleString('en-US') + ' <img src="coin.png" style="width: 26px; position: relative; top: 3.5px; left: -1px;">';
+            }
+
+            let posEl = document.getElementById('c-pos');
+            let posVal = document.getElementById('input-pos').value;
+            if(posEl) {
+                posEl.innerText = posVal;
+                
+                let posBgColor = '#FFC600'; 
+                let posTextColor = '#000000'; 
+
+                if(['GK'].includes(posVal)) {
+                    posBgColor = '#18A1FF'; posTextColor = '#ffffff'; 
+                } else if(['CB', 'LB', 'RB', 'LWB', 'RWB'].includes(posVal)) {
+                    posBgColor = '#3BE34D'; posTextColor = '#000000'; 
+                } else if(['CF', 'SS', 'RW', 'LW'].includes(posVal)) {
+                    posBgColor = '#FE3939'; posTextColor = '#ffffff'; 
+                } else if(['CM', 'DM', 'AM', 'LM', 'RM'].includes(posVal)) {
+                    posBgColor = '#FFC600'; posTextColor = '#000000'; 
+                }
+                
+                posEl.style.backgroundColor = posBgColor;
+                posEl.style.color = posTextColor;
+
+                posEl.style.transform = 'translate(-50%, -50%)';
+                if(flagEl) flagEl.style.transform = 'translate(-50%, -50%)';
+                
+                posEl.style.top = '70.5%';
+                if(flagEl) flagEl.style.top = '70.5%';
+                
+                if(flagEl) {
+                    flagEl.style.width = '21px';
+                    flagEl.style.height = '13.4px'; 
+                }
+
+                if(posVal.length === 3) {
+                    if(flagEl) flagEl.style.left = '73.5%';
+                    posEl.style.left = '81.6%';  
+                    posEl.style.fontSize = '10px'; 
+                    posEl.style.width = '22px';   
+                    posEl.style.height = '14px';  
+                } else {
+                    if(flagEl) flagEl.style.left = '73.5%'; 
+                    posEl.style.left = '81.6%';    
+                    posEl.style.fontSize = '13px'; 
+                    posEl.style.width = '22px';   
+                    posEl.style.height = '14px';  
+                }
+            }
+            if(document.getElementById('energy-toggle')) {
+                toggleEnergy();
+            }
+        }
+
+        function uS(id, val) {
+            let color = getHexColor(val);
+            let vEl = document.getElementById('v-' + id);
+            let rEl = document.getElementById('r-' + id);
+            let cEl = document.getElementById('c-' + id);
+            if(vEl) { vEl.innerText = val; vEl.style.color = color; }
+            if(rEl) { rEl.style.accentColor = color; }
+            if(cEl) { cEl.innerText = val; cEl.style.color = color; }
+        }
+        
+        function uOVR(val) {
+            let color = getHexColor(val);
+            let vOvr = document.getElementById('v-ovr');
+            let rOvr = document.getElementById('r-ovr');
+            let cOvr = document.getElementById('c-ovr');
+            
+            if(vOvr) { vOvr.innerText = val; vOvr.style.color = color; }
+            if(rOvr) { rOvr.style.accentColor = color; }
+            if(cOvr) { cOvr.innerText = val; cOvr.style.color = '#ffffff'; }
+            
+            if(typeof updateCardBg === 'function') updateCardBg();
+        }
+
+        // 🔥 এইচডি কোয়ালিটিতে কার্ড ডাউনলোড করার মাস্টার ফাংশন 🔥
+        function downloadCard() {
+            window.scrollTo(0, 0); // স্ক্রল পজিশন টপে নেওয়া হলো যাতে কার্ড না কাটে
+            const cardArea = document.getElementById('card-canvas-area');
+            const watermark = document.getElementById('dl-watermark');
+            const exportBox = document.getElementById('export-card-box');
+            
+            // ডাউনলোডের সময় ব্যাকগ্রাউন্ড কালো এবং ওয়াটারমার্ক শো করা
+            exportBox.classList.add('export-mode');
+            watermark.style.display = 'block';
+
+            setTimeout(() => {
+                html2canvas(cardArea, { 
+                    backgroundColor: '#0a0e17', // পারফেক্ট ব্ল্যাক ব্যাকগ্রাউন্ড
+                    scale: 3, // সুপার HD কোয়ালিটি
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false
+                }).then(canvas => {
+                    let link = document.createElement('a');
+                    link.download = 'NextGen_DLS_Card.png';
+                    link.href = canvas.toDataURL('image/png', 1.0); 
+                    link.click();
+                    
+                    // ডাউনলোড শেষে আবার আগের অবস্থায় ফিরিয়ে আনা
+                    exportBox.classList.remove('export-mode');
+                    watermark.style.display = 'none';
+                }).catch(err => {
+                    console.error("ডাউনলোড এরর: ", err);
+                    alert("ডাউনলোড ফেইল হয়েছে। আপনার ব্রাউজারে পারমিশন চেক করুন।");
+                    exportBox.classList.remove('export-mode');
+                    watermark.style.display = 'none';
+                });
+            }, 100); 
+        }
+
+        window.onload = function() {
+            document.getElementById('input-year').value = "2026";
+            let rOvr = document.getElementById('r-ovr');
+            if(rOvr) uOVR(rOvr.value);
+            updateDetails();
+            if(typeof updateCardBg === 'function') updateCardBg();
+            if(typeof togglePrice === 'function') togglePrice();
+            const stats = ['spe', 'acc', 'sta', 'str', 'con', 'pas', 'sho', 'tac'];
+            stats.forEach(s => {
+                let rEl = document.getElementById('r-' + s);
+                if(rEl) uS(s, rEl.value);
+            });
+        };
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark" data-lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NextGen DLS - Formations Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            // 🔥 জুম আটকানোর ম্যাজিক কোড 🔥
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); } 
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); } 
+                lastTouchEnd = now;
+            }, false);
+            
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey) event.preventDefault(); 
+            }, { passive: false });
+
+            // 🔥 সার্চ বক্সে Null প্রবলেম ফিক্স করার ম্যাজিক 🔥
+            document.addEventListener("DOMContentLoaded", function() {
+                let searchInput = document.getElementById('searchInput');
+                if(searchInput) {
+                    // এখানে আপনার কথামতো "ফর্মেশন খুঁজুন..." সেট করে দিয়েছি
+                    searchInput.placeholder = (savedLang === 'en') ? 'Search Formation...' : 'ফর্মেশন খুঁজুন...';
+                }
+            });
+        })();
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-main: #0a0e17; --text-color: #f3f4f6; --text-muted: #8492a6; --card-bg: #111827; --inner-bg: #0d121c;
+            --clr-blue: #3b82f6; --clr-cyan: #0ea5e9; --clr-green: #10b981; --clr-red: #ef4444; --clr-gold: #facc15;
+            --soft-shadow: 4px 4px 12px rgba(0,0,0,0.5), -4px -4px 12px rgba(255,255,255,0.01);
+            --inset-shadow: inset 2px 2px 8px rgba(0,0,0,0.5), inset -2px -2px 8px rgba(255,255,255,0.01);
+            --border-glow: 1px solid rgba(255,255,255,0.03);
+            
+            /* 🔥 মূল অরেঞ্জ কালার যোগ করা হলো 🔥 */
+            --accent-orange: #f97316; 
+            --orange-glow: rgba(249, 115, 22, 0.25);
+        }
+        [data-theme="light"] {
+            --bg-main: #f3f4f6; 
+            --text-color: #111827; 
+            --card-bg: #ffffff; 
+            --inner-bg: #f9fafb;
+            --border-glow: 1px solid rgba(0,0,0,0.05);
+            --soft-shadow: 4px 4px 12px rgba(0,0,0,0.1);
+            --inset-shadow: inset 2px 2px 8px rgba(0,0,0,0.1);
+            --orange-glow: rgba(249, 115, 22, 0.15);
+        }
+
+        /* ভাষার ঝলকানি বন্ধ */
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        body { 
+            background-color: var(--bg-main); color: var(--text-color); font-family: 'Poppins', sans-serif; 
+            margin: 0; padding-bottom: 50px; transition: 0.3s; 
+            overflow-x: hidden; width: 100vw; max-width: 100%;
+            touch-action: pan-y; 
+        }
+        
+        .header { 
+            background: var(--card-bg); padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--accent-orange);
+            position: sticky; top: 0; z-index: 1000; display: flex; 
+            justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%;
+        }
+        
+        .header-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        .page-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; }
+
+        .guide-container { padding: 15px 15px 25px 15px; max-width: 600px; margin: 0 auto; }
+
+        /* 🔥 প্রিমিয়াম ব্যাক বাটন 🔥 */
+        .top-controls { display: flex; justify-content: flex-start; margin-bottom: 12px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 13px; font-weight: 600; color: var(--text-color);
+            background: var(--card-bg); padding: 10px 20px; border-radius: 30px; 
+            box-shadow: var(--soft-shadow); border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer; transition: all 0.3s ease; font-family: 'Poppins', sans-serif;
+        }
+        .back-btn i { color: var(--accent-orange); font-size: 16px; }
+        .back-btn:active { transform: scale(0.95); box-shadow: var(--inset-shadow); }
+
+        /* সার্চ বক্স */
+        .search-box {
+            display: flex; align-items: center; background: var(--card-bg); border-radius: 100px;
+            padding: 12px 20px; margin-bottom: 25px; box-shadow: var(--inset-shadow);
+            border: 2px solid var(--orange-glow);
+        }
+        .search-box i { color: var(--accent-orange); }
+        .search-box input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-color); font-family: 'Poppins'; font-size: 14px; margin-left: 10px; }
+
+        /* গ্রিড মেনু */
+        .formation-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; animation: fadeIn 0.4s; }
+        .formation-card {
+            background: var(--card-bg); border-radius: 16px; padding: 22px 10px; text-align: center; 
+            box-shadow: var(--soft-shadow); border: var(--border-glow); cursor: pointer; transition: 0.2s;
+        }
+        .formation-card:active { transform: scale(0.95); box-shadow: var(--inset-shadow); border-color: var(--accent-orange); }
+        .formation-icon { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: 1.2px; color: var(--accent-orange); }
+
+        /* ডিটেইলস পেজ স্টাইল */
+        .detail-view { display: none; animation: slideIn 0.3s forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .article-wrapper { padding: 15px 15px 25px 15px; background: var(--inner-bg); border-radius: 16px; box-shadow: var(--inset-shadow); margin-top: 5px;}
+        .formation-title-big { font-family: 'Montserrat', sans-serif; font-size: 32px; font-weight: 900; margin: 0 0 15px 0; color: var(--accent-orange); letter-spacing: 2px; text-align: center; text-transform: uppercase;}
+        
+        /* 🔥 ম্যাজিক: যেকোনো কালারের বর্ডার এবং টাইটেলকে জোর করে অরেঞ্জ করার কোড (!important) 🔥 */
+        .guide-card {
+            background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 22px; 
+            box-shadow: var(--soft-shadow); border: var(--border-glow); text-align: left;
+            border-left: 5px solid var(--accent-orange) !important; /* জোর করে অরেঞ্জ */
+        }
+        .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; width: 100%;}
+        
+        /* ভেতরের হেডলাইন জোর করে অরেঞ্জ */
+        .card-title, .card-title *, #dynamic-content .card-title, #dynamic-content .card-title * { 
+            font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 800; 
+            color: var(--accent-orange) !important; /* জোর করে অরেঞ্জ */ 
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        
+        .guide-card p { margin: 0; font-size: 13.5px; line-height: 1.8; color: var(--text-color); opacity: 0.9; text-align: left; width: 100%; }
+
+        /* সিগনেচার লোগো */
+        .article-signature { text-align: center; margin-top: 40px; padding-top: 30px; border-top: 2px dashed rgba(255,255,255,0.05); }
+        .signature-logo { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; color: var(--text-muted); letter-spacing: 1.5px;}
+        .signature-logo span { color: var(--accent-orange); }
+        .sig-sub { font-size: 11px; margin-top: 4px; color: var(--text-muted); opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;}
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-users" style="color: var(--accent-orange); font-size: 22px;"></i> 
+            <div class="page-title">
+                <span class="lang-bn">ফর্মেশন গাইড</span>
+                <span class="lang-en">FORMATIONS GUIDE</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="guide-container">
+        
+        <div class="search-box" id="searchSection">
+            <i class="fa-solid fa-magnifying-glass" style="color:var(--accent-orange)"></i>
+            <input type="text" id="searchInput" data-bn-ph="ফর্মেশন খুঁজুন..." data-en-ph="Search Formation..." onkeyup="search()">
+
+        </div>
+
+        <div id="main-grid" class="formation-grid">
+            </div>
+
+        <div id="formation-detail-container" class="detail-view">
+            
+            <div class="top-controls" id="backBtn" onclick="goBack()" style="display: none;">
+                <div class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i> 
+                    <span class="lang-bn">ফিরে যান</span><span class="lang-en">Go Back</span>
+                </div>
+            </div>
+
+            <div class="article-wrapper">
+                <h3 class="formation-title-big" id="current-form-title">--</h3>
+                
+                <div id="dynamic-content"></div>
+
+                <div class="article-signature">
+                    <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                    <div class="sig-sub">GAMING HUB BD</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const formationDatabase = {
+            "4-4-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>ফুটবলের অন্যতম জনপ্রিয় এবং চিরাচরিত ফরমেশন ৪-৪-২। তবে শুরুতেই একটা বিষয় পরিষ্কার করে নেওয়া ভালো—বাস্তব জীবনের ফুটবলের সাথে গেমের ফরমেশনের কার্যকারিতার অনেক পার্থক্য থাকে। তাই আমরা পুরোপুরি গেমপ্লে বা ইন-গেম এক্সপেরিয়েন্সের ওপর ভিত্তি করেই এই আলোচনা সাজিয়েছি।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ </span></div>
+                    <p>১. এই ফরমেশনের অন্যতম বড় শক্তি হলো এর মিডফিল্ড। এখানে আপনি চারজন মিডফিল্ডার পাচ্ছেন, যার মধ্যে দুজন উইংয়ে (RM এবং LM) দায়িত্ব পালন করেন আর দুইজন (CM)। আপনি যদি মাঝমাঠের দখল নিয়ে খেলতে পছন্দ করেন, তবে এটি আপনার জন্য দারুণ একটি চয়েস হতে পারে। তবে মনে রাখবেন, চারজন মিডফিল্ডারকে সঠিকভাবে নিয়ন্ত্রণ করা কিছুটা চ্যালেঞ্জিং। এর জন্য প্রয়োজন প্রচুর প্র্যাকটিস এবং ধৈর্য। সাইড থেকে লং পাসের ক্ষেত্রে আপনাকে হতে হবে অত্যন্ত সচেতন। পজিশন না দেখে বা হুটহাট জোরে লং পাস দিলে বল হারানোর ঝুঁকি থাকে, তাই বুঝেশুনে পাসের নিয়ন্ত্রণ রাখতে পারলে এই ফরমেশন আপনাকে এক অনন্য গেমিং অভিজ্ঞতা দেবে।</p>
+                    <p style="margin-top:15px;">২. আক্রমণভাগের কথা বলতে গেলে, এই ফরমেশনে আপনি পাচ্ছেন দুজন প্রপার সেন্টার ফরোয়ার্ড। বর্তমান ডিএলএস মেটা অনুযায়ী শুধুমাত্র ক্রস খেলে গোল পাওয়া এখন বেশ কঠিন। সেই জায়গায় ৪-৪-২ ফরমেশনে দুজন ফরোয়ার্ড থাকায় পাসিং গেম খেলা খুব সহজ হয়ে যায়। একজন স্ট্রাইকার থেকে অন্যজনের কাছে কুইক পাসিং করে গোল বের করা অনেক বেশি কার্যকর। যারা আক্রমণভাগে সরাসরি পাসিং পছন্দ করেন, তাদের জন্য এটি সেরা একটি অপশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় চ্যালেঞ্জ হলো ডিফেন্স সামলানো। ডিএলএস-এ যেহেতু প্রতিপক্ষও প্রায়ই দুজন স্ট্রাইকার নিয়ে খেলে, তাই আপনার দুজন সেন্টার ব্যাকের ওপর প্রচুর চাপ পড়ে। একজন ডিফেন্ডার যদি পজিশন হারায় বা ট্যাকেল দিতে ভুল করে, তবে প্রতিপক্ষ অনায়াসেই গোল বের করে নিতে পারে।</p>
+                    <p style="margin-top:15px;">২. এখানে একটি মজার বিষয় হলো, এই ফরমেশনে আপনার ফুল-ব্যাকদের (RB এবং LB) ভূমিকা খুব একটা চোখে পড়ে না। যেহেতু সামনে (RM/LM) মিডফিল্ডাররা থাকে, তাই তাদের ওপরের দিকে ওঠার সুযোগ কম থাকে, আবার ডিফেন্সের মূল কাজটা সেন্টার ব্যাকরাই করে থাকে। কারণ DLS এ এমন অপনেন্ট খুব কম পাওয়া যায় যারা LW/RW নিয়ে খেলে যে তাদেরকে আটকানোর জন্য LB/RB এর দরকার হবে। তাই চার জন ডিফেন্ডারের বদলে তিনজন ডিফেন্ডার দিয়ে খেললে ডিফেন্স লাইন হয়তো আরও বেশি সুসংহত থাকতো। তবে আপনি যদি ফুল-ব্যাকদের কাজে লাগিয়ে বল উইং দিয়ে ওপরে তুলতে পারেন, তবে আপনার আক্রমণ আরও ধারালো হবে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>৪-৪-২ ফরমেশনে সফল হতে হলে আপনাকে অবশ্যই ডিফেন্সিভ মোডে খেলার মানসিকতা রাখতে হবে। শর্ট পাসের মাধ্যমে বিল্ড-আপ গেম খেলা এই ফরমেশনের সাফল্যের চাবিকাঠি। যদিও শুরুতে ডিফেন্স সামলানো বা চারজন মিডফিল্ডারের সাথে মানিয়ে নেওয়া কঠিন মনে হতে পারে, কিন্তু একবার আপনি এই পদ্ধতিতে অভ্যস্ত হয়ে গেলে আপনার গেমপ্লে অন্য উচ্চতায় পৌঁছে যাবে।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>4-4-2 is one of the most popular and classic formations in football. However, it's better to clarify one thing first—there are many differences in formation effectiveness between real-life football and the game. Therefore, we have structured this discussion entirely based on gameplay and in-game experience.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. One of the biggest strengths of this formation is its midfield. Here you get four midfielders, two of whom operate on the wings (RM and LM) and two in the center (CM). If you like to play by dominating the midfield, this can be a great choice for you. However, remember that controlling four midfielders properly is quite challenging. This requires a lot of practice and patience. You must be extremely conscious regarding long passes from the sides. There is a risk of losing the ball if you give long passes without checking the position or in a hurry, so if you can keep control of the passes wisely, this formation will give you a unique gaming experience.</p>
+                    <p style="margin-top:15px;">2. Speaking of the attack, in this formation you get two proper center-forwards. According to the current DLS meta, it is quite difficult to score goals only by playing crosses. In that place, since there are two forwards in the 4-4-2 formation, it becomes very easy to play a passing game. Quick passing from one striker to another is much more effective for scoring goals. For those who prefer direct passing in the attack, this is one of the best options.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The biggest challenge of this formation is managing the defense. Since opponents in DLS also often play with two strikers, there is a lot of pressure on your two center-backs. If a defender loses position or makes a mistake in tackling, the opponent can easily score a goal.</p>
+                    <p style="margin-top:15px;">2. An interesting point here is that the role of your full-backs (RB and LB) is not very noticeable in this formation. Since the midfielders (RM/LM) are in front, they have less chance to move upwards, and again the main work of defense is done by the center-backs. This is because such opponents are rarely found in DLS who play with LW/RW that LB/RB will be needed to stop them. Therefore, the defense line might have been more consolidated if played with three defenders instead of four. However, if you can use the full-backs to move the ball up through the wings, your attack will be sharper.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>To be successful in the 4-4-2 formation, you must have the mindset of playing in defensive mode. Playing a build-up game through short passes is the key to success for this formation. Although it may seem difficult to manage the defense or adapt to four midfielders at first, once you get used to this method, your gameplay will reach another level.</p>
+                </div>`
+            },
+                        "3-4-2-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>আজকে আমরা আলোচনা করবো ডিএলএস-এর ফরমেশনগুলোর মধ্যে অন্যতম সেরা এবং কার্যকর একটি ফরমেশন ৩-৪-২-১ নিয়ে। এই ফরমেশনের অধিকাংশ দিকই ইতিবাচক। যারা একটু বুঝেশুনে কৌশলগত গেমপ্লে পছন্দ করেন, তাদের জন্য এটি দারুণ একটি চয়েস হতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">প্রতিরক্ষা ও উইং ব্যাক</span></div>
+                    <p>১. এই ফরমেশনে আপনি পাচ্ছেন তিনজন প্রপার সেন্টার ব্যাক (CB) যারা মূলত মিড-রেঞ্জে অর্থাৎ ডি-বক্সের সামনের অংশটুকু ফিলাপ করে রাখে। এতে প্রতিপক্ষের পক্ষে আপনার ডিফেন্স লাইন ভাঙা অনেক কঠিন হয়ে যায়।</p>
+                    <p style="margin-top:15px;">২. এর সাথে রয়েছে দুইজন RWB/LWB। আপনি যখন আক্রমণে উঠবেন তখন তারা উইঙ্গারের ভূমিকা পালন করবে, আবার প্রতিপক্ষ যখন অ্যাটাক করবে তখন তারা নিচে নেমে ডিফেন্সে সাহায্য করবে। আপনি চাইলে এখানে RB/LB-ও ব্যবহার করতে পারেন। তবে যদি গোল খেয়ে বসেন এবং সময় খুব কম থাকে, তবে এই দুইজনের জায়গায় স্পিডি RW/LW অথবা RM/LM নামিয়ে আক্রমণ বাড়াতে পারেন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-cyan);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-cyan);">মিডফিল্ড ও আক্রমণ</span></div>
+                    <p>১. এই ফরমেশনের মূল কারিগর হলো দুইজন প্রপার DM। পুরো ম্যাচ কন্ট্রোল করা এবং প্রতিপক্ষের আক্রমণ ট্যাকেল করার মূল দায়িত্ব তাদের ওপর। তাই এখানে শক্তিশালী দুইজন ডিফেন্সিভ মিডফিল্ডার থাকা জরুরি। প্রয়োজনে আপনি এখানে সিএম (CM) দিয়েও খেলাতে পারেন।</p>
+                    <p style="margin-top:15px;">২. সবচেয়ে আকর্ষণীয় দিক হলো দুইজন AM। এরা প্লে-মেকার হিসেবে থাকলেও আক্রমণের সময় উপরে উঠে প্রপার ফরোয়ার্ডের কাজ করে। আপনি যখন অ্যাটাক করবেন তখন আপনার অ্যাটাকিং মিডফিল্ডাররা CF এর সাথে যোগ দিয়ে মোট তিনজন ফরোয়ার্ডের শক্তি তৈরি করবে। এই AM পজিশনে আপনি চাইলে উইঙ্গার বা SS পজিশনের প্লেয়ারও নামাতে পারেন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. খেলার সময় অবশ্যই 'ডিফেন্সিভ মোড' বজায় রাখতে হবে। এই মোডে অ্যাটাক করার সময় ফরমেশনটি ৩-২-৪-১ এর মতো কাজ করে, আবার ডিফেন্সের সময় স্বয়ংক্রিয়ভাবে ৫-৪-১ ফরমেশনে পরিণত হয়।</p>
+                    <p style="margin-top:10px;">২. যাদের টিমে স্পিডি প্লেয়ার আছে তাদের জন্য এটি বেশি কার্যকর। যাদের আইডি নতুন (Unmax) তাদের জন্য এই হাই-প্রেসিং ফরমেশনে টিকে থাকা কিছুটা কঠিন হতে পারে।</p>
+                    <p style="margin-top:10px;">৩. এখানে লং পাস খেলার সুযোগ কম, আপনাকে শর্ট পাস বিল্ড-আপের ওপর নির্ভর করতে হবে। তবে উইং ব্যাকের একজনের থেকে অন্যজনের কাছে লং পাস দিয়ে সাইড জোন খালি করতে পারলে সহজেই গোল বের করা সম্ভব।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>Today we will discuss one of the best and most effective formations in DLS, the 3-4-2-1. Most aspects of this formation are positive. It can be a great choice for those who prefer tactical gameplay.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Defense & Wing-backs</span></div>
+                    <p>1. You get three proper Center Backs (CB) who fill the mid-range area in front of the D-box. This makes it very difficult for the opponent to break your defensive line.</p>
+                    <p style="margin-top:15px;">2. Combined with two RWB/LWBs who act as wingers during attacks and drop back to help the defense during opponent attacks. If you're trailing late in the game, you can replace them with speedy RW/LW or RM/LMs to increase attacking pressure.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-cyan);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-cyan);">Midfield & Attack</span></div>
+                    <p>1. The key to this formation is the two proper DMs. They are responsible for controlling the match and tackling opponent attacks. Strong defensive midfielders are essential here.</p>
+                    <p style="margin-top:15px;">2. The most attractive part is the two AMs. Though they are playmakers, they act as proper forwards during attacks. With the CF, they create a three-man forward force. You can use wingers or SS players in these AM positions for better pressing.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Always maintain 'Defensive Mode'. In this mode, the formation acts as 3-2-4-1 during attacks and automatically switches to 5-4-1 during defense, maintaining perfect balance.</p>
+                    <p style="margin-top:10px;">2. Most effective for teams with speedy players. It might be difficult for new (Unmax) IDs to sustain this high-pressing style.</p>
+                    <p style="margin-top:10px;">3. Rely on short-pass build-ups rather than long passes. However, switching play between wing-backs to find empty side zones can lead to easy goals.</p>
+                </div>`
+            },
+            "3-2-3-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>আজকে আমরা ডিএলএস-এর এমন একটা ফরমেশন নিয়ে কথা বলব যেটা অনেক পুরাতন হলেও এর কার্যকারিতা এখনো তুঙ্গে। ফরমেশনটি হলো ৩-২-৩-২। গেমে ট্যাকটিকস বারবার বদলালেও গত ২-৩ বছর ধরেই এই ফরমেশন টপ লেভেলের পারফরম্যান্স দিচ্ছে, তাই একে আমি 'পুরাতন কিন্তু গোল্ড' ফরমেশন বলি।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ডিফেন্স ও উইং-ব্যাক</span></div>
+                    <p>১. এই ফরমেশনে আপনি পাচ্ছেন তিনজন প্রপার Center Back (CB) যারা ডি-বক্সের সামনের জায়গাটা এমনভাবে ফিলাপ করে রাখে যে প্রতিপক্ষের পক্ষে ডিফেন্স ভাঙা কঠিন হয়ে যায়।</p>
+                    <p style="margin-top:15px;">২. এর সাথে দুইজন RWB/LWB পাচ্ছেন যারা অ্যাটাকের সময় উইঙ্গার এবং ডিফেন্সের সময় ফুল-ব্যাক হিসেবে কাজ করে। আপনি চাইলে এখানে RB/LB-ও নামাতে পারেন। গোল খেয়ে সময় কম থাকলে তাদের জায়গায় স্পিডি RW/LW নামিয়ে অল-আউট অ্যাটাক করা যায়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-cyan);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-cyan);">মিডফিল্ড ও উইকনেস</span></div>
+                    <p>১. এই ফরমেশনের মূল কারিগর হলো দুইজন প্রপার DM। পুরো ম্যাচ কন্ট্রোল এবং ট্যাকেল করার দায়িত্ব তাদের ওপর। তাই এখানে অবশ্যই শক্তিশালী দুইজন ডিফেন্সিভ মিডফিল্ডার নামাতে হবে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের একটা উইকনেস হলো Attacking Midfielder (AM) পজিশন। আমার অভিজ্ঞতা অনুযায়ী, এই পজিশনে প্লেয়ারের ভূমিকা কিছুটা কম। সে একা হওয়ায় অন্যদের সাথে বন্ডিং কম হয় এবং বল সাপ্লাইও খুব একটা ভালো দিতে পারে না।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">আক্রমণ ও মোড </span></div>
+                    <p>১. এখানে দুইজন প্রপার CF থাকায় পাসিং গেম খেলা খুব সহজ। একজন স্ট্রাইকার থেকে অন্যজনের কাছে কুইক পাসিং করে গোল বের করা অনেক বেশি কার্যকর। যারা সরাসরি পাসিং পছন্দ করেন, তাদের জন্য এটি সেরা অপশন।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে 'Moderate' খেললে ব্যালেন্সড পারফরম্যান্স পাওয়া যায়। ডিফেন্সের সময় এটি ৫-৩-২ এবং অ্যাটাকের সময় ৩-৫-২ এর মতো কাজ করবে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>বেশিরভাগ শর্ট পাস খেলতে হবে। তবে একপাশের LM/RM থেকে অন্য পাশে লং পাস দিয়ে জোন খালি হলে সহজেই অ্যাটাক করা যায়। সাইড থেকে ক্রস দিলে দুইজন CF-এর যে কেউ গোল করতে পারবে। এছাড়া AM-কে পাস দিয়ে ডি-বক্সের বাহির থেকে লং শট নেওয়া সম্ভব, তবে AM-এর Shot এবং Control অবশ্যই ৯৩+ থাকতে হবে।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>Today we will talk about a formation that is old but still highly effective: the 3-2-3-2. Although game tactics change every year, this formation has provided top-level performance for the last 2-3 years, so I call it an 'Old but Gold' formation.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Defense & Wing-backs</span></div>
+                    <p>1. In this formation, you get three proper Center Backs (CB) who fill the area in front of the D-box, making it very difficult for the opponent to break your defense.</p>
+                    <p style="margin-top:15px;">2. You also get two RWB/LWBs who help as wingers during attack and drop back during defense. You can also use RB/LB here. If you are trailing late in the game, you can replace them with speedy RW/LW or RM/LMs for an all-out attack.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-cyan);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-cyan);">Midfield & Weakness</span></div>
+                    <p>1. The two proper DMs are the key architects here. They are responsible for controlling the match and tackling, so you must deploy strong defensive midfielders.</p>
+                    <p style="margin-top:15px;">2. According to my experience, the Attacking Midfielder (AM) position is a weakness. The player's role feels limited as they are isolated, making it harder to build bonds or provide consistent ball supply.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Attack & Game Mode</span></div>
+                    <p>1. With two proper CFs, playing a passing game becomes very easy. Quick passing between strikers is much more effective than just crossing. It's the best option for direct passing lovers.</p>
+                    <p style="margin-top:15px;">2. Playing on 'Moderate' gives a balanced performance. It works as a 5-3-2 during defense and as a 3-5-2 during attack.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title">Expert Tips</span></div>
+                    <p>Focus mostly on short passes. However, long passes are effective when switching play from one LM/RM to the opposite wing. Crosses from the sides can easily be converted by the two CFs. You can also take long shots with the AM from outside the box, but ensure your AM has 93+ Shot and Control stats.</p>
+                </div>`
+            },
+            "4-3-3": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>আজকে আমরা কথা বলব ফুটবল বিশ্বের সবচাইতে আইকনিক এবং জনপ্রিয় ফরমেশন ৪-৩-৩ নিয়ে। রিয়েল লাইফ ফুটবলে এই ফরমেশন দিয়ে যে দাপট দেখানো যায়, গেমে সেটা বজায় রাখা কতটা কঠিন বা সহজ—আজকে আমরা সেই খুঁটিনাটি নিয়েই আলোচনা করব। যারা সুন্দর পাসিং গেম পছন্দ করেন, আজকের আলোচনা তাদের জন্য।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় শক্তির জায়গা হলো এর দুই উইং। অপনেন্ট যদি তিনজন সেন্টার ব্যাক (যেমন ৩-৪-৩ বা ৩-৫-২) নিয়ে খেলে, তবে এই ফরমেশন দিয়ে উইং দিয়ে অ্যাটাক করা একদম পানির মতো সহজ হয়ে যায়।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের আরেকটি চমৎকার দিক হলো একদিকের উইঙ্গার থেকে অন্যদিকের উইঙ্গারের কাছে লম্বা পাস বা ডাইরেক্ট সুইচ করা। এই কৌশলে খেললে অপনেন্টের ডিফেন্স লাইন মুহূর্তেই অগোছালো হয়ে যায় এবং গোলের বড় সুযোগ তৈরি হয়।</p>
+                    <p style="margin-top:15px;">৩. যারা 'টিকি-টাকা' বা পাসিং ফুটবল খুব ভালো বোঝেন এবং মাথা ঠান্ডা রেখে খেলতে পারেন, তাদের জন্য এটি গেমে সেরা ফরমেশন হতে পারে। গেমিং সেন্স ভালো থাকলে আপনি রিয়েল লাইফ ফুটবলের আসল আমেজটা এই ফরমেশনে পাবেন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এর একটা বড় চ্যালেঞ্জ হলো মিডফিল্ড। মাঝমাঠে মাত্র তিনজন প্লেয়ার থাকায় একটা বড় গ্যাপ তৈরি হয়। অপনেন্ট যদি বেশি মিডফিল্ডার (যেমন ৪-৫-১ বা ৪-৪-২) নিয়ে খেলে তবে তারা খুব সহজেই আপনার মাঝমাঠ দখল করে নেবে এবং ডিফেন্সের ওপর চাপ বাড়বে।</p>
+                    <p style="margin-top:15px;">২. এটি অ্যাটাকিং ফরমেশন হওয়ায় LB এবং RB বারবার উপরে উঠে যায়। তখন নিচে শুধু দুইজন সেন্টার ব্যাক থাকে। অপনেন্ট দ্রুত কাউন্টার অ্যাটাক দিলে মাত্র দুইজন ডিফেন্ডার নিয়ে সেই অ্যাটাক ঠেকানো অনেক সময় কঠিন হয়ে পড়বে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. ৪-৩-৩ ফরমেশনে গোল পেতে হলে আপনার একজন লম্বা চওড়া স্ট্রাইকার (CF) লাগবেই। কারণ গেমে অনেকেই পারফেক্ট ক্রস দিতে পারে না, তাই স্ট্রাইকারের ফিনিশিং ক্ষমতা এখানে খুব জরুরি।</p>
+                    <p style="margin-top:15px;">২. ৪-৩-৩ ফরমেশনটি যেমন রোমাঞ্চকর, তেমনি ঝুঁকিপূর্ণ। আপনার যদি পাসিং এবং ক্রসিংয়ে ভালো দখল থাকে, তবে এই ফরমেশন দিয়ে আপনি যেকোনো অপনেন্টকে কুপোকাত করতে পারবেন।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>Today we will discuss the most iconic and popular formation: 4-3-3. We will break down how to maintain the dominance of this real-life classic within the game mechanics. This is for those who love beautiful passing football.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The biggest strength is the two wings. If the opponent plays with three CBs (like 3-4-3 or 3-5-2), attacking through the wings becomes very easy as you get plenty of space.</p>
+                    <p style="margin-top:15px;">2. Direct switching from one winger to another is highly effective. This tactic instantly disorganizes the opponent's defensive line and creates massive scoring opportunities.</p>
+                    <p style="margin-top:15px;">3. For those who understand 'Tiki-Taka' and keep a cool head, this is the best formation. Good gaming sense allows you to experience the real feel of football in DLS.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The midfield is the major challenge. With only three players in the middle, gaps are created. Opponents with more midfielders (like 4-5-1 or 4-4-2) can easily dominate the pitch and pressure your defense.</p>
+                    <p style="margin-top:15px;">2. Since it's an attacking formation, the LB and RB frequently push up. This leaves only two CBs behind, making counter-attacks very difficult to stop.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. You need a physically strong and tall CF to succeed here. Proper crossing and finishing ability are essential to reap the full benefits of this formation.</p>
+                    <p style="margin-top:15px;">2. 4-3-3 is as thrilling as it is risky. If you have mastery over passing and crossing, you can defeat any opponent with this setup.</p>
+                </div>`
+            },
+            "4-1-2-1-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>ডিএলএস-এর অন্যতম ব্যালেন্সড একটি ফরমেশন হলো ৪-১-২-১-২, একে অনেকে 'ডায়মন্ড ফরমেশন'-ও বলে থাকে। যারা মাঝমাঠের পূর্ণ দখল রেখে পাসিং গেম খেলতে ভালোবাসেন, এটি তাদের জন্য দারুণ একটি চয়েস।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় শক্তির জায়গা হলো এর মিডফিল্ড। এখানে একজন DM, দুইজন CM এবং একজন AM মিলে মাঝমাঠে একটি ডায়মন্ড শেপ তৈরি করে। শর্ট পাসিং বা টিকি-টাকা খেলার জন্য এটি বর্তমানে গেমের অন্যতম সেরা ফরমেশন।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে আপনি দুইজন CF পাচ্ছেন। যারা উইং দিয়ে ক্রসিং খুব একটা পছন্দ করেন না, বরং মাঝপথ দিয়ে কুইক পাসিং করে গোল করতে পছন্দ করেন, তাদের জন্য এটি সেরা। একজন স্ট্রাইকার থেকে অন্যজনের কাছে ওয়ান-টু পাস খেলে গোল বের করা এখানে অনেক কার্যকর।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা ও চ্যালেঞ্জ (Weaknesses)</span></div>
+                    <p>১. এই ফরমেশনের একটি দুর্বলতা হলো উইং বা সাইডের জোনগুলো। যেহেতু এখানে কোনো প্রপার উইঙ্গার (RW/LW) নেই, তাই সাইড জোনগুলো খালি থাকে। অপনেন্ট যদি দ্রুতগতির উইঙ্গার দিয়ে কাউন্টার অ্যাটাক দেয়, তবে আপনার ডিফেন্সের ওপর প্রচণ্ড চাপ সৃষ্টি হয়।</p>
+                    <p style="margin-top:15px;">২. অধিকাংশ গেমার বর্তমানে দুইজন স্ট্রাইকার নিয়ে খেলে। ৩ জন সেন্টার ব্যাক (CB) নিয়ে খেললে মাঝখানের জায়গাটা যেভাবে ব্লক করে রাখা যায়, ৪ জন ডিফেন্ডারের এই ফরমেশনে মাত্র ২ জন সেন্টার ব্যাক থাকায় সেই সুবিধা পাওয়া যায় না। মাঝখানের এই গ্যাপটাই অনেক সময় ভয়ের কারণ হতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">NextGen পরামর্শ (Expert Tips)</span></div>
+                    <p>১. শুরুতে ডিফেন্সের ক্ষেত্রে আপনাকে অবশ্যই 'Defensive' মুডে খেলতে হবে। মডারেট বা অ্যাটাকিং মুডে খেললে আপনার RB এবং LB অনেক বেশি উপরে উঠে যায়, যা আপনার ডিফেন্সকে অরক্ষিত করে ফেলে। তবে দ্বিতীয়ার্ধে আপনি 'Moderate' দিয়ে খেলতে পারেন।</p>
+                    <p style="margin-top:15px;">২. ৪-১-২-১-২ ফরমেশনটি মূলত একটি ব্রেইন গেম। যারা হুটহাট লং বল না মেরে ধীরে সুস্থে পাস খেলে গেম কন্ট্রোল করতে পছন্দ করেন, তাদের জন্য এটিই হতে পারে বেস্ট অপশন। এই ফরমেশনে মিডফিল্ড কন্ট্রোল করা একটু বেশিই কঠিন, তাই আপনার ধৈর্য ধরে খেলতে হবে।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 4-1-2-1-2 is widely regarded as one of the most balanced formations in DLS, often referred to by players as the 'Diamond Formation'. It’s an excellent choice for those who love to control the midfield and play a passing game.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The greatest strength is the midfield. A DM, two CMs, and an AM form a diamond shape, allowing you to dominate the middle. It's currently one of the best formations for short passing or Tiki-Taka.</p>
+                    <p style="margin-top:15px;">2. You get two CFs, making it perfect for those who prefer quick central passing over wing crossing. One-two passes between strikers are highly effective at piercing the opponent's defense.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The weakness lies in the wing zones. Since there are no proper wingers (RW/LW), the sides remain open. Quick counter-attacks from the opponent's wingers can put immense pressure on your defense.</p>
+                    <p style="margin-top:15px;">2. Most players use two strikers. Unlike 3-CB formations that block the middle solidly, this 4-defender setup only has 2 CBs, which can leave dangerous gaps in the central defensive area.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. At the beginning, you must play in a 'Defensive' mentality to secure your backline. If you play in 'Moderate' or 'Attacking' mode, your RB and LB will push too high up the pitch, leaving your defense vulnerable. However, you can switch to 'Moderate' in the second half.</p>
+                    <p style="margin-top:15px;">2. The 4-1-2-1-2 formation is essentially a brain game. For players who prefer not to hit random long balls but rather control the game patiently with precise passes, this might be the best option. Controlling the midfield in this formation can be quite challenging, so you must play with patience.
+</p>
+                </div>`
+            },
+            "4-2-3-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>আজকে আমরা আলোচনা করবো ডিএলএস-এর অন্যতম আধুনিক এবং ট্যাকটিক্যাল একটি ফরমেশন ৪-২-৩-১ নিয়ে। যারা মাঠে পজিশন ধরে রেখে কন্ট্রোল গেম খেলতে পছন্দ করেন এবং মাঝমাঠে একাধিপত্য বজায় রাখতে চান, তাদের জন্য এটি একটি আদর্শ ফরমেশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় শক্তির জায়গা হলো এর 'ডাবল ভোল্ট' বা দুইজন DM। এই দুইজন মিডফিল্ডার আপনার ডিফেন্সের সামনে একটি নিরেট দেয়াল তৈরি করে এবং প্রতিপক্ষের কাউন্টার অ্যাটাক মাঝপথেই রুখে দিতে সক্ষম।</p>
+                    <p style="margin-top:15px;">২. এর আকর্ষণীয় দিক হলো স্ট্রাইকারের পেছনে থাকা ৩ জন AM বা "Creative Trio"। মাঝখানের প্লেয়ারটি ইঞ্জিনের মতো কাজ করে। তারা পাসের মাধ্যমে আক্রমণ সাজাতে ওস্তাদ। তবে এরা প্রপার উইঙ্গারদের মতো একদম সাইডলাইন ঘেঁষে ওপরে উঠতে পারে না, মূলত মাঝমাঠ থেকেই অপারেট করে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এর একটি উল্লেখযোগ্য দুর্বলতা হলো উইং বা সাইড জোনগুলো। যেহেতু এখানে প্রপার উইঙ্গার নেই এবং ৩ জন মিডফিল্ডারই মাঝপথ দিয়ে খেলে, তাই সাইডগুলো খালি থাকে। অপনেন্ট উইং দিয়ে দ্রুত অ্যাটাক করলে ফুলব্যাকদের ওপর প্রচণ্ড চাপ সৃষ্টি হয়।</p>
+                    <p style="margin-top:15px;">২. এখানে আপনি মাত্র একজন CF পাচ্ছেন, তাই তাকে বক্সে অনেক সময় একা হয়ে যেতে হয়। পেছনের ৩ জন AM যদি দ্রুত ওয়ান-টু পাসের মাধ্যমে সাপোর্ট না দেয়, তবে গোল বের করা কঠিন হতে পারে। তাই এখানে উন্নত ফিনিশিং ও ফিজিক্যাল পাওয়ারের স্ট্রাইকার জরুরি।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. ৪ জন ডিফেন্ডারের এই ফরমেশনে মাত্র ২ জন সেন্টার ব্যাক থাকলেও সামনে ২ জন DM থাকায় মাঝখানের জায়গাটা বেশ শক্তিশালী থাকে। এই DM জুটিই আপনার ডিফেন্সের বড় ভয়ের কারণগুলোকে সামলে নেবে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে অবশ্যই 'Defensive' মুডে খেলতে হবে। যেহেতু ৩ জন AM অলরেডি ওপরে আছে, তাই RB এবং LB-কে নিচে রেখে ডিফেন্স সামলানোই হবে সবচাইতে বুদ্ধিমানের কাজ। এটি মূলত একটি পিওর ট্যাকটিক্যাল ব্রেইন গেম।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>Today we will discuss one of the most modern and tactical formations in DLS, the 4-2-3-1. It is an ideal formation for those who like to maintain position and dominate the midfield.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The greatest strength is the 'Double Pivot' or two DMs. These two midfielders create a solid wall in front of your defense and can stop opponent counter-attacks in their tracks.</p>
+                    <p style="margin-top:15px;">2. The attractive part is the 3 AMs behind the striker, known as the "Creative Trio". The central one acts as the engine. While they excel at building attacks through passes, they mostly operate centrally rather than hugging the touchline like pure wingers.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. A notable weakness is the side zones. Since there are no proper wingers and the midfielders stay central, the flanks remain open. Speedy wing attacks from opponents can put immense pressure on your fullbacks.</p>
+                    <p style="margin-top:15px;">2. You only have one CF, who can often become isolated in the box. Without quick one-two pass support from the AMs, scoring can be difficult. A striker with high finishing and physical strength is essential.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Although there are only 2 CBs, the 2 DMs in front make the central area very strong. This DM duo will handle the major defensive threats for you.</p>
+                    <p style="margin-top:15px;">2. You must play on 'Defensive' mode. Since 3 AMs are already pushed up, keeping RB and LB back to manage the defense is the smartest move. This is a pure tactical brain game.</p>
+                </div>`
+            },
+            "4-1-3-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৪-১-৩-২ ডিএলএস-এর অন্যতম ব্যালেন্সড একটি ফরমেশন। যারা মাঝমাঠে পাসিং ফুটবল পছন্দ করেন এবং একইসাথে কাউন্টার অ্যাটাকে প্রতিপক্ষকে ঘায়েল করতে চান, তাদের জন্য এটি একটি পাওয়ারফুল অপশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. ৪-১-৩-২ ফরমেশনের সবচাইতে বড় প্লাস পয়েন্ট হলো এর DM। বর্তমান মেটাতে অধিকাংশ অপনেন্ট ২ জন স্ট্রাইকার নিয়ে খেলে, যাদের আটকাতে এই DM আপনার দুইজন সেন্টার ব্যাকের সামনে দেয়াল হয়ে দাঁড়িয়ে অতিরিক্ত সুরক্ষা দেয়।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠের ৩ জন মিডফিল্ডারের মধ্যে মাঝখানের জন প্লে-মেকার এবং পাশের দুইজন উইং দিয়ে বল নিয়ে ওপরে উঠতে সাহায্য করে। এই ৩ জন ঠিকমতো পাসিং গেম খেলতে পারলে অপনেন্টের মাঝমাঠ ভেদ করা খুব সহজ হয়ে যায়।</p>
+                    <p style="margin-top:15px;">৩. এর অন্যতম শক্তি হলো ডুয়াল স্ট্রাইকার কম্বিনেশন। দুইজন প্লেয়ার নিজেদের মধ্যে ওয়ান-টু-ওয়ান পাস খেলে খুব সহজেই বক্সে ঢুকে পড়তে পারে, যা আপনার গোল করার সম্ভাবনা অনেক বাড়িয়ে দেবে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এই ফরমেশনের উল্লেখযোগ্য দুর্বলতা হলো উইং বা সাইড জোন। যেহেতু এখানে প্রপার উইঙ্গার নেই, তাই সাইডগুলো অনেক সময় খালি থাকে। অপনেন্ট উইং দিয়ে দ্রুতগতির অ্যাটাক চালালে ফুলব্যাকদের ওপর প্রচণ্ড চাপ সৃষ্টি হয়।</p>
+                    <p style="margin-top:15px;">২. প্রধান চ্যালেঞ্জ হলো মাঝমাঠের গ্যাপ। যদি আপনার ৩ জন মিডফিল্ডারই অনেক বেশি ওপরে উঠে যায়, তবে মাঝমাঠে বড় গ্যাপ তৈরি হয়। এতে আপনার একমাত্র DM একা হয়ে পড়ে এবং অপনেন্ট সহজেই আপনার ডিফেন্সে চাপ সৃষ্টি করতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>১. এই ফরমেশনটি মূলত অ্যাটাকিং গেমপ্লে পছন্দ করা গেমারদের জন্য বেশি সুবিধাজনক। DM পজিশনে পুরোপুরি আপগ্রেড করা (বা বেস্ট কোচিংয়ের) একজন আদর্শ ডিফেন্সিভ মিডফিল্ডার ব্যবহার করা উচিত। ৩ জন মিডফিল্ডারের জায়গায় আপনি চাইলে তিনজন AM বা উইঙ্গারও ব্যবহার করতে পারেন, তবে খেয়াল রাখবেন যেন তাদের ট্যাকেলিং স্ট্যাট তুলনামূলক ভালো থাকে। </p>
+                    <p style="margin-top:15px;">২. ৪-১-৩-২ মূলত একটি ডাইনামিক ট্যাকটিক্যাল গেমপ্লে। মাঝমাঠ আর আক্রমণের মধ্যে সঠিক সমন্বয় থাকলেই আপনি সেরা রেজাল্ট পাবেন। LB এবং RB পজিশনে অবশ্যই স্পিড ও স্ট্যামিনা সম্পন্ন ফুল-আপগ্রেড করা প্লেয়ার রাখতে হবে কারণ তাদের ওপর অনেক প্রেসার পড়বে, এবং দরকার হলে সময়মতো তাদের সাবস্টিটিউট করাতে হবে। ডিফেন্স শক্ত রেখে যারা কাউন্টার অ্যাটাক পছন্দ করেন, তাদের জন্য এটি সেরা পছন্দ।
+</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>4-1-3-2 is one of the most balanced formations in DLS. It is a powerful option for those who love midfield passing and want to destroy opponents through balanced counter-attacks.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The biggest plus point of 4-1-3-2 is the DM. In the current meta where most opponents use two strikers, this DM stands like a wall in front of your CBs to provide extra defensive cover.</p>
+                    <p style="margin-top:15px;">2. The midfield trio features a playmaker in the middle and two side midfielders who help carry the ball up. If they play the passing game correctly, piercing the opponent's midfield is only a matter of time.</p>
+                    <p style="margin-top:15px;">3. The strongest aspect is the dual-striker combination. Two forwards playing one-two passes can easily penetrate the box, significantly increasing your scoring chances.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. A notable weakness is the wing or side zone. Since there are no proper wingers, the flanks often remain empty. Speedy wing attacks from opponents can put immense pressure on your full-backs.</p>
+                    <p style="margin-top:15px;">2. The main challenge is the gap in central midfield. If all 3 midfielders push too high for goals, it creates a huge gap. This leaves your lone DM isolated, allowing the opponent to pressure your defense easily.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. This formation is highly beneficial for those who prefer an attacking playstyle. It is strongly recommended to use a fully upgraded (max-coached) defensive midfielder in the DM position. Instead of standard midfielders, you can also use three AMs or wingers, provided their tackling stats are relatively decent.</p>
+                    <p style="margin-top:15px;">The 4-1-3-2 relies heavily on dynamic tactical execution. You will get the best results by maintaining proper coordination between the midfield and the attack. Your LB and RB must be fully upgraded with high speed and stamina because they will face a lot of pressure, and timely substitutions for them are essential. It is the best choice for players who prefer to keep their defense solid while launching swift counter-attacks.
+</p>
+                </div>`
+            },
+            "4-3-1-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৪-৩-১-২ ডিএলএস-এর অন্যতম ব্যালেন্সড একটি ফরমেশন। যারা উইং দিয়ে ক্রস খেলার চেয়ে শর্ট পাসিং এবং সেন্ট্রাল অ্যাটাক বা মাঝমাঠ চিরে আক্রমণ করতে ভালোবাসেন, তাদের জন্য এটি একটি দারুণ ও কার্যকরী অপশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় শক্তি হলো এর মাঝমাঠ। তিনজন CM এবং একজন AM মিলে মাঝমাঠে একটি শক্তিশালী ডায়মন্ড শেপ তৈরি করে। এর ফলে বল পজিশন ধরে রাখা এবং ছোট ছোট পাসের মাধ্যমে প্রতিপক্ষের ডিফেন্স চিরে ভেতরে ঢোকা খুব সহজ হয়।</p>
+                    <p style="margin-top:15px;">২. বর্তমান ডিএলএস মেটা অনুযায়ী সেন্ট্রাল অ্যাটাক অনেক কার্যকর। দুজন স্ট্রাইকার এবং একজন ক্রিয়েটিভ AM থাকায় গোল করার সুযোগ অনেক বেশি তৈরি হয়। যারা 'ওয়ান-টু' পাস খেলে বক্সে ঢুকতে পছন্দ করেন, তাদের জন্য এটি সেরা ফরমেশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এর সবচাইতে বড় দুর্বলতা হলো এতে কোনো প্রপার উইঙ্গার (RW/LW) নেই। এর ফলে মাঠের দুই পাশ একদম খালি থাকে। অপনেন্ট যদি উইঙ্গারওয়ালা ফরমেশনে খেলে, তবে তারা আপনার সাইডলাইন দিয়ে খুব সহজেই ক্রস করার সুযোগ পাবে।</p>
+                    <p style="margin-top:15px;">২. যেহেতু মাঝমাঠে কোনো ডেডিকেটেড DM থাকে না, তাই প্রতিপক্ষ দ্রুত কাউন্টার অ্যাটাকে আসলে আপনার ডিফেন্স লাইনের ওপর সরাসরি চাপ পড়ে। মাঝমাঠ থেকে ডিফেন্সকে সুরক্ষা দেওয়ার মতো লোক কম থাকায় গোল খাওয়ার ঝুঁকি বেড়ে যায়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. এই ফরমেশনে সফল হতে হলে আপনাকে অবশ্যই 'Defensive' মোডে খেলতে হবে। অ্যাটাকিং মোডে গেলে আপনার মিডফিল্ডাররা অনেক ওপরে উঠে যাবে এবং কাউন্টারে আপনি গোল খেয়ে বসতে পারেন।মিডে তিনজন CM-এর পরিবর্তে মাঝখানের পজিশনটিতে একজন DM রাখতে পারেন।</p>
+                    <p style="margin-top:15px;">২. যারা ৪-৩-৩ ফরমেশনে খেলতে পছন্দ করেন কিন্তু গেমপ্লেতে কিছুটা ভিন্নতা খুঁজছেন, তাদের জন্য এটি সেরা ফরমেশন। এই ফরমেশনে সফলতা পেতে হলে আপনাকে পাসিং এবং প্রেসিং বেশি করতে হবে। যতটা সম্ভব বল পায়ে রেখে আক্রমণ সাজানোর চেষ্টা করুন।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>4-3-1-2 is one of the most balanced formations in DLS. For those who prefer short passing and central attacks to pierce through the midfield rather than relying on wing crosses, this is a highly reliable and effective option.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The biggest strength is the midfield. Three CMs and an AM form a solid diamond shape, making it very easy to maintain possession and penetrate the opponent's defense through short passing.</p>
+                    <p style="margin-top:15px;">2. According to the current DLS meta, central attacks are highly effective. Having two strikers and a creative AM creates numerous scoring opportunities, especially for those who love 'one-two' passing.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The major weakness is the lack of proper wingers (RW/LW), leaving the flanks exposed. Opponents using wing-based formations can easily find space along the sidelines to deliver crosses.</p>
+                    <p style="margin-top:15px;">2. Since there is no dedicated DM, your defense line comes under direct pressure during quick counter-attacks. Without central defensive cover, the risk of conceding goals increases significantly.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. To succeed in this formation, it is highly recommended to play in a 'Defensive' mentality. If you switch to attacking mode, your midfielders will push too far up, leaving you vulnerable to counter-attacks. You can also use one DM in the center instead of three CMs for better defensive stability.</p>
+                    <p style="margin-top:15px;">2. This formation is the best choice for those who love playing the 4-3-3 but are looking for a bit of variation in their gameplay. To achieve success here, you need to rely heavily on passing and pressing. Try to maintain possession and build your attacks patiently.</p>
+                </div>`
+            },
+            "4-2-2-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>ফুটবলের আধুনিক ট্যাকটিক্যাল ফরমেশনগুলোর মধ্যে ৪-২-২-২ অন্যতম ব্যালেন্সড একটি সেটআপ। এটি মূলত ৪-৪-২ ফরমেশনের একটি উন্নত সংস্করণ, যেখানে মাঝমাঠকে দুই ভাগে ভাগ করা হয়েছে—দুইজন DM (ডিফেন্সিভ মিডফিল্ডার) এবং দুইজন AM (অ্যাটাকিং মিডফিল্ডার)।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচেয়ে বড় শক্তি হলো এর দুইজন প্রপার DM। আপনার ৪ জন ডিফেন্ডারের ঠিক সামনে এই দুইজন মিডফিল্ডার একটি দুর্ভেদ্য দেয়াল তৈরি করে রাখে যা প্রতিপক্ষের আক্রমণ মাঝপথেই রুখে দিতে সক্ষম।</p>
+                    <p style="margin-top:15px;">২. এখানে দুইজন AM এবং দুইজন CF থাকায় আক্রমণের সময় মোট ৪ জন প্লেয়ার বক্সে চাপ সৃষ্টি করতে পারে। দুইজন AM মূলত উইঙ্গার এবং প্লে-মেকার—উভয় ভূমিকা পালন করে দ্রুত গোল করতে সহায়তা করে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এই ফরমেশনের বড় দুর্বলতা হলো মাঝমাঠের কেন্দ্রস্থল অনেক সময় ফাঁকা হয়ে যায়। দুইজন DM নিচে এবং দুইজন AM ওপরে থাকায় মাঝখানে বল পজিশন ধরে রাখার মতো কেউ থাকে না, ফলে অপনেন্ট সহজে মাঝমাঠ দখল করতে পারে।</p>
+                    <p style="margin-top:15px;">২. যেহেতু এখানে প্রপার উইঙ্গার (RW/LW) নেই, তাই সাইডলাইন সামলানোর সব দায়িত্ব ফুল-ব্যাকদের (RB/LB) ওপর পড়ে। অপনেন্ট দ্রুতগতির উইঙ্গার দিয়ে অ্যাটাক করলে ডিফেন্স অগোছালো হয়ে যাওয়ার ঝুঁকি থাকে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. আপনার দুইজন AM পজিশনে এমন প্লেয়ার রাখুন যাদের Spe, Acc, Con, Pas, Sho ১০০ হওয়ার পাশাপাশি ট্যাকেলিং ক্ষমতাও বেশ ভালো (যেমন ৯৯ রেটিংয়ের মেসি)। যেহেতু সবার কাছে এমন প্লেয়ার থাকে না, সেক্ষেত্রে অন্তত ৯৫ স্পিডের AM ব্যবহার করতে পারেন যার ট্যাকেল ৬০+ থাকবে। তাহলে তারা অ্যাটাকিংয়ে সহায়তার পাশাপাশি DM-দের ডিফেন্সে সাহায্য করতে পারবে।</p>
+                    <p style="margin-top:15px;">২. DM পজিশনে ১৯০+ সেমি হাইটের প্লেয়ার রাখুন যার ট্যাকেলিং স্ট্যাট ৯৫-১০০ এর মধ্যে। সেই সাথে পাসও ৯০+ থাকতে হবে। ডিফেন্সের ক্ষেত্রে CB অবশ্যই সম্পূর্ণ আপগ্রেড করা (বেস্ট কোচিংয়ের) হতে হবে। পাশাপাশি LB এবং RB পজিশনে এমন প্লেয়ার লাগবে যাদের Spe, Acc, Sta ১০০ হওয়ার পর STR অন্তত ৯০ থাকে।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>4-2-2-2 is one of the most balanced tactical setups in modern football. It's an advanced version of 4-4-2 where the midfield is split into two Defensive Midfielders (DM) and two Attacking Midfielders (AM).</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The greatest strength is the two proper DMs. These two midfielders create an impenetrable wall in front of your 4 defenders, stopping opponent attacks in their tracks.</p>
+                    <p style="margin-top:15px;">2. With two AMs and two CFs, four players can apply pressure in the box during attacks. The AMs act as both wingers and playmakers, helping to score goals quickly.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. A major weakness is the gap in the center of the midfield. With two DMs staying low and two AMs high, there is often no one to hold possession in the middle, allowing opponents to dominate that area.</p>
+                    <p style="margin-top:15px;">2. Since there are no proper wingers (RW/LW), full-backs (RB/LB) bear the entire responsibility for the flanks. Fast opponent wingers can cause the defensive line to become disorganized.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. In your two AM positions, use players who have 100 in Spe, Acc, Con, Pas, and Sho, along with good tackling abilities (like a 99-rated Messi). Since not everyone has such maxed-out players, try to use AMs with at least 95 speed and 60+ tackling. This allows them to assist the DMs in defense while still heavily contributing to the attack.</p>
+                    <p style="margin-top:15px;">2. Place players with 190+ cm height in the DM positions, possessing 95-100 tackling stats and 90+ passing. For the defense, your CBs must be fully upgraded (max-coached). Additionally, you need LBs and RBs who have 100 in Spe, Acc, and Sta, with a STR rating of at least 90.</p>
+                </div>`
+            },
+            "4-4-1-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>ফুটবল বিশ্বের অন্যতম ঐতিহ্যবাহী এই ফরমেশনটি মূলত ৪-৪-২ এরই একটি পরিবর্তিত রূপ। এখানে একজন প্রপার ফরোয়ার্ডের ঠিক পেছনে একজন সেকেন্ড স্ট্রাইকার বা 'Shadow Striker' ব্যবহার করা হয়। এটি গেমে টিকে থাকার জন্য একটি আদর্শ রক্ষণাত্মক কৌশল।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় শক্তির জায়গা হলো এর নিখুঁত রক্ষণাত্মক ভারসাম্য। ব্যাকলাইনে ৪ জন এবং মাঝমাঠে ৪ জন মিলে মোট ৮ জন প্লেয়ার ডিফেন্স করতে প্রস্তুত থাকে, ফলে প্রতিপক্ষ সহজে ফাঁকা জায়গা খুঁজে পায় না।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে ৪ জন প্লেয়ার থাকায় আপনি উইং এবং সেন্টার—উভয় দিক দিয়েই খেলার নিয়ন্ত্রণ রাখতে পারবেন। স্ট্রাইকারের পেছনে থাকা প্লেয়ারটি ফ্রি-রোল পালন করে, যা প্রতিপক্ষের ডিফেন্সকে কনফিউজড করে দিতে কার্যকর।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা ও চ্যালেঞ্জ</span></div>
+                    <p>১. আক্রমণভাগে একাকীত্ব এই ফরমেশনের বড় মাইনাস পয়েন্ট। সামনে মাত্র একজন CF থাকায় সে প্রায়ই প্রতিপক্ষের ২-৩ জন ডিফেন্ডারের মাঝখানে একা হয়ে পড়ে। মিডফিল্ডাররা দ্রুত ওপরে না উঠতে পারলে গোল বের করা কঠিন হয়ে যায়।</p>
+                    <p style="margin-top:15px;">২. ৪-৪-১-১ ফরমেশনটি মূলত পাসিং বা কাউন্টার অ্যাটাকের জন্য অতটা ডাইনামিক না। এটি অনেক সময় গেমের গতি কমিয়ে দেয়। যারা খুব দ্রুত গোল করতে পছন্দ করেন, তারা এই ধীরগতির গেমপ্লেতে বিরক্ত হতে পারেন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. এই ফরমেশনে গোল পেতে হলে আপনার CF পজিশনে এমন একজনকে লাগবে যার Physical Strength এবং Height বেশি (যেমন হ্যালান্ড, কেইন) যাতে সে একাই বল হোল্ড করতে পারে। আর তার পেছনের প্লেয়ারটি (SS) অবশ্যই খুব দ্রুতগতির হতে হবে। যেমন এমবাপ্পে বা বেস্ট কোচিংয়ের কোনো ফরোয়ার্ড যার হাইট কম হলেও পাস, কন্ট্রোল তুলনামূলক বেশি। তাছাড়া STR ১০০ নাহলেও Spe, Acc, Sho ১০০ হতে হবে। কন্ট্রোল ও পাস ৯৫ এর আশেপাশে হতে হবে।</p>
+                    <p style="margin-top:15px;">২. এখানে আপনি 'Defensive' বা 'Moderate' মোডে খেললে সবচাইতে ভালো ফল পাবেন। মনে রাখবেন, এটি কোনো গোলের বন্যা বইয়ে দেওয়ার ফরমেশন নয়; এটি হলো ডিফেন্স ঠিক রেখে ১-০ বা ২-০ তে ম্যাচ জেতার ট্যাকটিকস।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">TACTICAL OVERVIEW</span></div>
+                    <p>One of the most traditional formations in world football, this is essentially a modified version of the 4-4-2. Here, a second striker or 'Shadow Striker' is used right behind a proper forward. It is an ideal defensive strategy for maintaining stability in the game.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The biggest strength of this formation is its perfect defensive balance. With 4 players in the backline and 4 in the midfield, a total of 8 players are ready to defend, making it difficult for the opponent to find open spaces.></p>
+                    <p style="margin-top:15px;">2. With 4 players in the midfield, you can control the game through both the wings and the center. The player behind the striker plays a free role, which is highly effective in confusing the opponent's defense.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses & Challenges</span></div>
+                    <p>1. Isolation in the attack is the major minus point of this formation. With only one CF up front, they often become isolated among 2-3 opposing defenders. If the midfielders cannot move up quickly, creating goal-scoring opportunities becomes difficult.</p>
+                    <p style="margin-top:15px;">2. The 4-4-1-1 formation is not very dynamic for quick passing or counter-attacking. It often slows down the pace of the game. Players who prefer scoring quick goals might find this slow-paced gameplay frustrating.
+</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. To score goals in this formation, you need a player in the CF position with high Physical Strength and Height (like Haaland or Kane) so they can hold the ball up alone. The player behind them (SS) must be extremely fast—like Mbappe, or any highly-trained forward who might lack height but possesses superior passing and ball control. Furthermore, even if their STR isn't 100, their Spe, Acc, and Sho must be 100. Control and passing should be around 95.</p>
+                    <p style="margin-top:15px;">2. You will get the best results playing in 'Defensive' or 'Moderate' mentality. Remember, this is not a formation designed for raining goals; it is a tactic focused on keeping the defense solid to win matches 1-0 or 2-0.
+</p>
+                </div>`
+            },
+            "4-5-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৪-৫-১ ফরমেশনটি মূলত একটি অতি রক্ষণাত্মক কৌশল। এখানে মাঝমাঠকে ৫ জন প্লেয়ার দিয়ে এমনভাবে ব্লক করে রাখা হয় যে, প্রতিপক্ষের জন্য পাসিং গেম খেলা প্রায় অসম্ভব হয়ে পড়ে।  শক্তিশালী অপনেন্টের বিরুদ্ধে লিড ধরে রাখার জন্য এটি একটি দুর্দান্ত অপশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূ</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় শক্তি হলো মাঝমাঠের একাধিপত্য। ৫ জন মিডফিল্ডার থাকায় মাঠের প্রতিটি কোণ আপনার দখলে থাকবে এবং অপনেন্ট সহজে বল কন্ট্রোল করতে পারবে না।</p>
+                    <p style="margin-top:15px;">২. এটি বিপজ্জনক কাউন্টার অ্যাটাকের জন্য দারুণ। মিডফিল্ডাররা বল কেড়ে নিয়ে দ্রুত উইং দিয়ে LM/RM-কে পাস দিলে তারা দ্রুত গতিতে ওপরে উঠে স্ট্রাইকারকে বল সাপ্লাই দিতে পারে এবং প্রতিপক্ষকে চমকে দিতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা ও চ্যালেঞ্জ</span></div>
+                    <p>১. স্ট্রাইকারের বিচ্ছিন্নতা এই ফরমেশনের প্রধান সমস্যা। সামনে মাত্র একজন CF থাকায় সে প্রতিপক্ষের ডিফেন্ডারদের মাঝে একা হয়ে পড়ে। মিডফিল্ডাররা দ্রুত সাপোর্ট না দিলে পুরো ম্যাচে গোলের সুযোগ তৈরি করা কঠিন হয়ে যায়।</p>
+                    <p style="margin-top:15px;">২. আক্রমণে ধীরগতির কারণে যারা প্রচুর গোল করতে পছন্দ করেন, তাদের কাছে এই ফরমেশনটি একঘেয়ে বা বোরিং মনে হতে পারে। এটি দিয়ে চাইলেই হাই-ভোল্টেজ অ্যাটাকিং ফুটবল খেলা সম্ভব হয় না।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. মিডফিল্ডে পাঁচজন থাকায় আপনাকে অবশ্যই মাঝমাঠ ডমিনেট করতে হবে। তবে LM এবং RM-এর পরিবর্তে আপনি চাইলে LWB, RWB অথবা পাসিং স্ট্যাট ভালো এমন LB, RB ব্যবহার করতে পারেন। এতে ডিফেন্সিভ দিকটি আরও শক্তিশালী হবে। তাছাড়া তিনজন CM-এর পরিবর্তে একজন CM, একজন DM (মাঝখানের পজিশনে) এবং একজন AM ব্যবহার করা বেশি কার্যকরী।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে সফল হওয়ার প্রধান উপায় হলো 'Defensive' মোডে খেলা। 'Moderate' মোডে খেলাটাও নিরাপদ, তবে 'Attacking' মোডে গেলে আপনার ৫ জন মিডফিল্ডারই অনেক ওপরে উঠে যাবে, ফলে কাউন্টার অ্যাটাকে গোল খাওয়ার ঝুঁকি বেড়ে যাবে। এটি মূলত প্রতিপক্ষকে হতাশ করে ম্যাচ বের করে আনার একটি কৌশল।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 4-5-1 formation is essentially an ultra-defensive tactic. The midfield is blocked with 5 players, making it nearly impossible for the opponent to play their passing game. It is the best choice for holding a lead against strong opponents.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The greatest strength is midfield dominance. With 5 midfielders, every corner of the field is under your control, making it difficult for the opponent to maintain possession.</p>
+                    <p style="margin-top:15px;">2. It's excellent for dangerous counter-attacks. When midfielders win the ball and quickly pass to LM/RM on the wings, they can rapidly push up to supply the striker and surprise the opponent.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Striker isolation is the main issue. With only one CF, he often gets trapped among opponent defenders. Without quick support from the midfield, creating scoring chances becomes very hard.</p>
+                    <p style="margin-top:15px;">2. Due to the slow pace of attack, players who love high-scoring games might find this formation boring. It's not designed for high-voltage attacking football.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. With five players in the middle, you must aim to dominate the midfield. However, instead of LM and RM, you can use LWB, RWB, or fullbacks (LB/RB) with high passing stats. This will significantly strengthen your defense. Additionally, instead of using three CMs, it is more effective to use one CM, one DM (in the central position), and one AM.</p>
+                    <p style="margin-top:15px;">2. The key to success in this formation is playing in a 'Defensive' mentality. Playing in 'Moderate' mode is also safe, but if you switch to 'Attacking', all 5 of your midfielders will push too far forward, increasing the risk of conceding from counter-attacks. This tactic is essentially about frustrating the opponent to win the match.
+</p>
+                </div>`
+            },
+            "4-1-4-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৪-১-৪-১ ফরমেশনটি মূলত রক্ষণভাগ এবং মাঝমাঠের মধ্যে একটি শক্তিশালী সেতু তৈরি করে। এখানে একজন ডেডিকেটেড DM থাকে, যা আপনার ডিফেন্সকে অতিরিক্ত সুরক্ষা দেয় এবং ৪ জন মিডফিল্ডার আক্রমণে সহায়তা করে। এটি পজিশন হোল্ড করে খেলার জন্য দারুণ একটি ফরমেশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের বড় শক্তি হলো এর 'DM' পজিশন। ৪ জন ডিফেন্ডারের সামনে এই প্লেয়ারটি দাঁড়িয়ে থেকে প্রতিপক্ষের থ্রু-পাস বা স্ট্রাইকারদের মুভমেন্ট মাঝপথেই আটকে দেয়, যা আপনার ডিফেন্সকে দেয় নিরেট নিরাপত্তা।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে ৪ জন মিডফিল্ডার থাকায় পাসিংয়ের জন্য সব সময় একাধিক অপশন খোলা থাকে। বল পজিশন ধরে রেখে ধীরে ধীরে আক্রমণ বিল্ড-আপ করার জন্য এবং মাঝমাঠের নিয়ন্ত্রণ নিতে এটি খুবই কার্যকর।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. ৪-৫-১ এর মতো এখানেও সামনে মাত্র একজন CF থাকে। যদি চারজন মিডফিল্ডার দ্রুত স্ট্রাইকারকে সাপোর্ট দিতে না পারে, তবে সে একা হয়ে যায় এবং গোল করার সম্ভাবনা অনেক কমে যায়। এখানে মিডফিল্ডারদের ইনভলভমেন্ট খুব জরুরি।</p>
+                    <p style="margin-top:15px;">২. ৪ জন মিডফিল্ডার আক্রমণে ওঠার সময় যদি পজিশন হারায় এবং আপনার একমাত্র DM একা হয়ে পড়ে, তবে অপনেন্ট খুব সহজে কাউন্টার অ্যাটাক দিয়ে ডিফেন্স ভেঙে দিতে পারে। বিশেষ করে উইং অ্যাটাক সামলানো তখন কঠিন হয়ে পড়ে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. এই ফরমেশনের সাফল্য নির্ভর করে DM এর ওপর। এখানে এমন কাউকে রাখুন যার Tackle এবং Strength ভালো (যেমন- রদ্রি)। স্ট্রাইকার হিসেবে ভালো Control এবং Shooting সম্পন্ন প্লেয়ার রাখা জরুরি যাতে সে মিডফিল্ডারদের ওপরে ওঠার সময় দিতে পারে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে সবচাইতে ভালো রেজাল্ট পাওয়া যায় 'Moderate' মোডে খেললে। এটি ডিফেন্সের সময় ৫-৪-১ এর মতো এবং আক্রমণের সময় ৪-৩-৩ এর মতো শেপ তৈরি করে। মাঝমাঠে পজিশন ধরে রাখাই হলো এর মূল ট্যাকটিকস।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 4-1-4-1 formation creates a strong bridge between defense and midfield. A dedicated DM provides extra cover for the defense while 4 midfielders support the attack. It is excellent for maintaining possession.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The greatest strength is the DM position. Standing in front of the 4 defenders, this player blocks through-passes and striker movements, providing solid security to your defensive line.</p>
+                    <p style="margin-top:15px;">2. With 4 midfielders, you always have multiple passing options. It is very effective for dictating the game's tempo and building attacks while keeping possession.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Similar to 4-5-1, the lone CF can become isolated. If the four midfielders fail to support the striker quickly, scoring becomes difficult. Midfield involvement is crucial here.</p>
+                    <p style="margin-top:15px;">2. If the 4 midfielders lose possession while attacking, your lone DM can be left isolated. This makes you vulnerable to quick opponent counter-attacks, especially through the wings.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">   Expert Tips</span></div>
+                    <p>1. Success depends on your DM. Use a player with high Tackle and Strength (like Rodri). Choose a striker with good Control and Shooting who can hold the ball until the midfielders arrive.</p>
+                    <p style="margin-top:15px;">2. Best results are achieved in 'Moderate' mode. It acts like a 5-4-1 when defending and shifts to a 4-3-3 shape during attacks. Holding position in midfield is the key tactic.</p>
+                </div>`
+            },
+            "4-3-2-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৪-৩-২-১ ফরমেশনটি ফুটবলে 'ক্রিসমাস ট্রি' নামে পরিচিত। এটি মূলত একটি ন্যারো বা সংকীর্ণ ফরমেশন, যেখানে মাঝমাঠে ৫ জন প্লেয়ার ভিন্ন ভিন্ন লেয়ারে কাজ করে। এটি রক্ষণাত্মকভাবে অত্যন্ত শক্তিশালী এবং মাঝমাঠ দিয়ে খেলা তৈরিতে অতুলনীয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূ</span></div>
+                    <p>১. এই ফরমেশনের বড় শক্তি হলো মিডফিল্ডের তিনটি লেয়ার (৩ জন CM এবং ২ জন AM)। এটি প্রতিপক্ষের জন্য পাসের জায়গা একদম বন্ধ করে দেয় এবং মাঝপথ দিয়ে করা যেকোনো আক্রমণ খুব সহজে রুখে দিয়ে বল পজিশন ধরে রাখতে সাহায্য করে।</p>
+                    <p style="margin-top:15px;">২. এর মূল আকর্ষণ হলো ২ জন AM যারা 'ক্রিয়েটিভ ইঞ্জিন' হিসেবে কাজ করে। এই দুইজন এবং একমাত্র CF মিলে ত্রিভুজাকৃতির ওয়ান-টু পাসিং মুভ তৈরি করে প্রতিপক্ষের সেন্টার ব্যাকদের কনফিউজড করে গোল বের করার জন্য সেরা উপায় তৈরি করে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. সাইডলাইনের অভাব এই ফরমেশনের সবচাইতে বড় দুর্বলতা। কোনো উইঙ্গার না থাকায় মাঠের দুই পাশ পুরোপুরি ফাঁকা থাকে। অপনেন্ট যদি উইং দিয়ে বারবার ক্রস দেয়, তবে আপনার ফুল-ব্যাকরা একা হয়ে পড়ে এবং ডিফেন্স ভেঙে যাওয়ার প্রবল ঝুঁকি থাকে।</p>
+                    <p style="margin-top:15px;">২. যারা উইং দিয়ে দৌড়ে গিয়ে ক্রস দিতে অভ্যস্ত, তাদের কাছে এটি কঠিন মনে হতে পারে। কারণ এখানে সব আক্রমণ মাঝপথ দিয়েই করতে হয়। অপনেন্ট মাঝমাঠ ব্লক করে রাখলে গোল বের করা অনেক সময় অসম্ভব হয়ে পড়ে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. মিডফিল্ডে তিনজন CM-এর পরিবর্তে মাঝখানের পজিশনে একজন DM রাখুন। AM হিসেবে অবশ্যই সম্পূর্ণ আপগ্রেড করা (বেস্ট কোচিংয়ের) সেরা প্লেয়ার ব্যবহার করবেন। অ্যাটাকে বাড়তি সুবিধা পেতে চাইলে আপনি LW/RW, SS বা CF-ও ব্যবহার করতে পারেন, তবে খেয়াল রাখবেন যেন তাদের ট্যাকেলিং স্ট্যাট তুলনামূলক ভালো থাকে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে 'Moderate' মোড সবচাইতে কার্যকর। তাড়াহুড়ো না করে মাঝমাঠে বল পজিশন ধরে রেখে সুযোগের অপেক্ষা করাই এই ফরমেশনে জেতার আসল কৌশল। লিড ধরে রাখতে প্রয়োজনে 'Defensive' মোডে যেতে পারেন।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 4-3-2-1 formation is famously known as the 'Christmas Tree'. It is a narrow formation where 5 midfielders work in different layers, making it defensively solid and unparalleled for building play through the center.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The greatest strength is the three layers of midfield (3 CMs and 2 AMs). This shuts down passing lanes for the opponent and makes it very easy to win the ball back and maintain possession.</p>
+                    <p style="margin-top:15px;">2. The highlight is the 2 AMs acting as creative engines. Along with the lone CF, they can create triangular one-two passing moves that confuse opponent center-backs and create scoring chances.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Lack of width is the major drawback. With no wingers, the flanks are completely exposed. If the opponent uses wide formations and crosses frequently, your full-backs can get overwhelmed.</p>
+                    <p style="margin-top:15px;">2. Players used to sprinting down wings and crossing might find this difficult. All attacks must go through the center, which can become impossible if the opponent blocks the middle effectively.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">NextGen Tips</span></div>
+                    <p>1. Instead of using three CMs, it is better to place one DM in the central midfield position. For the AM spots, make sure to use top-tier, fully upgraded (max-coached) players. For an added attacking advantage, you can also deploy LW/RW, SS, or CF in these positions, provided their tackling stats are relatively decent.</p>
+                    <p style="margin-top:15px;">2. 'Moderate' mode is most effective for this formation. The key to winning is staying patient, holding possession in midfield, and waiting for the right opening. Switch to 'Defensive' to hold a lead.</p>
+                </div>`
+            },
+            "4-1-2-3": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৪-১-২-৩ ফরমেশনটি মূলত আক্রমণ এবং রক্ষণভাগের মধ্যে একটি চমৎকার ভারসাম্য তৈরি করে। মাঝমাঠে একজন DM থাকায় ডিফেন্স যেমন নিরাপদ থাকে, তেমনি দুইজন CM এবং তিনজন ফরোয়ার্ড মিলে আক্রমণে প্রচণ্ড চাপ সৃষ্টি করতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনে একজন DM এবং দুইজন CM মিলে মাঝমাঠে একটি শক্তিশালী ত্রিভুজ তৈরি করে। এর ফলে বল পজিশন ধরে রাখা এবং ছোট ছোট পাসের মাধ্যমে খেলা নিয়ন্ত্রণ করা খুব সহজ হয়। যারা পজিশন-বেজড ফুটবল পছন্দ করেন তাদের জন্য এটি সেরা।</p>
+                    <p style="margin-top:15px;">২. তিনজন প্রপার ফরোয়ার্ড (LW, RW, CF) থাকায় আপনি উইং এবং সেন্টার—উভয় দিক দিয়েই আক্রমণ করতে পারবেন। দুইজন CM আক্রমণে ওপরে উঠে আসায় স্ট্রাইকাররা বক্সে প্রচুর বল সাপ্লাই পায়, যা গোলের সম্ভাবনা অনেক বাড়িয়ে দেয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. কাউন্টার অ্যাটাকের ঝুঁকি এই ফরমেশনের সবচাইতে বড় ভয়ের কারণ। দুইজন CM আক্রমণে ব্যস্ত থাকায় বল হারিয়ে ফেললে মাঝমাঠে বড় গ্যাপ তৈরি হয়, ফলে আপনার একমাত্র DM অনেকটা একা হয়ে পড়ে এবং ডিফেন্সের ওপর প্রচণ্ড চাপ সৃষ্টি হয়।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে দুইজন CM-কে একইসাথে অ্যাটাক এবং ডিফেন্স—উভয় দিকেই দৌড়াতে হয়। এর ফলে তাদের এনার্জি বা স্ট্যামিনা খুব দ্রুত শেষ হয়ে যায়। ব্যাকআপ প্লেয়ার না থাকলে ম্যাচের শেষ দিকে মাঝমাঠের নিয়ন্ত্রণ হারানোর ঝুঁকি থাকে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. এই ফরমেশনের সাফল্য অনেকটাই নির্ভর করে DM-এর ওপর। এখানে এমন কাউকে রাখুন যার ইন্টারসেপশন এবং ট্যাকেলিং স্ট্যাট ভালো। উইঙ্গার হিসেবে অবশ্যই সম্পূর্ণ আপগ্রেড করা (বেস্ট কোচিংয়ের) সেরা প্লেয়ার রাখবেন। যদি আরও বেশি অ্যাটাকের প্রয়োজন হয়, তবে ২ জন CM-এর জায়গায় একজন AM ব্যবহার করতে পারেন।</p>
+                    <p style="margin-top:15px;">২. এখানে 'Moderate' মোড সবচাইতে ভালো ফল দেয়। তবে শক্তিশালী প্রতিপক্ষের বিরুদ্ধে 'Defensive' মোডে থাকাই বুদ্ধিমানের কাজ। তাড়াহুড়ো করে সব প্লেয়ারকে ওপরে না পাঠিয়ে ধীরে ধীরে আক্রমণ সাজানোই এই ফরমেশনের মূল ট্যাকটিকস।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 4-1-2-3 formation creates an excellent balance between attack and defense. With a dedicated DM securing the defense, two CMs and three forwards can apply immense pressure on the opponent.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The DM and two CMs form a strong midfield triangle, making it easy to maintain possession and dictate the tempo. This is ideal for players who prefer a possession-based football style.</p>
+                    <p style="margin-top:15px;">2. With three proper forwards (LW, RW, CF), you can attack through both the wings and the center. The two CMs moving up provide great ball supply to the strikers, increasing scoring chances.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Vulnerability to counter-attacks is the biggest risk. Since two CMs stay busy in attack, losing the ball creates a huge gap in midfield, leaving your DM isolated and putting the defense under pressure.</p>
+                    <p style="margin-top:15px;">2. Midfielders can get exhausted quickly as the two CMs must cover both attack and defense. Without good backup players, you risk losing control of the midfield in the final stages of the match.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. The success of this formation heavily relies on the DM. Deploy a player here who has excellent interception and tackling skills. For the winger positions, make sure to use top-tier, fully upgraded (max-coached) players. If you need more attacking output, you can replace one of the CMs with an AM.</p>
+                    <p style="margin-top:15px;">2. 'Moderate' mode gives the best results. However, against strong opponents, staying on 'Defensive' is wiser. The key tactic is to build up attacks slowly rather than rushing all players forward.</p>
+                </div>`
+            },
+            "4-2-1-3": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৪-২-১-৩ ফরমেশনটি মূলত ৪-৩-৩ এর একটি ট্যাকটিক্যাল সংস্করণ। এখানে দুইজন CM ডিফেন্সকে সুরক্ষা দেয় এবং একজন AM সরাসরি আক্রমণভাগের সাথে সংযোগ তৈরি করে। এটি আক্রমণ এবং রক্ষণভাগের মধ্যে এক চমৎকার ভারসাম্য বজায় রাখে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ </span></div>
+                    <p>১. এই ফরমেশনের বড় শক্তি হলো এর দুইজন CM। তারা ডিফেন্সের ঠিক সামনে একটি শক্ত দেয়াল তৈরি করে রাখে, যা প্রতিপক্ষের আক্রমণগুলো বক্সে ঢোকার আগেই রুখে দেয়। মাঝমাঠ দখল করার জন্য এটি খুব কার্যকর।</p>
+                    <p style="margin-top:15px;">২. একজন ডেডিকেটেড AM থাকায় তিনজন ফরোয়ার্ডের (LW, RW, CF) কাছে বল সাপ্লাই দেওয়া খুব সহজ হয়। AM মূলত মাঝমাঠ থেকে থ্রু-বল বাড়িয়ে প্রতিপক্ষের ডিফেন্স লাইনের ওপর সব সময় একটা মানসিক চাপ বজায় রাখে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এই ফরমেশনে দুইজন CM এবং একজন AM-এর মধ্যে বড় গ্যাপ তৈরি হতে পারে। যদি আপনার AM আক্রমণে ওপরে উঠে যায় এবং নিচে নামতে দেরি করে, তবে প্রতিপক্ষ দ্রুত পাসিং গেম খেলে মাঝমাঠের নিয়ন্ত্রণ কেড়ে নিতে পারে।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে প্লেয়ার কম থাকায় সাইডলাইন সামলানোর দায়িত্ব RB/LB-এর ওপর পড়ে। তারা ওপরে উঠে এলে যদি বল পজিশন হারিয়ে ফেলেন, তবে প্রতিপক্ষের উইঙ্গাররা আপনার ফাঁকা সাইডলাইন দিয়ে খুব সহজেই কাউন্টার অ্যাটাক করতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. দুইজন CM পজিশনে এমন প্লেয়ার রাখুন যারা একইসাথে ডিফেন্স এবং পাসিংয়ে দক্ষ। তবে একজন 'Both Footed' (দুই পায়েই খেলতে পারেন এমন) CM হলে ভালো হয়। আপনি যদি পাসিং এবং বল কন্ট্রোল গেমপ্লেতে কিছুটা দুর্বল হন, তবে নিরাপত্তার জন্য একজন DM ব্যবহার করতে পারেন। আর AM পজিশনে অবশ্যই টিমের সবচাইতে সেরা প্লে-মেকারকে রাখুন (যেমন- মেসি বা ডি ব্রুইনা), যার শ্যুটিং (Sho) স্ট্যাট তুলনামূলক বেশি থাকবে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে 'Moderate' বা 'Attacking' মোডে খেললে সবচাইতে ভালো ফল পাওয়া যায়। তবে প্রতিপক্ষ খুব শক্তিশালী হলে 'Defensive' মোডে থেকে কাউন্টার অ্যাটাকের সুযোগ খুঁজুন। AM এবং উইঙ্গারদের মধ্যে দ্রুত ওয়ান-টু পাস খেলাই গোল পাওয়ার চাবিকাঠি।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>4-2-1-3 is a tactical version of 4-3-3, where two CMs protect the defense and an AM connects directly with the front line. it maintains an excellent balance between attack and defense.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The biggest strength is the two CMs. They create a solid wall in front of the defense, stopping opponent attacks before they reach the box. It is highly effective for controlling the midfield.</p>
+                    <p style="margin-top:15px;">2. Having a dedicated AM makes it easy to supply balls to the three forwards (LW, RW, CF). The AM keeps constant pressure on the opponent's defense by providing crucial through-balls.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. A large gap can form between the two CMs and the AM. If your AM stays too high in attack and fails to track back, the opponent can easily seize control of the midfield with quick passing.</p>
+                    <p style="margin-top:15px;">2. With fewer players in midfield, the full-backs (RB/LB) carry more responsibility. If they push up and lose possession, opponent wingers can exploit the empty flanks for quick counter-attacks.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. In the two CM positions, deploy players who excel in both defending and passing. It is advantageous if one of them is 'Both Footed'. If you are relatively weak at possession and passing games, you can use a DM for added safety. For the AM position, always use your team's best playmaker (like Messi or De Bruyne) with a high Shooting (Sho) stat.</p>
+                    <p style="margin-top:15px;">2. Best results are achieved on 'Moderate' or 'Attacking' mode. Against stronger opponents, stay on 'Defensive' and wait for counter-attack opportunities. Quick one-two passes between the AM and wingers are key to scoring.</p>
+                </div>`
+            },
+            "5-3-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৫-৩-২ ফরমেশনটি মূলত একটি অতি-রক্ষণাত্মক কৌশল যেখানে আপনার গোলপোস্টের সামনে ৩ জন CB এবং ২ জন ফুল-ব্যাক মিলে ৫ জনের একটি নিরেট দেয়াল তৈরি করে রাখে। এটি শক্তিশালী প্রতিপক্ষের আক্রমণ সামলানো এবং লিড ধরে রাখার জন্য সেরা চয়েস।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচেয়ে বড় শক্তি হলো এর অভেদ্য রক্ষণভাগ। বক্সে ৩ জন সেন্টার ব্যাক থাকায় প্রতিপক্ষের স্ট্রাইকাররা জায়গা পায় না এবং যেকোনো ক্রস বা থ্রু-বল আপনার বাড়তি ডিফেন্ডাররা খুব সহজেই ক্লিয়ার করে দিতে পারে।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে ৩ জন CM থাকায় পজিশন হোল্ড করা সহজ হয়। বল কেড়ে নেওয়ার পর দ্রুত দুই স্ট্রাইকারকে বল সাপ্লাই দিলে হঠাৎ কাউন্টার অ্যাটাকে গোল পাওয়ার ভালো সম্ভাবনা তৈরি হয়। 'ক্লিন শিট' রাখার জন্য এটি গেমের সেরা ফরমেশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. এই ফরমেশনে কোনো প্রপার উইঙ্গার (LW/RW) না থাকায় সাইড দিয়ে আক্রমণ করার সুযোগ খুব কম থাকে। যারা কেবল উইং দিয়ে ক্রস খেলে গোল করতে অভ্যস্ত, তাদের জন্য এই ফরমেশনে খেলা বেশ চ্যালেঞ্জিং হতে পারে।</p>
+                    <p style="margin-top:15px;">২. উইঙ্গার নেই বলে মাঝেমধ্যে RB এবং LB-কে ওপরে উঠে আক্রমণে সাহায্য করতে হয়। তারা ওপরে থাকা অবস্থায় যদি বল পজিশন হারিয়ে ফেলেন, তবে ডিফেন্সের দুই সাইড একদম ফাঁকা হয়ে পড়ে যা আপনার জন্য বিপজ্জনক হতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. এই ফরমেশনে মিডফিল্ডের তিনজনের মধ্যে মাঝখানের পজিশনে একজন DM রাখুন। ফরোয়ার্ড এবং ফুল-ব্যাকদের (LB/RB) ওপর অনেক প্রেসার পড়ে, যে কারণে তাদের স্ট্যামিনা খুব দ্রুত শেষ হয়ে যায়। তাই সময়মতো সাবস্টিটিউট করাতে হবে। CM পজিশনে তুলনামূলক স্পিড বেশি এমন প্লেয়ার ব্যবহার করবেন। আর অবশ্যই চেষ্টা করবেন অন্তত একজন 'Both Footed' (দুই পায়েই খেলতে পারেন এমন) CM দলে রাখতে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের জন্য 'Defensive' বা 'Moderate' মোড সবচাইতে আদর্শ। খুব প্রয়োজন না হলে অ্যাটাকিং মোডে যাবেন না, কারণ এতে মাঝমাঠ ফাঁকা হয়ে পড়ার ঝুঁকি থাকে। ধৈর্য ধরে ডিফেন্স ঠিক রেখে প্রতিপক্ষের ভুলের সুযোগ নেয়াই মূল কৌশল।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 5-3-2 formation is an ultra-defensive tactic where 3 CBs and 2 full-backs create a solid 5-man wall in front of your goal. It is the best choice for withstanding heavy pressure and holding a lead.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The greatest strength is the impenetrable defense. With 3 CBs in the box, opponent strikers find no space, and any crosses or through-balls are easily cleared by your extra defenders.</p>
+                    <p style="margin-top:15px;">2. Having 3 CMs helps in maintaining possession. Once the ball is won, supplying it quickly to the two strikers creates great opportunities for sudden counter-attack goals. It is one of the best formations for a clean sheet.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. There are no proper wingers (LW/RW), so attacking options through the flanks are limited. Players who rely solely on wing play and crossing might find this formation difficult to use.</p>
+                    <p style="margin-top:15px;">2. Without wingers, RB and LB must occasionally push high to assist the attack. If they lose possession and fail to track back quickly, the flanks become completely exposed and vulnerable.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Among the three midfielders, place a DM in the central position. The forwards and full-backs (LB/RB) face a lot of pressure, causing their stamina to deplete quickly, so making timely substitutions is crucial. In the CM positions, try to use players with relatively high speed. Additionally, make sure to include at least one 'Both Footed' CM.</p>
+                    <p style="margin-top:15px;">2. 'Defensive' or 'Moderate' modes are ideal for this formation. Avoid attacking mode unless necessary, as it leaves the midfield empty. The key is to stay patient, maintain the defense, and exploit opponent mistakes.</p>
+                </div>`
+            },
+            "5-2-1-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৫-২-১-২ ফরমেশনটি মূলত একটি নিরেট রক্ষণভাগ এবং একজন ক্রিয়েটিভ প্লে-মেকারের সমন্বয়ে গঠিত। এখানে ৫ জন ডিফেন্ডার আপনার গোলপোস্টকে সুরক্ষিত রাখে, আর একজন AM দুই স্ট্রাইকারকে আক্রমণের রসদ সরবরাহ করে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. ৫ জন ডিফেন্ডার (৩ জন CB এবং ২ জন RB/LB) থাকায় আপনার বক্সে প্রতিপক্ষের স্ট্রাইকাররা কোনো ফাঁকা জায়গা পায় না। হাইট এবং ফিজিক্যাল স্ট্রেন্থ সম্পন্ন ডিফেন্ডাররা যেকোনো ক্রস বা থ্রু-বল খুব সহজেই নস্যাৎ করে দিতে পারে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের বিশেষত্ব হলো এর AM পজিশন। দুইজন CM যখন ডিফেন্স থেকে বল কেড়ে নেয়, তখন তারা সরাসরি AM-কে পাস দেয়, যা দ্রুত ওয়ান-টু পাস খেলে কাউন্টার অ্যাটাকে গোল বের করার দারুণ সুযোগ তৈরি করে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. মাঝমাঠে মাত্র ২ জন প্রপার CM থাকায় আপনি বল পজিশনের লড়াইয়ে পিছিয়ে পড়তে পারেন। অপনেন্ট যদি বেশি মিডফিল্ডার নিয়ে খেলে, তবে তারা মাঝমাঠ দখল করে নিয়ে আপনার ডিফেন্সের ওপর বারবার চাপ সৃষ্টি করতে পারে।</p>
+                    <p style="margin-top:15px;">২. কোনো প্রপার উইঙ্গার না থাকায় মাঠের দুই পাশ পুরোপুরি আপনার ফুল-ব্যাকদের ওপর নির্ভর করে। তারা আক্রমণে উঠে পজিশন হারালে প্রতিপক্ষের উইঙ্গাররা আপনার ফাঁকা সাইডলাইন দিয়ে খুব সহজেই আক্রমণ করার সুযোগ পায়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. আপনার AM পজিশনে টিমের সেরা প্লে-মেকারকে রাখুন (যেমন- মেসি বা ডি ব্রুইনা) যার পাসিং এবং শ্যুটিং স্ট্যাট ভালো। CM পজিশনে অন্তত একজন DM ব্যবহার করতে পারেন, যার অন্যান্য স্ট্যাট CM-এর মতোই কিন্তু ট্যাকেলিং স্ট্যাট ৯০+ থাকবে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে 'Moderate' মোড সবচাইতে ভালো ফল দেয়। এতে ডিফেন্স এবং আক্রমণ—উভয় দিকেই সাপোর্ট পাওয়া যায়। তবে লিড পাওয়ার পর 'Defensive' মোডে চলে গিয়ে কাউন্টার অ্যাটাকের জন্য অপেক্ষা করাই বুদ্ধিমানের কাজ।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 5-2-1-2 formation combines a solid defensive line with a creative playmaker. 5 defenders protect your goal while an AM sits behind two strikers as the key to your offensive moves.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. With 5 defenders (3 CBs and 2 full-backs), opponents find no space in the box. High-strength defenders can easily neutralize crosses and through-balls before they become dangerous.</p>
+                    <p style="margin-top:15px;">2. The highlight is the AM position. When the two CMs win the ball back, they can immediately find the AM, who can then play quick one-two passes or through-balls to the two strikers.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Having only 2 CMs means you might lose the possession battle in midfield. If the opponent plays with more midfielders, they can dominate the center and put constant pressure on your defense.</p>
+                    <p style="margin-top:15px;">2. Lack of proper wingers makes you heavily dependent on full-backs for width. If they push too high and lose possession, opponent wingers can exploit the empty flanks easily.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Place your team's best playmaker (like Messi or De Bruyne) in the AM position, ensuring they have high passing and shooting stats. For one of the CM positions, you can use a DM whose overall stats are similar to a CM but possesses a tackling stat of 90+.</p>
+                    <p style="margin-top:15px;">2. 'Moderate' mode gives the best balance between defense and attack. After taking a lead, switching to 'Defensive' is a smart move to wait for counter-attack opportunities and catch the opponent off-guard.</p>
+                </div>`
+            },
+            "5-2-3": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৫-২-৩ ফরমেশনটি রক্ষণাত্মক শক্তি এবং আক্রমণাত্মক গতির এক অনন্য সংমিশ্রণ। ৫ জন ডিফেন্ডার দিয়ে নিজেদের বক্স সুরক্ষিত রেখে এই ফরমেশনে সরাসরি ৩ জন ফরোয়ার্ডকে ব্যবহার করা হয়, যা দ্রুত কাউন্টার অ্যাটাকের জন্য সেরা।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. ৩ জন সেন্ট্রাল ব্যাক (CB) এবং ২ জন ফুল-ব্যাক মিলে আপনার গোলপোস্টের সামনে একটি অভেদ্য দেয়াল তৈরি করে। প্রতিপক্ষের থ্রু-বল এবং ক্রস ক্লিয়ার করার জন্য এই বাড়তি ডিফেন্স লাইন অত্যন্ত কার্যকর।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের আসল শক্তি হলো এর ফ্রন্ট-লাইন। ৩ জন প্রপার ফরোয়ার্ড (LW, RW, CF) থাকায় ডিফেন্স থেকে বল কেড়ে লম্বা পাসে উইঙ্গারদের দিলে তারা সহজেই দ্রুত গতিতে কাউন্টার অ্যাটাক থেকে গোল বের করতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. ৫-২-৩ ফরমেশনের প্রধান সমস্যা হলো মাঝমাঠের শূন্যতা। মাত্র ২ জন মিডফিল্ডার থাকায় মাঝমাঠ দিয়ে খেলা নিয়ন্ত্রণ করা কঠিন হয়ে পড়ে এবং অপনেন্ট সহজে মাঝমাঠ দখল করে আপনার ডিফেন্সের ওপর চাপ সৃষ্টি করতে পারে।</p>
+                    <p style="margin-top:15px;">২. এখানে ২ জন CM-কে একইসাথে ডিফেন্স ও আক্রমণ সামলাতে হয়, ফলে তাদের স্ট্যামিনা দ্রুত শেষ হয়ে যায়। মাঝমাঠের নিয়ন্ত্রণ হারিয়ে ফেললে স্ট্রাইকাররা বলের যোগান থেকে বিচ্ছিন্ন হয়ে পড়ার ঝুঁকি থাকে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. আপনার ২ জন CM পজিশনে অবশ্যই উচ্চ Passing এবং Interception সম্পন্ন প্লেয়ার রাখুন। আর ৩ জন ফরোয়ার্ডের মধ্যে উইঙ্গারদের স্পিড যেন অনেক বেশি থাকে, যাতে তারা কাউন্টার অ্যাটাকগুলো সফল করতে পারে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের জন্য 'Defensive' মোড সবচাইতে কার্যকর। মাঝমাঠে অহেতুক ড্রিবলিং না করে সরাসরি উইংয়ে বা স্ট্রাইকারকে পাস দিয়ে দ্রুত আক্রমণে যাওয়াই এই ফরমেশনের জেতার মূল কৌশল।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 5-2-3 formation is a unique blend of defensive stability and offensive pace. By securing the box with 5 defenders, this setup uses 3 direct forwards, making it lethal for quick counter-attacks.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. 3 CBs and 2 full-backs create an impenetrable wall in front of your goal. This extra defensive line is highly effective at clearing through-balls and crosses from the opponent.</p>
+                    <p style="margin-top:15px;">2. The real magic is in the front line. With 3 proper forwards (LW, RW, CF), winning the ball back and playing long passes to the wingers allows for devastating counter-attack goals.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The major weakness is the empty midfield. With only 2 midfielders, controlling the game in the center becomes difficult, allowing opponents to dominate and put pressure on your defense.</p>
+                    <p style="margin-top:15px;">2. The 2 CMs bear the burden of both defense and attack, causing their stamina to drain quickly. If you lose midfield control, your strikers risk becoming isolated from ball supply.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Use players with high Passing and Interception in the 2 CM positions. Ensure your wingers have maximum speed to make the most of counter-attacking opportunities.</p>
+                    <p style="margin-top:15px;">2. 'Defensive' mode is most effective here. Avoid unnecessary dribbling in midfield and focus on direct passes to the wings or striker to catch the opponent off-guard.</p>
+                </div>`
+            },
+            "5-2-2-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৫-২-২-১ ফরমেশনটি মূলত একটি আল্ট্রা-ডিফেন্সিভ কাউন্টার কৌশল। ৫ জন ডিফেন্ডার এবং ২ জন CM মিলে ৭ জনের একটি দেয়াল তৈরি করে প্রতিপক্ষকে আটকে দেয়। এখানে দুইজন AM মূলত স্ট্রাইকারকে গোল করতে সহায়তা করে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের সবচাইতে বড় শক্তি হলো এর নিখুঁত ডিফেন্সিভ লক। ৫ জন ডিফেন্ডার বক্সে থাকায় প্রতিপক্ষের কোনো স্ট্রাইকার নড়াচড়া করার জায়গা পায় না এবং ৩ জন সেন্টার ব্যাক থাকায় ক্রস ক্লিয়ার করা খুব সহজ হয়।</p>
+                    <p style="margin-top:15px;">২. রক্ষণাত্মক হলেও দুইজন AM থাকার কারণে আক্রমণে বৈচিত্র্য পাওয়া যায়। এই দুইজন প্লে-মেকার হিসেবে কাজ করে এবং একমাত্র স্ট্রাইকারকে নিখুঁত বল সাপ্লাই দেয়, যা ওয়ান-টু পাস খেলে গোল করার জন্য কার্যকর।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. স্ট্রাইকারের একাকীত্ব এই ফরমেশনের প্রধান দুর্বলতা। সামনে মাত্র একজন CF থাকায় যদি AM-রা দ্রুত ওপরে না উঠতে পারে, তবে স্ট্রাইকার প্রতিপক্ষের ডিফেন্ডারদের মাঝে একা হয়ে যায় এবং কাউন্টার অ্যাটাক মাঝপথেই থেমে যায়।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে মাত্র ২ জন CM থাকায় বল পজিশনের লড়াইয়ে পিছিয়ে পড়ার ঝুঁকি থাকে। অপনেন্ট বেশি মিডফিল্ডার নিয়ে খেললে তারা মাঝমাঠ দখল করে আপনার ডিফেন্সের ওপর ক্রমাগত চাপ সৃষ্টি করতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. একমাত্র CF হিসেবে এমন একজনকে রাখুন যার Physicality এবং Heading ভালো (যেমন- হালান্দ)। আর ২ জন AM হিসেবে খুব দ্রুতগতির প্লেয়ার ব্যবহার করুন যাতে তারা ডিফেন্স থেকে আক্রমণে দ্রুত শিফট হতে পারে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের জন্য 'Defensive' মোড সবচেয়ে আদর্শ। ধৈর্য ধরে ডিফেন্স ঠিক রেখে প্রতিপক্ষকে হতাশ করা এবং কাউন্টার অ্যাটাকে ফোকাস করাই হলো এই ফরমেশনের মূল মন্ত্র। লিড ধরে রাখতে এটি অতুলনীয়।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 5-2-2-1 formation is an ultra-defensive counter strategy. With 5 defenders and 2 CMs creating a 7-man wall, it is designed to frustrate opponents. Two AMs act as the primary support for the lone striker.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The ultimate defensive lock is the highlight here. With 5 defenders in the box, opponent strikers get no space, and having 3 CBs makes clearing crosses exceptionally easy.</p>
+                    <p style="margin-top:15px;">2. Despite being defensive, the two AMs provide tactical variety. They act as playmakers and supply the lone striker with precise balls, making it effective for one-two passing plays.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Striker isolation is the main drawback. With only one CF, if the AMs don't push up quickly, the striker gets trapped between defenders and the counter-attack loses momentum.</p>
+                    <p style="margin-top:15px;">2. Having only 2 CMs means you might lose the midfield battle. Opponents with more midfielders can dominate possession and put constant pressure on your defensive line.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Use a CF with high Physicality and Heading (like Haaland). For the 2 AM positions, choose very fast players who can transition from defense to attack rapidly.</p>
+                    <p style="margin-top:15px;">2. 'Defensive' mode is the most ideal for this setup. The key is to stay patient, maintain the defense, and wait for the perfect moment to strike on the counter-attack.</p>
+                </div>`
+            },
+            "5-4-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৫-৪-১ ফরমেশনটি হচ্ছে ডিএলএস গেমের আল্টিমেট 'পার্ক দ্য বাস' ট্যাকটিকস। এখানে ৫ জন ডিফেন্ডার এবং ৪ জন মিডফিল্ডার মিলে মাঠের বিশাল এলাকা ব্লক করে রাখে। এটি মূলত শক্তিশালী অপনেন্টের বিরুদ্ধে পয়েন্ট বাঁচাতে ব্যবহার করা হয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ </span></div>
+                    <p>১. এই ফরমেশনে গোল করা প্রতিপক্ষের জন্য একপ্রকার দুঃস্বপ্ন। ৩ জন সেন্টার ব্যাক বক্সের ভেতর দেয়াল হয়ে থাকে এবং ২ জন ফুল-ব্যাক উইং ব্লক করে রাখে, ফলে প্রতিপক্ষ সহজে ক্রস বা থ্রু-বল দেওয়ার সুযোগ পায় না।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে ৪ জন মিডফিল্ডার থাকায় অপনেন্টের পাসিং লেনগুলো পুরোপুরি বন্ধ হয়ে যায়। ২ জন CM এবং ২ জন LM/RM দিয়ে মাঠের পুরো প্রশস্ততা ব্যবহার করে প্রতিপক্ষকে আপনার বক্স থেকে দূরে রাখা সম্ভব হয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. আক্রমণভাগে চরম একাকীত্ব এই ফরমেশনের প্রধান সমস্যা। সামনে মাত্র ১ জন CF থাকে এবং মিডফিল্ডাররা অনেক নিচে থাকায় স্ট্রাইকার বল পেলেও আশেপাশে সাপোর্ট পায় না। গোল করার সুযোগ এখানে খুবই সীমিত।</p>
+                    <p style="margin-top:15px;">২. যারা অ্যাটাকিং ফুটবল পছন্দ করেন, তাদের কাছে এই ফরমেশনটি বিরক্তিকর মনে হতে পারে। এটি মূলত কেবল ডিফেন্স করার জন্য তৈরি। আক্রমণে ওঠার সময় পজিশন হারালে পুনরায় ডিফেন্স সেটআপ করা কঠিন হয়ে পড়ে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. একমাত্র CF হিসেবে টিমের দ্রুততম এবং সেরা ফিনিশারকে রাখুন (যেমন- এমবাপ্পে)। কারণ পুরো ম্যাচে হয়তো একটি মাত্র সুযোগ আসবে এবং সেটাকেই গোলে রূপান্তর করতে হবে। মাঝমাঠে হাই স্ট্যামিনা সম্পন্ন প্লেয়ার রাখা জরুরি।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের আসল মজা কেবল 'Defensive' মোডে। এটি দিয়ে জেতার চেয়ে 'ম্যাচ না হারা' বেশি নিশ্চিত করা হয়। লিড ধরে রাখতে বা ক্লিন শিট নিশ্চিত করতে এটি গেমের সেরা কৌশল।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 5-4-1 formation is the ultimate 'Park the Bus' tactic in DLS. With 5 defenders and 4 midfielders blocking almost two-thirds of the pitch, it is designed to survive against much stronger opponents.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. Scoring against this formation is a nightmare for opponents. With 3 CBs acting as a wall and 2 full-backs blocking the wings, it neutralizes both crosses and through-balls effectively.</p>
+                    <p style="margin-top:15px;">2. The 4 midfielders shut down all passing lanes. By using 2 CMs and 2 wide players (LM/RM), you can control the width of the pitch and keep the opponent far away from your box.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Extreme isolation of the striker is the biggest flaw. With midfielders sitting deep, the lone CF often has no support when they receive the ball, making goal-scoring opportunities very rare.</p>
+                    <p style="margin-top:15px;">2. This formation isn't for players who love high-tempo attacking football. It focuses heavily on defense, and losing possession while trying to move forward can leave your structure disorganized.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Use your fastest and most clinical finisher as the lone CF (like Mbappé). You might only get one chance in the entire match, so efficiency is key. Ensure your midfielders have high stamina.</p>
+                    <p style="margin-top:15px;">2. The true effectiveness of this formation lies in 'Defensive' mode. It is not meant to dominate matches but to prevent losses. It is unparalleled for securing a clean sheet or holding onto a lead.</p>
+                </div>`
+            },
+            "5-1-2-1-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৫-১-২-১-১ ফরমেশনটি মূলত একটি পিরামিড আকৃতির স্তরবিন্যস্ত সেটআপ। এখানে ৫ জন ডিফেন্ডারের সামনে একজন DM, তার ওপরে ২ জন CM, একজন AM এবং সবার সামনে একজন স্ট্রাইকার থাকে। এটি প্রতিপক্ষকে পাসিং গ্যাপ খুঁজে পেতে বাধা দেওয়ার জন্য সেরা।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. এই ফরমেশনের বড় শক্তি হলো এর অভেদ্য রক্ষণাত্মক স্তর। ৫ জন ডিফেন্ডারের সামনে একজন DM থাকায় একটি অতিরিক্ত প্রোটেকশন লেয়ার তৈরি হয়, যা প্রতিপক্ষের থ্রু-বল মাঝপথেই আটকে দিতে অত্যন্ত কার্যকর।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে অনেকগুলো লেয়ার থাকায় ছোট ছোট পাসের মাধ্যমে বল পজিশন ধরে রাখা সহজ হয়। DM থেকে CM, তারপর AM এবং শেষে CF—এই চেইনটি মেইনটেইন করে ধীরে ধীরে আক্রমণ সাজানোর জন্য এটি দারুণ একটি ফরমেশন।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. উইঙ্গারদের অনুপস্থিতি এই ফরমেশনের প্রধান দুর্বলতা। কোনো প্রপার উইঙ্গার না থাকায় মাঠের দুই পাশ একদম খালি থাকে। আপনার ফুল-ব্যাকরা ওপরে উঠে গেলে প্রতিপক্ষের উইঙ্গাররা কাউন্টার অ্যাটাকে আপনাকে বিপদে ফেলতে পারে।</p>
+                    <p style="margin-top:15px;">২. এটি কোনো দ্রুত কাউন্টার অ্যাটাকিং ফরমেশন নয়। বল ডিফেন্স থেকে স্ট্রাইকার পর্যন্ত পৌঁছাতে বেশ সময় লাগে। যারা খুব দ্রুত গোল করতে পছন্দ করেন, তাদের কাছে এই গেমপ্লেটি ধীরগতির এবং বিরক্তিকর মনে হতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. আপনার DM পজিশনে এমন একজনকে রাখুন যার ইন্টারসেপশন (Interception) এবং পাসিং (Passing) দুটোই ভালো। আর একমাত্র CF হিসেবে একজন খুব শক্তিশালী এবং বল হোল্ড করতে পারে এমন প্লেয়ার (যেমন- হ্যালান্ড) রাখুন, যাতে মিডফিল্ডাররা ওপরে ওঠার জন্য পর্যাপ্ত সময় পায়।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনের জন্য 'Moderate' মোড সবচাইতে কার্যকর। আপনি যদি 'Defensive' মোডে খেলেন, তবে আক্রমণ করা বেশ কঠিন হয়ে যাবে। মাঝমাঠ দিয়ে ত্রিভুজ আকৃতির পাসিং খেলে গেম কন্ট্রোল করাই এই ফরমেশনের আসল শক্তি।
+।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 5-1-2-1-1 formation is a pyramid-shaped tactical setup. With a DM in front of 5 defenders, followed by 2 CMs, an AM, and a lone striker, it is designed to shut down opponent passing lanes through multiple layers.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The impenetrable defensive layers are the highlight. Having a DM right in front of the 5-man defense creates an extra protection layer that is highly effective at intercepting through-balls mid-pitch.</p>
+                    <p style="margin-top:15px;">2. Multiple midfield layers make it easy to maintain possession through short passes. Moving the ball from DM to CM, then AM, and finally CF allows for a structured and steady build-up play.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Lack of wingers is the main weakness. Since there are no proper wide players, the flanks remain exposed. If your full-backs push too high, opponent wingers can exploit the space on the counter.</p>
+                    <p style="margin-top:15px;">2. This is not a fast counter-attacking formation. It takes time for the ball to travel from defense to the striker, which might feel slow and tedious for players who prefer high-tempo attacking.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Deploy a player in the DM position who excels in both Interception and Passing. For the lone CF position, use a physically strong player capable of holding up the ball (like Haaland), which will give your midfielders enough time to push forward and join the attack.</p>
+                    <p style="margin-top:15px;">2. 'Moderate' mode is the most effective mentality for this formation. If you play in 'Defensive' mode, creating attacking opportunities will become very difficult. Dominating the game through triangular passing in the midfield is the true strength of this tactic.
+</p>
+                </div>`
+            },
+            "3-5-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৩-৫-২ ফরমেশনটি ডিএলএস গেমের সবচাইতে শক্তিশালী মিডফিল্ড ডমিন্যান্ট ফরমেশন। এখানে ৩ জন CB ডিফেন্স সামলায় এবং ৫ জন মিডফিল্ডার পুরো মাঠের নিয়ন্ত্রণ নিজেদের হাতে রাখে। এটি হাই-প্রেসিং ফুটবল খেলার জন্য সেরা কৌশল।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. ৫ জন মিডফিল্ডার পুরো মাঠকে আপনার নিয়ন্ত্রণে রাখে, ফলে অপনেন্ট সহজে মাঝমাঠ দিয়ে এগোতে পারে না। পাসিং ফুটবলের জন্য এটি সেরা ফরমেশন কারণ পাসের জন্য সব সময় একাধিক অপশন খোলা থাকে।</p>
+                    <p style="margin-top:15px;">২. ২ জন স্ট্রাইকার এবং তাদের পেছনে ৫ জন মিডফিল্ডারের সাপোর্ট থাকায় আক্রমণের সময় প্রতিপক্ষের বক্সে প্রচুর চাপ সৃষ্টি করা যায়। উইং এবং সেন্টার—উভয় দিক দিয়েই গোল বের করা এখানে সহজ হয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. উইং ডিফেন্সের ঝুঁকি এই ফরমেশনের সবচাইতে বড় দুর্বলতা। কোনো প্রপার RB বা LB না থাকায় মাঠের দুই পাশ খালি থাকে। অপনেন্ট যদি দ্রুতগতির উইঙ্গার দিয়ে উইং অ্যাটাক করে, তবে ৩ জন সেন্টার ব্যাকের ওপর প্রচণ্ড চাপ সৃষ্টি হয়।</p>
+                    <p style="margin-top:15px;">২. উইংয়ে কোনো ডিফেন্ডার না থাকায় ৩ জন CB-কে বারবার দুই পাশে দৌড়ে আক্রমণ ঠেকাতে হয়। এর ফলে তাদের স্ট্যামিনা খুব দ্রুত শেষ হয়ে যায় এবং ম্যাচের শেষ দিকে ডিফেন্স অগোছালো হয়ে যাওয়ার ঝুঁকি থাকে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. মিডফিল্ড নির্ভর এই ফরমেশনে মাঝখানের পজিশনে একজন DM রাখুন। বাম পাশে একজন 'Both Footed' (দুই পায়েই খেলতে পারেন এমন) CM রাখার চেষ্টা করুন। DM-এর ডানপাশে এমন একজন AM ব্যবহার করুন যার ট্যাকেলিং স্ট্যাট তুলনামূলক বেশি থাকবে। আর দুই সাইডে LWB, RWB ব্যবহার করুন, অথবা এমন LM, RM ব্যবহার করুন যাদের ট্যাকেল স্ট্যাট ভালো। ডিফেন্সে সবচেয়ে বেশি চাপটা এদেরকেই সামলাতে হবে।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে 'Attacking' বা 'Moderate' মোড সবচাইতে ভালো ফল দেয়। তবে ডিফেন্সের সময় LM এবং RM-কে দ্রুত নিচে নামিয়ে আনার চেষ্টা করুন যাতে এটি ৫-৩-২ শেপ তৈরি করে। এটি একটি 'হাই রিস্ক, হাই রিওয়ার্ড' কৌশল।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 3-5-2 formation is the most dominant midfield setup in DLS. With 3 CBs handling the defense and 5 midfielders controlling the pitch, it is the best strategy for high-pressing football.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. 5 midfielders keep the entire pitch under your control, making it hard for opponents to advance through the middle. It's ideal for passing football as multiple options are always available.</p>
+                    <p style="margin-top:15px;">2. Having 2 strikers supported by 5 midfielders allows for immense pressure on the opponent's box. Breaking down defenses through both the wings and the center becomes much easier.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. Wing defense vulnerability is the biggest flaw. Since there are no proper full-backs (RB/LB), the flanks are exposed. Fast opponent wingers can put extreme pressure on your 3 CBs.</p>
+                    <p style="margin-top:15px;">2. Without side defenders, your 3 CBs must constantly sprint to the flanks to cover attacks. This drains their stamina rapidly, risking a disorganized defense in the final stages of the match.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">NextGen Tips</span></div>
+                    <p>1. In this midfield-reliant formation, place a DM in the central position. Try to use a 'Both Footed' CM on the left side. On the right side of the DM, use an AM with relatively high tackling stats. For the wide areas, use LWB and RWB, or LM and RM players who have decent tackling abilities. They will have to handle the most pressure defensively.</p>
+                    <p style="margin-top:15px;">2. 'Attacking' or 'Moderate' modes yield the best results. However, try to bring your LM and RM back quickly during defense to form a 5-3-2 shape. This is a classic 'high risk, high reward' formation.</p>
+                </div>`
+            },
+            "3-1-4-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৩-১-৪-২ ফরমেশনটি মূলত ৩-৫-২ এর একটি অনেক বেশি ট্যাকটিক্যাল এবং ব্যালেন্সড সংস্করণ। ৩ জন ডিফেন্ডারের ঠিক সামনে একজন DM থাকায় এটি মাঝমাঠ এবং রক্ষণভাগের মধ্যে চমৎকার ভারসাম্য বজায় রাখে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. ৩ জন CB-এর সামনে একজন ডেডিকেটেড DM থাকা মানে আপনার ডিফেন্সে একটি অতিরিক্ত প্রোটেকশন লেয়ার তৈরি হওয়া। এটি প্রতিপক্ষের কাউন্টার অ্যাটাক মাঝপথেই থামিয়ে দিতে এবং থ্রু-বল ইন্টারসেপ্ট করতে দারুণ কার্যকর।</p>
+                    <p style="margin-top:15px;">২. মাঝমাঠে মোট ৫ জন প্লেয়ার ভিন্ন স্তরে (১ DM + ৪ মিডফিল্ডার) থাকায় পাসের অপশন অনেক বেশি থাকে। ২ জন স্ট্রাইকার এবং মিডফিল্ডারদের সমন্বয়ে প্রতিপক্ষের বক্সে ছোট ছোট পাসে আক্রমণ করা সহজ হয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. সাইডে কোনো প্রপার LB/RB না থাকায় উইং দিয়ে গোল খাওয়ার ঝুঁকি সব সময় থাকে। অপনেন্ট যদি দ্রুতগতিতে উইং দিয়ে আক্রমণ করে এবং আপনার LM/RM নিচে নামতে দেরি করে, তবে ৩ জন ডিফেন্ডার বড় চাপের মুখে পড়ে।</p>
+                    <p style="margin-top:15px;">২. এটি কোনো দ্রুত কাউন্টার অ্যাটাকিং ফরমেশন নয়। ডিফেন্স থেকে স্ট্রাইকার পর্যন্ত বল পৌঁছাতে অনেক বেশি পাসের প্রয়োজন হয়, যা ধীরগতির বিল্ড-আপ গেমপ্লে পছন্দ না করা গেমারদের কাছে বিরক্তিকর হতে পারে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. আপনার DM পজিশনে অবশ্যই টিমের সবচাইতে সেরা ইন্টারসেপ্টরকে (যেমন- রদ্রি) রাখুন। সাইড-ব্যাক না থাকার রিস্ক কমাতে LM/RM-এর জায়গায় LWB/RWB অথবা পাসিং স্ট্যাট ভালো এমন LB/RB ব্যবহার করতে পারেন।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে 'Defensive' বা 'Moderate' মোড সবচাইতে নিরাপদ। ডিফেন্সিভ মোডে খেললে আপনার DM চতুর্থ ডিফেন্ডার হিসেবে এবং LM/RM নিচে নেমে ৫ জনের একটি মজবুত ডিফেন্স শেপ তৈরি করবে, যা উইং ডিফেন্সের অভাব পূরণ করে দেয়।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>3-1-4-2 is a tactical and balanced version of 3-5-2. Having a dedicated DM in front of the 3 CBs ensures a steady connection between the midfield and the defensive line.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. A DM in front of 3 CBs creates an extra layer of protection. It is highly effective at stopping opponent counter-attacks mid-pitch and intercepting dangerous through-balls.</p>
+                    <p style="margin-top:15px;">2. With 5 midfielders in different layers (1 DM + 4 MF), passing options are abundant. Two strikers combined with creative midfielders allow for structured attacks on the opponent's box.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The lack of proper full-backs (LB/RB) makes the wings vulnerable. If the opponent attacks quickly through the flanks and your wide midfielders (LM/RM) fail to track back, your 3 CBs will be under immense pressure.</p>
+                    <p style="margin-top:15px;">2. This is not a fast counter-attacking formation. Transitioning from defense to attack requires many passes, which may feel slow for players who prefer a high-tempo direct game.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">NextGen Tips</span></div>
+                    <p>1. Make sure to deploy your team's best interceptor (like Rodri) in the DM position. To minimize the risk of playing without full-backs, you can use LWB/RWB, or even LB/RB with good passing stats, instead of traditional LM/RM players.</p>
+                    <p style="margin-top:15px;">2. 'Defensive' or 'Moderate' modes are safest for this formation. In Defensive mode, the DM drops deep and wide midfielders track back to form a 5-man defensive shape, filling the gaps on the flanks.</p>
+                </div>`
+            },
+            "3-4-1-2": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৩-৪-১-২ ফরমেশনটি মূলত ৩-৫-২ এর একটি আক্রমণাত্মক রূপ। এখানে একজন ডেডিকেটেড AM দুইজন স্ট্রাইকারের ঠিক পেছনে থেকে প্লে-মেকার হিসেবে কাজ করে। মাঝমাঠ দিয়ে ছোট ছোট পাসে প্রতিপক্ষের ডিফেন্স চিরে ফেলার জন্য এটি সেরা কৌশল।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ </span></div>
+                    <p>১. এই ফরমেশনের তুরুপের তাস হলো এর AM পজিশন। এই প্লে-মেকারটি সবসময় দুইজন স্ট্রাইকারের কাছে থাকায় ওয়ান-টু পাস খেলা বা স্ট্রাইকারদের নিখুঁত থ্রু-বল দেওয়া খুব সহজ হয়। মাঝপথ দিয়ে আক্রমণের জন্য এটি অতুলনীয়।</p>
+                    <p style="margin-top:15px;">২. ৪ জন মিডফিল্ডার এবং ১ জন AM মিলে মাঝমাঠে ৫ জনের একটি শক্তিশালী ইউনিট তৈরি করে। এর ফলে খুব সহজেই বল পজিশন ধরে রাখা যায় এবং প্রতিপক্ষকে তাদের নিজেদের হাফে আটকে রাখা সম্ভব হয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. রক্ষণভাগের ঝুঁকি এই ফরমেশনের প্রধান সমস্যা কারণ এখানে কোনো প্রপার LB বা RB নেই। AM পজিশনের প্লেয়ারটি সবসময় ওপরে থাকায় মাঝমাঠে ডিফেন্সিভ কাভার কিছুটা কমে যায়, ফলে প্রতিপক্ষের উইং অ্যাটাক সামলানো কঠিন হয়ে পড়ে।</p>
+                    <p style="margin-top:15px;">২. আক্রমণে বেশি প্লেয়ার অংশ নেওয়ায় বল হারিয়ে ফেললে কাউন্টার অ্যাটাক ঠেকানো ঝুঁকিপূর্ণ হয়ে যায়। যদি দুইজন CM আক্রমণে উঠে যায়, তবে আপনার ৩ জন ডিফেন্ডারকে একাই পুরো মাঠ সামলাতে হয় যা বেশ বিপদজনক।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. AM পজিশনে টিমের সেরা প্লে-মেকারকে (যেমন- মেসি বা ডি ব্রুইনা) রাখুন। আর ৩ জন CB হিসেবে অবশ্যই খুব দ্রুতগতির এবং লম্বা প্লেয়ার ব্যবহার করুন যাতে তারা হেডিং এবং স্পিড—উভয় দিক দিয়ে উইং অ্যাটাক রুখে দিতে পারে।</p>
+                    <p style="margin-top:15px;">২. সাইড ব্যাক না থাকায় এই ফরমেশনে 'Defensive' বা 'Moderate' মোড হলো আপনার আসল রক্ষাকবচ। এতে LM/RM নিচে নেমে ৫ জনের ডিফেন্স তৈরি করবে যা সাইডলাইনের গ্যাপগুলো পূরণ করে দেবে। মাঝমাঠ দিয়ে ধীরে ধীরে আক্রমণ সাজানোই হলো জেতার মূল রহস্য।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 3-4-1-2 formation is an aggressive variant of 3-5-2. A dedicated AM sits right behind the two strikers as a playmaker, making it the perfect setup for breaking down defenses through central quick passing.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The AM position is the trump card. This playmaker stays close to the two strikers, making one-two passes and through-balls exceptionally effective. It's one of the best setups for central clinical attacks.</p>
+                    <p style="margin-top:15px;">2. 4 midfielders and 1 AM create a 5-man ball-control unit. This allows you to dominate possession easily and keep the opponent pinned back in their own half.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. High defensive risk is the main concern as there are no proper full-backs (LB/RB). Since the AM stays high, defensive cover in midfield is reduced, leaving your 3 CBs vulnerable to wide attacks.</p>
+                    <p style="margin-top:15px;">2. Committing many players to attack makes you vulnerable to counter-attacks. If both CMs push up, your 3 defenders are left to cover the entire width of the pitch, which is extremely risky.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Place your best passer (like Messi or De Bruyne) in the AM role. Ensure your 3 CBs are both fast and tall to handle wing sprints and aerial crosses effectively.</p>
+                    <p style="margin-top:15px;">2. Given the lack of side backs, 'Defensive' or 'Moderate' modes are your best protection. In these modes, LM/RM will drop back to form a 5-man defense, filling the gaps on the flanks. Slow build-up is the key to success here.</p>
+                </div>`
+            },
+            "3-5-1-1": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৩-৫-১-১ ফরমেশনটি ডিএলএস গেমের সবচাইতে মিডফিল্ড হেভি এবং ট্যাকটিক্যাল ফরমেশন। এটি মূলত মাঝমাঠ দিয়ে প্রতিপক্ষের সব আক্রমণ ব্লক করে দেওয়া এবং বল পজিশন ধরে রাখার জন্য ডিজাইন করা হয়েছে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ </span></div>
+                    <p>১. মাঝমাঠে ৫ জন প্লেয়ার ভিন্ন স্তরে থাকায় পাসের জন্য সব সময় অপশন খোলা থাকে। এটি বল পজিশন ধরে রাখার জন্য গেমের সেরা ফরমেশন। প্রতিপক্ষ মাঝমাঠ দিয়ে আক্রমণ করতে চাইলে আপনার ঘন মিডফিল্ডের জালে আটকা পড়তে বাধ্য।</p>
+                    <p style="margin-top:15px;">২. ৩ জন CB-এর সামনে একজন DM থাকায় একটি শক্ত দেয়াল তৈরি হয়। এর ফলে আপনার ডিফেন্ডারদের সরাসরি প্রতিপক্ষের স্ট্রাইকারের মুখোমুখি হতে হয় না, DM আগেই তাদের গতি কমিয়ে দিয়ে রক্ষণভাগকে সুরক্ষিত রাখে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. সাইডে কোনো LB বা RB না থাকায় উইংয়ের বিশাল অংশ খালি থাকে। আপনার সেন্ট্রাল মিডফিল্ড শক্তিশালী হলেও অপনেন্ট যদি দ্রুতগতির উইঙ্গার দিয়ে লম্বা ক্রস খেলে, তবে আপনার ৩ জন ডিফেন্ডার বড় বিপদে পড়ে যেতে পারে।</p>
+                    <p style="margin-top:15px;">২. সামনে মাত্র একজন প্রপার স্ট্রাইকার থাকায় গোল করার সুযোগ তৈরি করা কিছুটা কঠিন হতে পারে। মিডফিল্ডাররা দ্রুত স্ট্রাইকারকে সাপোর্ট দিতে না পারলে কাউন্টার অ্যাটাকগুলো অনেক সময় মাঝপথেই থেমে যায়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. একমাত্র CF হিসেবে শক্তিশালী এবং ভালো ফিনিশার (যেমন- হালান্দ বা কেন) রাখুন। আর SS/AM পজিশনে খুব ক্রিয়েটিভ কাউকে রাখুন যাতে সে স্ট্রাইকারের সাথে ওয়ান-টু পাস খেলে দ্রুত বক্সে ঢুকতে পারে।</p>
+                    <p style="margin-top:15px;">২. উইং ডিফেন্সের অভাব মেটাতে এই ফরমেশনে 'Defensive' বা 'Moderate' মোড ব্যবহার করা সবচাইতে বুদ্ধিমানের কাজ। এতে আপনার LM/RM নিচে নেমে ৫ জনের একটি চেইন তৈরি করবে এবং DM বক্সে নেমে এসে বাড়তি কাভার দেবে। তবে আপনি চাইলে LM, RM-এর জায়গায় LB, RB বা LWB, RWB ব্যবহার করতে পারেন, সেক্ষেত্রে আরও বেশি ডিফেন্সিভ সুবিধা পাবেন।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 3-5-1-1 formation is the most midfield-heavy and tactical setup in DLS. It is designed to dominate ball possession and block all opponent attacks through the center of the pitch.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. With 5 midfielders in different layers, passing options are always available. This is the best formation for possession football, as opponents will struggle to bypass your dense midfield wall.</p>
+                    <p style="margin-top:15px;">2. Having a DM in front of 3 CBs provides an extra layer of protection. This prevents your defenders from facing strikers directly, as the DM slows down attacks and secures the clean sheet.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The absence of LB/RB leaves the flanks completely exposed. Even with a strong midfield, if the opponent uses fast wingers and long crosses, your 3 CBs will be under extreme pressure.</p>
+                    <p style="margin-top:15px;">2. Having only one proper striker can make goal-scoring difficult. If midfielders fail to support the CF quickly, counter-attacks may lose momentum before reaching the final third.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Use a physically strong finisher (like Haaland or Kane) as the lone CF. Place a creative player in the SS/AM role to link up with the striker through quick one-two passing plays.</p>
+                    <p style="margin-top:15px;">2. To compensate for the lack of wing defense, playing in 'Defensive' or 'Moderate' mode is the wisest choice. In this setup, your LM/RM will drop back to form a 5-man defensive chain, and the DM will drop into the box to provide extra cover. However, you can also use LB, RB, or LWB, RWB instead of LM, RM for added defensive stability.</p>
+                </div>`
+            },
+            "3-4-3": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৩-৪-৩ ফরমেশনটি ডিএলএস গেমের সবচাইতে আক্রমণাত্মক এবং রোমাঞ্চকর ফরমেশন। এটি মূলত ৩ জন ফরোয়ার্ড এবং ৪ জন মিডফিল্ডারের সমন্বয়ে গঠিত, যারা প্রতিপক্ষের রক্ষণভাগকে তছনছ করে দেওয়ার ক্ষমতা রাখে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. ৩ জন প্রপার ফরোয়ার্ড (LW, RW, CF) থাকায় মাঠের পুরো প্রশস্ততা ব্যবহার করে আক্রমণ করা যায়। উইং দিয়ে ক্রস এবং মাঝখান দিয়ে শ্যুটিং—সব অপশন খোলা থাকে যা প্রতিপক্ষকে দিশেহারা করে দেয়।</p>
+                    <p style="margin-top:15px;">২. হাই-প্রেসিং গেমপ্লের জন্য এটি সেরা ফরমেশন। ৪ জন মিডফিল্ডার যদি পজিশন হোল্ড করে খেলে, তবে প্রতিপক্ষ বল ক্লিয়ার করার জায়গাই পায় না, ফলে তাদের হাফ-লাইনে বল কেড়ে নিয়ে দ্রুত গোল করা সহজ হয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. সাইডে কোনো LB বা RB না থাকা এই ফরমেশনের প্রধান দুর্বলতা। অপনেন্ট যদি দ্রুতগতির উইঙ্গার দিয়ে উইং অ্যাটাক করে, তবে ৩ জন সেন্টার ব্যাকের (CB) ওপর প্রচণ্ড চাপ সৃষ্টি হয় এবং ডিফেন্স অগোছালো হয়ে যাওয়ার ঝুঁকি থাকে।</p>
+                    <p style="margin-top:15px;">২. আক্রমণে অনেক প্লেয়ার অংশ নেওয়ায় বল হারিয়ে ফেললে গোল খাওয়ার চরম ঝুঁকি তৈরি হয়। এটি একটি 'ডু অর ডাই' ফরমেশন—পজিশন হারালে পুনরায় ডিফেন্স সেটআপ করা অত্যন্ত কঠিন হয়ে পড়ে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. মিডফিল্ডে অবশ্যই সম্পূর্ণ আপগ্রেড করা (বেস্ট কোচিংয়ের) ২ জন CM রাখবেন, যাদের স্পিড ৯০-এর মতো এবং পাস ও কন্ট্রোল ৯৫+ থাকে। প্রথমার্ধে মিডের দুই পাশে LW এবং RW ব্যবহার করতে পারেন। তবে যদি ঝুঁকি কমাতে চান, তখন LM/RM বা LWB/RWB ব্যবহার করতে পারেন। সবচেয়ে ভালো হয় লিড পাওয়ার পর ডিফেন্স মজবুত করা।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে 'Attacking' মোডে খেললে বেশ সুবিধা পাওয়া যায়। খুব সহজে অতিরিক্ত অ্যাটাক করা যায় এই ফরমেশনের মাধ্যমে। শুরুতে অ্যাটাকিং খেললেও লিড ধরে রাখার জন্য 'Defensive' বা 'Moderate' মোডে খেলা সবচাইতে বুদ্ধিমানের কাজ হবে। এতে আপনার উইংয়ের খেলোয়াড়রা নিচে নেমে এসে ডিফেন্সকে সাপোর্ট দেবে, যা আক্রমণে ধার বজায় রাখার পাশাপাশি রক্ষণেও নিরাপত্তা নিশ্চিত করবে।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 3-4-3 formation is one of the most aggressive and exciting setups in DLS. Featuring 3 forwards and 4 midfielders, it has the raw power to completely dismantle opponent defenses.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. With 3 proper forwards (LW, RW, CF), you can exploit the full width of the pitch. Both wing crossing and central shooting options stay open, leaving the opponent confused and overwhelmed.</p>
+                    <p style="margin-top:15px;">2. This is the best formation for high-pressing gameplay. If the 4 midfielders hold their ground, the opponent finds no space to clear the ball, allowing you to win possession in their half for quick goals.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The lack of LB/RB is the primary flaw. If the opponent uses pacy wingers for wide attacks, your 3 CBs face immense pressure, risking a completely disorganized defensive line.</p>
+                    <p style="margin-top:15px;">2. Committing many players forward carries a high risk of conceding on the counter. This is a 'do or die' formation—losing possession makes it extremely difficult to reorganize your defense in time.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. In the midfield, make sure to use 2 fully upgraded (max-coached) CMs with around 90 speed and 95+ passing and control. In the first half, you can deploy LW and RW on the flanks of the midfield. However, if you want to minimize risk, you can use LM/RM or LWB/RWB instead. The best approach is to solidify your defense once you take the lead.</p>
+                    <p style="margin-top:15px;">2. Playing in 'Attacking' mode offers a great advantage in this formation, as it allows for relentless attacking pressure. While you can start in attacking mode, switching to 'Defensive' or 'Moderate' mode to hold onto a lead is the wisest choice. This allows your wide players to drop back and support the defense, ensuring defensive security without completely blunting your attacking edge.</p>
+                </div>`
+            },
+            "3-1-2-1-3": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৩-১-২-১-৩ ফরমেশনটি একটি ডায়মন্ড শেপ মিডফিল্ড এবং ৩ জন ফরোয়ার্ডের সমন্বয়ে গঠিত। এটি মাঝমাঠের আধিপত্য এবং আক্রমণভাগের গতির এক চমৎকার ভারসাম্য বজায় রাখে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ</span></div>
+                    <p>১. মাঝমাঠে ৪ জন প্লেয়ার ভিন্ন ভিন্ন লেভেলে (DM, 2 CMs, AM) থাকায় পাসের একটি ডায়মন্ড চেইন তৈরি হয়। এর ফলে খুব সহজেই বল পজিশন ধরে রাখা যায় এবং প্রতিপক্ষ মাঝমাঠ দিয়ে আক্রমণ করতে গেলে আপনার মিডফিল্ডের জালে আটকা পড়তে বাধ্য।</p>
+                    <p style="margin-top:15px;">২. সামনে LW, RW এবং CF—এই ৩ জন ফরোয়ার্ড থাকায় আক্রমণের সময় কোনো কমতি থাকে না। বিশেষ করে AM যখন স্ট্রাইকারদের নিখুঁত থ্রু-বল সাপ্লাই দেয়, তখন প্রতিপক্ষের ডিফেন্স লাইন মুহূর্তেই ভেঙে ফেলা সম্ভব হয়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. উইং ডিফেন্সের অভাব এই ফরমেশনের সবচাইতে বড় ঝুঁকি কারণ এখানে কোনো প্রপার LB বা RB নেই। মিডফিল্ডাররা মাঝখানে ডায়মন্ড তৈরি করে থাকায় মাঠের দুই পাশ পুরোপুরি ফাঁকা থাকে, যা দ্রুতগতির উইঙ্গারদের জন্য সহজ লক্ষ্যবস্তু হয়ে দাঁড়ায়।</p>
+                    <p style="margin-top:15px;">২. এই ফরমেশনে দুইজন CM-কে একইসাথে মাঝমাঠ সামলাতে হয় এবং উইংয়ের গ্যাপগুলো কভার করতে হয়। তারা আক্রমণে বেশি ওপরে উঠে বল হারিয়ে ফেললে আপনার ৩ জন ডিফেন্ডার বড় চাপের মুখে পড়ে যায়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. আপনার DM পজিশনে অবশ্যই টিমের সেরা ইন্টারসেপ্টরকে রাখুন। আপনার ৩ জন সেন্টার ব্যাকের (CB) ফুল ফিটনেস (১০০ স্ট্যামিনা) থাকার পাশাপাশি ট্যাকেলিং স্ট্যাট ১০০ থাকা লাগবে, এছাড়া তাদের হাইট ১৯০ সেমি বা তার বেশি হতে হবে। CM পজিশনে অন্তত একজন 'Both Footed' (দুই পায়েই খেলতে পারেন এমন) প্লেয়ার ব্যবহার করার চেষ্টা করুন।</p>
+                    <p style="margin-top:15px;">২. সাইড ব্যাক না থাকায় এই ফরমেশনে 'Defensive' বা 'Moderate' মোড ব্যবহার করা সবচাইতে নিরাপদ। এতে DM চতুর্থ ডিফেন্ডার হিসেবে এবং CM-রা সাইডে নেমে এসে কাভার দেওয়ার চেষ্টা করে, যা ডিফেন্সের ভারসাম্য বজায় রাখে।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 3-1-2-1-3 formation features a diamond-shaped midfield combined with 3 forwards. It provides a perfect balance between midfield dominance and offensive speed.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. With 4 players at different midfield levels (DM, 2 CMs, AM), a diamond passing chain is formed. This makes it easy to maintain possession and intercept opponent attacks through the center.</p>
+                    <p style="margin-top:15px;">2. Having LW, RW, and CF ensures no shortage of attacking options. When the AM supplies through-balls to the forwards, even the strongest defense lines can be dismantled quickly.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The lack of wing defense is the biggest risk, as there are no proper full-backs (LB/RB). Since the midfield forms a diamond in the center, the flanks remain exposed to fast winger attacks.</p>
+                    <p style="margin-top:15px;">2. The 2 CMs bear the heavy burden of controlling the middle while covering the wide gaps. If they push too high and lose possession, your 3 CBs are left vulnerable.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. You must deploy your team's best interceptor in the DM position. Your 3 CBs need to have full fitness (100 stamina) alongside a 100 tackling stat, and their height should be around 190 cm or taller. Additionally, try to use at least one 'Both Footed' player in the CM positions.</p>
+                    <p style="margin-top:15px;">2. Due to the lack of side backs, using 'Defensive' or 'Moderate' mode is essential for safety. In these modes, the DM acts as a fourth defender and CMs drop wider to provide necessary cover.</p>
+                </div>`
+            },
+            "3-3-1-3": {
+                bn: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">ট্যাকটিক্যাল ওভারভিউ</span></div>
+                    <p>৩-৩-১-৩ ফরমেশনটি ডিএলএস গেমের অন্যতম ইউনিক এবং ট্যাকটিক্যাল ফরমেশন। এটি মূলত 'টোটাল ফুটবল' স্টাইলের জন্য ডিজাইন করা হয়েছে, যা মাঠের প্রতিটি প্রান্তে প্লেয়ারদের উপস্থিতি নিশ্চিত করে এবং পজিশন হোল্ড করে খেলতে সাহায্য করে।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">ভালো দিকসমূহ </span></div>
+                    <p>১. এই ফরমেশনের বড় শক্তি হলো এর লেয়ার্ড মিডফিল্ড কন্ট্রোল। ৩ জন মিডফিল্ডার এবং ১ জন AM মিলে একটি ত্রিভুজাকৃতি স্তর তৈরি করে, যার ফলে ছোট ছোট পাসের মাধ্যমে খেলা নিয়ন্ত্রণ করা এবং প্রতিপক্ষের আক্রমণ মাঝমাঠেই রুখে দেওয়া সহজ হয়।</p>
+                    <p style="margin-top:15px;">২. সামনে LW, RW এবং CF—এই ৩ জন প্রপার ফরোয়ার্ড থাকায় আক্রমণের সময় বিপক্ষ দলের ডিফেন্ডাররা সব সময় চাপে থাকে। বিশেষ করে AM যখন উইঙ্গারদের থ্রু-বল বাড়িয়ে দেয়, তখন উইং দিয়ে গোল বের করা অনেক সহজ হয়ে যায়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">দুর্বলতা</span></div>
+                    <p>১. সাইডে কোনো LB বা RB না থাকা এই ফরমেশনের সবচাইতে বড় ঝুঁকি। মিডফিল্ডাররা মাঝখানে বেশি ফোকাস করায় উইংয়ের বিশাল অংশ খালি থাকে, ফলে অপনেন্ট দ্রুতগতির উইঙ্গার দিয়ে কাউন্টার অ্যাটাক করলে ৩ জন সেন্টার ব্যাকের জন্য তা সামলানো কঠিন হয়ে পড়ে।</p>
+                    <p style="margin-top:15px;">২. মিডফিল্ডারদের ওপর অতিরিক্ত চাপ থাকে। বল পজিশন হারিয়ে ফেললে তারা যদি দ্রুত নিচে নেমে ডিফেন্সকে কাভার দিতে না পারে, তবে আপনার রক্ষণভাগ একদম উন্মুক্ত হয়ে পড়ে এবং গোল খাওয়ার সম্ভাবনা বেড়ে যায়।</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">এক্সপার্ট টিপস</span></div>
+                    <p>১. ৩ জন মিডফিল্ডারের মধ্যে অন্তত একজন DM রাখুন। তিনজনের মধ্যে মাঝখানের পজিশনে DM ব্যবহার করাটাই সবচেয়ে ভালো। আর AM-এর ক্ষেত্রে এমন কাউকে রাখুন যার শ্যুটিং (Shooting) স্ট্যাট ৯৫-১০০ এর মধ্যে। তবে মনে রাখবেন, এই ফরমেশনে মানিয়ে নেওয়া গেমারদের জন্য বেশ চ্যালেঞ্জিং হতে পারে।</p>
+                    <p style="margin-top:15px;">২. সাইড ব্যাক না থাকায় এই ফরমেশনে 'Moderate' বা 'Defensive' মোড খেলা সবচাইতে নিরাপদ। এতে মিডফিল্ডাররা নিচে নেমে এসে ডিফেন্সের সাইডলাইনগুলো কভার দেওয়ার চেষ্টা করে, যা উইং ডিফেন্সের অভাব পূরণ করে এবং ক্লিন শিট বজায় রাখতে সাহায্য করে।</p>
+                </div>`,
+                en: `
+                <div class="guide-card">
+                    <div class="card-header"><span class="card-title">Tactical Overview</span></div>
+                    <p>The 3-3-1-3 formation is one of the most unique and tactical setups in DLS. Designed for a 'Total Football' style, it ensures player presence across all areas of the pitch for superior possession play.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-green);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-green);">Strengths</span></div>
+                    <p>1. The core strength lies in its layered midfield control. 3 midfielders and 1 AM form a triangular structure, making it easy to control the game through short passes and stop opponent attacks mid-pitch.</p>
+                    <p style="margin-top:15px;">2. With LW, RW, and CF, the opponent's defense is constantly under pressure. It's particularly effective when the AM provides through-balls to the wingers, creating easy scoring chances from the flanks.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-red);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-red);">Weaknesses</span></div>
+                    <p>1. The lack of LB/RB is the biggest risk here. Since midfielders focus on the center, the flanks are exposed, making it difficult for the 3 CBs to cover wide areas against fast opponent wingers on the counter.</p>
+                    <p style="margin-top:15px;">2. Midfielders face immense pressure. If they fail to track back quickly after losing possession, your defense becomes completely exposed, increasing the risk of conceding goals.</p>
+                </div>
+                <div class="guide-card" style="border-left-color: var(--clr-gold);">
+                    <div class="card-header"><span class="card-title" style="color: var(--clr-gold);">Expert Tips</span></div>
+                    <p>1. Keep at least one DM among the 3 midfielders. It is best to deploy the DM in the central position among the three. For the AM position, use a player whose shooting stat is between 95 and 100. However, keep in mind that adapting to this formation can be quite challenging for players.</p>
+                    <p style="margin-top:15px;">2. Playing on 'Moderate' or 'Defensive' mode is the safest choice due to the lack of side backs. In these modes, midfielders drop deep to cover the defensive flanks, filling the gaps and helping to maintain a clean sheet.</p>
+                </div>`
+            },
+
+        };
+
+        const formList = [
+            ['4-4-2','cyan'],['4-1-2-1-2','cyan'],['4-3-1-2','cyan'],['4-2-2-2','cyan'],['4-4-1-1','cyan'],['4-1-3-2','cyan'],
+            ['4-5-1','cyan'],['4-1-4-1','cyan'],['4-2-3-1','cyan'],['4-3-2-1','cyan'],['4-3-3','cyan'],['4-1-2-3','cyan'],['4-2-1-3','cyan'],
+            ['5-3-2','red'],['5-2-1-2','red'],['5-2-3','red'],['5-2-2-1','red'],['5-4-1','red'],['5-1-2-1-1','red'],
+            ['3-5-2','green'],['3-2-3-2','green'],['3-1-4-2','green'],['3-4-1-2','green'],['3-5-1-1','green'],['3-4-3','green'],['3-4-2-1','green'],['3-1-2-1-3','green'],['3-3-1-3','green']
+        ];
+
+        const grid = document.getElementById('main-grid');
+        formList.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'formation-card';
+            div.setAttribute('data-name', f[0]);
+            div.onclick = () => openDetails(f[0]);
+            div.innerHTML = `<div class="formation-icon" style="color:var(--clr-${f[1]})">${f[0]}</div>`;
+            grid.appendChild(div);
+        });
+
+        function search() {
+            let val = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.formation-card').forEach(c => {
+                c.style.display = c.getAttribute('data-name').toLowerCase().includes(val) ? 'block' : 'none';
+            });
+            
+        }
+
+        function openDetails(name) {
+            const lang = localStorage.getItem('savedLang') || 'bn';
+            document.getElementById('current-form-title').innerText = name;
+            const content = formationDatabase[name] ? formationDatabase[name][lang] : `<div class="guide-card"><p style="text-align:center">${lang === 'bn' ? 'গাইড শীঘ্রই আসছে...' : 'Detailed guide coming soon...'}</p></div>`;
+            document.getElementById('dynamic-content').innerHTML = content;
+            document.getElementById('main-grid').style.display = 'none';
+            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('formation-detail-container').style.display = 'block';
+            document.getElementById('backBtn').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function goBack() {
+            document.getElementById('formation-detail-container').style.display = 'none';
+            document.getElementById('backBtn').style.display = 'none';
+            document.getElementById('main-grid').style.display = 'grid';
+            document.getElementById('searchSection').style.display = 'flex';
+        }
+
+                function syncEverything() {
+            try {
+                // ১. থিম চেক (Light/Dark)
+                const theme = localStorage.getItem('savedTheme') || 'dark';
+                document.body.setAttribute('data-theme', theme);
+                
+                // ২. ভাষা চেক (BN/EN)
+                const lang = localStorage.getItem('savedLang') || 'bn';
+                document.querySelectorAll('[data-bn]').forEach(el => {
+                    const text = el.getAttribute('data-' + lang);
+                    if (text) el.innerText = text;
+                });
+
+                // সার্চ বক্সের প্লেসহোল্ডার
+                let input = document.getElementById('searchInput');
+                if (input) {
+                    input.placeholder = input.getAttribute('data-' + lang + '-ph');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        // প্রতি ৫০০ মিলিসেকেন্ডে চেক করবে (যাতে মেইন পেজে থিম পাল্টালে এখানেও পাল্টায়)
+        setInterval(syncEverything, 500);
+        window.onload = syncEverything;
+
+    </script>
+</body>
+</html>

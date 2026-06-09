@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NEXTGEN DLS - News Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+        })();
+    </script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --bg-main: #0b1120; 
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --accent: #f97316; 
+            --text-dim: #94a3b8;
+            --news-text: #cbd5e1;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-dim: #475569;
+            --news-text: #334155;
+        }
+
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-color); 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; padding: 0; 
+            padding-bottom: 50px;
+            transition: background-color 0.2s, color 0.2s;
+            visibility: hidden; 
+            width: 100vw;
+            max-width: 100%;
+            overflow-x: hidden; 
+            touch-action: pan-y; 
+        }
+        
+        .header { 
+            background: var(--card-bg); 
+            padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--accent);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+        
+        .header-title-wrapper { display: flex; align-items: center; gap: 10px; }
+        .page-title { font-size: 20px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+        
+        .news-container { padding: 20px 15px; display: flex; flex-direction: column; gap: 20px; width: 100%; overflow-x: hidden;}
+
+        .disclaimer-box {
+            background: rgba(249, 115, 22, 0.08);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 10px; padding: 15px; margin-bottom: 5px;
+        }
+        .disclaimer-title {
+            color: var(--accent); font-size: 15px; font-weight: 700; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .disclaimer-text {
+            font-family: 'Hind Siliguri', 'Roboto', sans-serif; font-size: 14px; color: var(--text-dim); line-height: 1.6; 
+            text-align: justify; 
+        }
+
+        .news-card {
+            background: var(--card-bg); border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 22px 20px; width: 100%; overflow-x: hidden;
+        }
+
+        .news-category {
+            font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;
+        }
+
+        .news-main-title {
+            font-size: 21px; font-weight: 700; color: var(--accent);
+            line-height: 1.4; margin-bottom: 22px; font-family: 'Poppins', sans-serif;
+        }
+
+        .news-block { 
+            position: relative; margin-bottom: 25px; padding-left: 18px; 
+        }
+        .news-block:last-child { margin-bottom: 0; }
+        
+        .news-block::before {
+            content: ''; position: absolute; left: 0; top: 4px; bottom: 4px;
+            width: 4px; background-color: var(--accent); border-radius: 20px;
+        }
+
+        .news-sub-title {
+            font-size: 16px; font-weight: 700; color: var(--text-color);
+            margin-bottom: 8px; font-family: 'Poppins', sans-serif;
+        }
+
+        .news-content {
+            font-size: 15.5px; color: var(--news-text); line-height: 1.75; 
+            text-align: justify; 
+            font-family: 'Hind Siliguri', 'Roboto', sans-serif; 
+        }
+
+        .highlight { color: var(--accent); font-weight: 700; }
+    </style>
+        <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-newspaper" style="color: var(--accent); font-size: 22px;"></i> 
+            <div class="page-title">
+                <span data-bn="ডিএলএস নিউজ পোর্টাল" data-en="DLS NEWS PORTAL">ডিএলএস নিউজ পোর্টাল</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="news-container">
+        
+        <div class="disclaimer-box">
+            <div class="disclaimer-title">
+                <i class="fa-solid fa-triangle-exclamation"></i> 
+                <span data-bn="গুরুত্বপূর্ণ নোটিশ" data-en="IMPORTANT NOTICE">গুরুত্বপূর্ণ নোটিশ</span>
+            </div>
+            <div class="disclaimer-text">
+                <span data-bn="এখানে দেওয়া গেমের বিভিন্ন আপডেট, ইভেন্ট এবং সেগুলোর সম্ভাব্য তারিখ সম্পর্কিত তথ্যগুলো মূলত আমাদের দীর্ঘদিনের গেমিং অভিজ্ঞতা ও পূর্ববর্তী বছরগুলোর রেকর্ডের ওপর ভিত্তি করে তৈরি করা হয়েছে। <br><br>যেহেতু গেমটির মূল স্বত্বাধিকারী <span class='highlight'>FTG (First Touch Games)</span>, তাই গেমের যেকোনো আপডেট, ইভেন্টের শিডিউল বা নিয়মে যেকোনো সময় পরিবর্তন আনার সম্পূর্ণ অধিকার তাদের রয়েছে। পূর্বের রেকর্ড অনুযায়ী দেওয়া সম্ভাব্য তারিখগুলোর সাথে বর্তমান বা ভবিষ্যতের আপডেটের সময়কাল হুবহু না-ও মিলতে পারে। <br><br>আমাদের এই তথ্যের মূল উদ্দেশ্য হলো আপনাদের ইভেন্টগুলো সম্পর্কে একটি আগাম ধারণা দেওয়া। গেমের যেকোনো চূড়ান্ত সিদ্ধান্ত বা পরিবর্তনের বিষয়টি সম্পূর্ণভাবে <span class='highlight'>FTG</span>-এর ওপর নির্ভরশীল।" data-en="The information provided here regarding various game updates, events, and their probable dates is mainly based on our long-term gaming experience and records from previous years. <br><br>Since the main owner of the game is <span class='highlight'>FTG (First Touch Games)</span>, they reserve the full right to bring changes to any update, event schedule, or rules at any time. The probable dates given according to previous records may not exactly match the timing of current or future updates. <br><br>Our main objective with this information is to give you an advance idea about the events. Any final decision or change in the game depends entirely on <span class='highlight'>FTG</span>.">এখানে দেওয়া গেমের বিভিন্ন আপডেট, ইভেন্ট এবং সেগুলোর সম্ভাব্য তারিখ সম্পর্কিত তথ্যগুলো মূলত আমাদের দীর্ঘদিনের গেমিং অভিজ্ঞতা ও পূর্ববর্তী বছরগুলোর রেকর্ডের ওপর ভিত্তি করে তৈরি করা হয়েছে। <br><br>যেহেতু গেমটির মূল স্বত্বাধিকারী <span class='highlight'>FTG (First Touch Games)</span>, তাই গেমের যেকোনো আপডেট, ইভেন্টের শিডিউল বা নিয়মে যেকোনো সময় পরিবর্তন আনার সম্পূর্ণ অধিকার তাদের রয়েছে। পূর্বের রেকর্ড অনুযায়ী দেওয়া সম্ভাব্য তারিখগুলোর সাথে বর্তমান বা ভবিষ্যতের আপডেটের সময়কাল হুবহু না-ও মিলতে পারে। <br><br>আমাদের এই তথ্যের মূল উদ্দেশ্য হলো আপনাদের ইভেন্টগুলো সম্পর্কে একটি আগাম ধারণা দেওয়া। গেমের যেকোনো চূড়ান্ত সিদ্ধান্ত বা পরিবর্তনের বিষয়টি সম্পূর্ণভাবে <span class='highlight'>FTG</span>-এর ওপর নির্ভরশীল।</span>
+            </div>
+        </div>
+
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-gamepad"></i>
+                <span data-bn="গেম পরিচিতি" data-en="GAME INTRODUCTION">গেম পরিচিতি</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="ডিএলএস গেমের ইতিহাস ও লাইসেন্সিং" data-en="History & Licensing of DLS Game">ডিএলএস গেমের ইতিহাস ও লাইসেন্সিং</span>
+            </div>
+            <div class="news-block">
+                <div class="news-content">
+                    <span data-bn="ড্রিম লিগ সকার (DLS) বর্তমানে ফুটবল গেম প্রেমীদের কাছে এক জনপ্রিয় নাম। <span class='highlight'>২০১১ সালে</span> আইওএস (iOS) প্ল্যাটফর্মের মাধ্যমে যাত্রা শুরু করলেও, <span class='highlight'>২০১৪ সালে</span> অ্যান্ড্রয়েডে আসার পর এটি বিশ্বব্যাপী জনপ্রিয়তা পায়। তবে বর্তমানে আমরা যে আধুনিক ইন্টারফেস ও ফিচারের গেমটি খেলি, তার অফিশিয়াল যাত্রা শুরু হয় <span class='highlight'>২০১৬ সাল</span> থেকে।" data-en="Dream League Soccer (DLS) is currently a popular name among football game lovers. Although it started its journey through the iOS platform in <span class='highlight'>2011</span>, it gained worldwide popularity after coming to Android in <span class='highlight'>2014</span>. However, the official journey of the game with the modern interface and features that we play today began in <span class='highlight'>2016</span>.">ড্রিম লিগ সকার (DLS) বর্তমানে ফুটবল গেম প্রেমীদের কাছে এক জনপ্রিয় নাম। <span class='highlight'>২০১১ সালে</span> আইওএস (iOS) প্ল্যাটফর্মের মাধ্যমে যাত্রা শুরু করলেও, <span class='highlight'>২০১৪ সালে</span> অ্যান্ড্রয়েডে আসার পর এটি বিশ্বব্যাপী জনপ্রিয়তা পায়। তবে বর্তমানে আমরা যে আধুনিক ইন্টারফেস ও ফিচারের গেমটি খেলি, তার অফিশিয়াল যাত্রা শুরু হয় <span class='highlight'>২০১৬ সাল</span> থেকে।</span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-content">
+                    <span data-bn="এই গেমের সবচেয়ে গুরুত্বপূর্ণ নিয়ম হলো, একটি প্লেয়ার গেমে ততক্ষণ পর্যন্তই পাওয়া যাবে, যতক্ষণ পর্যন্ত সে <span class='highlight'>লাইসেন্সকৃত দেশ বা ক্লাবের</span> সাথে যুক্ত থাকে। অর্থাৎ যদি কোনো প্লেয়ার চুক্তিবদ্ধ দেশ বা ক্লাবে খেলে, তাহলে আপনি তাকে গেমে পাবেন। কিন্তু সে যদি ক্লাব ছেড়ে দিয়ে এমন কোনো ক্লাবে চলে যায় যেটা গেমে নেই অথবা <span class='highlight'>অবসর গ্রহণ</span> করে, তবে সেই প্লেয়ারের কার্ড গেমে আর পাওয়া যাবেবারিক। তবে বিভিন্ন স্পেশাল ইভেন্টের মাধ্যমে <span class='highlight'>লিজেন্ড প্লেয়ার</span> বা গেম থেকে চলে যাওয়া প্লেয়ারদের পাওয়ার সুযোগ থাকে।" data-en="The most important rule of this game is that a player will only be available in the game as long as they are associated with a <span class='highlight'>licensed country or club</span>. That means if a player plays for a contracted country or club, you will find them in the game. But if they leave the club and go to a club that is not in the game, or if they <span class='highlight'>retire</span>, that player's card will no longer be available in the game. However, there are opportunities to get <span class='highlight'>legend players</span> or players who have left the game through various special events.">এই গেমের সবচেয়ে গুরুত্বপূর্ণ নিয়ম হলো, একটি প্লেয়ার গেমে ততক্ষণ পর্যন্তই পাওয়া যাবে, যতক্ষণ পর্যন্ত সে <span class='highlight'>লাইসেন্সকৃত দেশ বা ক্লাবের</span> সাথে যুক্ত থাকে। অর্থাৎ যদি কোনো প্লেয়ার চুক্তিবদ্ধ দেশ বা ক্লাবে খেলে, তাহলে আপনি তাকে গেমে পাবেন। কিন্তু সে যদি ক্লাব ছেড়ে দিয়ে এমন কোনো ক্লাবে চলে যায় যেটা গেমে নেই অথবা <span class='highlight'>অবসর গ্রহণ</span> করে, তবে সেই প্লেয়ারের কার্ড গেমে আর পাওয়া যাবে না। তবে বিভিন্ন স্পেশাল ইভেন্টের মাধ্যমে <span class='highlight'>লিজেন্ড প্লেয়ার</span> বা গেম থেকে চলে যাওয়া প্লেয়ারদের পাওয়ার সুযোগ থাকে।</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                <span data-bn="আপডেট নিউজ" data-en="UPDATE NEWS">আপডেট নিউজ</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="মেজর, মাইনর ও সিজনাল আপডেট" data-en="Major, Minor & Seasonal Updates">মেজর, মাইনর ও সিজনাল আপডেট</span>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Major Update - ভার্সন আপগ্রেড:" data-en="Major Update or Version Upgrade:">Major Update - ভার্সন আপগ্রেড:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="গেমে সাধারণত দুই ধরনের আপডেট আসে—একটি হলো <span class='highlight'>মেজর (Major)</span> আপডেট এবং অন্যটি <span class='highlight'>মাইনর (Minor)</span> আপডেট। মেজর আপডেটে গেমে নতুন ভার্সন যুক্ত হয়। এই আপডেটের মাধ্যমে ট্রান্সফার আপডেট করা হয়, অর্থাৎ প্লেয়ারদের ক্লাব পরিবর্তন, নতুন প্লেয়ার যুক্ত করা এবং রিটায়ার হওয়া প্লেয়ারদের গেম থেকে রিমুভ করা হয়। এছাড়া প্লেয়ারের রেটিং বাড়ানো বা কমানো এবং গ্রাফিক্স ও গেম প্লে পরিবর্তন করা হয়। তাছাড়া কমেন্ট্রি ও বিভিন্ন ফিচার যুক্ত করা হয়। সাধারণত DLS গেমে এই ধরনের আপডেট প্রতি বছরের <span class='highlight'>ডিসেম্বরের প্রথম সপ্তাহে</span> (১-৫ ডিসেম্বরের মধ্যে) আসে।" data-en="Usually, two types of updates come to the game—one is the <span class='highlight'>Major</span> update and the other is the <span class='highlight'>Minor</span> update. A new version is added to the game in a major update. Transfer updates are done through this update, which means players' club changes, adding new players, and removing retired players from the game. Apart from this, players' ratings are increased or decreased, and graphics and gameplay are changed. Moreover, commentary and various features are added. Typically, this type of update in the DLS game arrives in the <span class='highlight'>first week of December</span> every year (between December 1-5).">গেমে সাধারণত দুই ধরনের আপডেট আসে—একটি হলো <span class='highlight'>মেজর (Major)</span> আপডেট এবং অন্যটি <span class='highlight'>মাইনর (Minor)</span> আপডেট। মেজর আপডেটে গেমে নতুন ভার্সন যুক্ত হয়। এই আপডেটের মাধ্যমে ট্রান্সফার আপডেট করা হয়, অর্থাৎ প্লেয়ারদের ক্লাব পরিবর্তন, নতুন প্লেয়ার যুক্ত করা এবং রিটায়ার হওয়া প্লেয়ারদের গেম থেকে রিমুভ করা হয়। এছাড়া প্লেয়ারের রেটিং বাড়ানো বা কমানো এবং গ্রাফিক্স ও গেম প্লে পরিবর্তন করা হয়। তাছাড়া কমেন্ট্রি ও বিভিন্ন ফিচার যুক্ত করা হয়। সাধারণত DLS গেমে এই ধরনের আপডেট প্রতি বছরের <span class='highlight'>ডিসেম্বরের প্রথম সপ্তাহে</span> (১-৫ ডিসেম্বরের মধ্যে) আসে।</span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Minor Update - ছোট আপডেট:" data-en="Minor Update:">Minor Update - ছোট আপডেট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="গেমে নিয়মিত অনেকগুলো ছোট ছোট আপডেট দেওয়া হয়। এই আপডেটগুলোর মাধ্যমে মূলত গেমের বিভিন্ন <span class='highlight'>বাগ (Bug), গ্লিচ</span> বা কারিগরি সমস্যাগুলো ফিক্সড করা হয়। সাধারণত বড় আপডেটের পর যেসব সমস্যা দেখা দেয়, সেগুলো পরবর্তী মাইনর আপডেট দিয়ে ঠিক করে দেওয়া হয়।" data-en="Many small updates are regularly provided in the game. Through these updates, various <span class='highlight'>bugs, glitches</span>, or technical issues of the game are mainly fixed. Usually, the problems that appear after a major update are fixed with subsequent minor updates.">গেমে নিয়মিত অনেকগুলো ছোট ছোট আপডেট দেওয়া হয়। এই আপডেটগুলোর মাধ্যমে মূলত গেমের বিভিন্ন <span class='highlight'>বাগ (Bug), গ্লিচ</span> বা কারিগরি সমস্যাগুলো ফিক্সড করা হয়। সাধারণত বড় আপডেটের পর যেসব সমস্যা দেখা দেয়, সেগুলো পরবর্তী মাইনর আপডেট দিয়ে ঠিক করে দেওয়া হয়।</span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Winter Update - শীতকালীন আপডেট:" data-en="Winter Update:">Winter Update - শীতকালীন আপডেট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="এটি প্রতি বছর <span class='highlight'>ফেব্রুয়ারি মাসে</span> আসা একটি বড় আপডেট। এখানে গেমের ডেটা ও ফিচারে বড় পরিবর্তন আনা হয়। বিশেষ করে <span class='highlight'>জানুয়ারির ট্রান্সফার উইন্ডো</span> অনুযায়ী নতুন সাইনিং, লোন এবং প্লেয়ারদের রেটিং আপগ্রেড বা ডাউনগ্রেড করা হয়।" data-en="This is a major update that arrives in <span class='highlight'>February</span> every year. Significant changes are made to the game's data and features here. In particular, according to the <span class='highlight'>January transfer window</span>, new signings, loans, and players' ratings are upgraded or downgraded.">এটি প্রতি বছর <span class='highlight'>ফেব্রুয়ারি মাসে</span> আসা একটি বড় আপডেট। এখানে গেমের ডেটা ও ফিচারে বড় পরিবর্তন আনা হয়। বিশেষ করে <span class='highlight'>জানুয়ারির ট্রান্সফার উইন্ডো</span> অনুযায়ী নতুন সাইনিং, লোন এবং প্লেয়ারদের রেটিং আপগ্রেড বা ডাউনগ্রেড করা হয়।</span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Summer Update - গ্রীষ্মকালীন আপডেট:" data-en="Summer Update:">Summer Update - গ্রীষ্মকালীন আপডেট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="এটি হলো সিজন-এন্ড মেজর আপডেট, যা <span class='highlight'>মে মাসের শেষে বা জুনের শুরুতে</span> আসে। পুরো সিজনের পারফরম্যান্সের ভিত্তিতে প্লেয়ারদের রেটিং আপডেট করা হয়। সিজনের পারফরম্যান্স অনুযায়ী প্লেয়ারদের রেটিং আপগ্রেড এবং ডাউনগ্রেড করা হয়। এছাড়া নতুন কিছু ফিচার যুক্ত করা হয়।" data-en="This is the season-end major update, which comes at the <span class='highlight'>end of May or the beginning of June</span>. Based on the performance of the entire season, players' ratings are updated alongside the addition of new features and graphics.">এটি হলো সিজন-এন্ড মেজর আপডেট, যা <span class='highlight'>মে মাসের শেষে বা জুনের শুরুতে</span> আসে। পুরো সিজনের পারফরম্যান্সের ভিত্তিতে প্লেয়ারদের রেটিং আপডেট করা হয়। সিজনের পারফরম্যান্স অনুযায়ী প্লেয়ারদের রেটিং আপগ্রেড এবং ডাউনগ্রেড করা হয়। এছাড়া নতুন কিছু ফিচার যুক্ত করা হয়।</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-trophy"></i>
+                <span data-bn="স্পেশাল ইভেন্ট" data-en="SPECIAL EVENTS">স্পেশাল ইভেন্ট</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="লিজেন্ডারি ক্লাসিক, চ্যাম্পিয়নস ও TOTY ইভেন্ট" data-en="Legendary Classic, Champions & TOTY Events">লিজেন্ডারি ক্লাসিক, চ্যাম্পিয়নস ও TOTY ইভেন্ট</span>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Special Legendary Classic Players Event - বিশেষ লিজেন্ডারি ক্লাসিক প্লেয়ার ইভেন্ট:" data-en="Special Legendary Classic Players Event:">Special Legendary Classic Players Event - বিশেষ লিজেন্ডারি ক্লাসিক প্লেয়ার ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>২০২৫ সালে</span> এফটিজি (FTG) গেমে '<span class='highlight'>স্পেশাল লিজেন্ডারি ক্লাসিক প্লেয়ার</span>' ফিচারটি নিয়ে আসে। যারা ফুটবল থেকে অবসর নিয়েছেন, তাদের নির্দিষ্ট সময়ের পারফরম্যান্স অনুযায়ী আলাদা স্পেশাল কার্ড হিসেবে গেমে ফিরিয়ে আনা হয়। এগুলো প্রাইজ লিডারের মাধ্যমে পেতে হয়, যার জন্য নির্ধারিত <span class='highlight'>ডিপি (DP)</span> পয়েন্ট অর্জন করা প্রয়োজন। গড়ে একটি ক্যারিয়ার ম্যাচ জিতলে <span class='highlight'>১১০ ডিপি</span> পাওয়া যায়। প্রথম সিজনে <span class='highlight'>২ লাখ ডিপি</span> পয়েন্টে <span class='highlight'>৪ জন</span> প্লেয়ার দেওয়া হলেও দ্বিতীয় সিজন থেকে লক্ষ্যমাত্রা বাড়িয়ে <span class='highlight'>২.৫ লাখ</span> করা হয়েছে।" data-en="In <span class='highlight'>2025</span>, FTG introduced the '<span class='highlight'>Special Legendary Classic Player</span>' feature to the game. Those who have retired from football are brought back to the game as separate special cards based on their performance during a specific period. These have to be obtained through the Prize Ladder, which requires earning specific <span class='highlight'>DP (Dream Points)</span>. On average, winning a career match grants <span class='highlight'>110 DP</span>. Although <span class='highlight'>4 players</span> were given for <span class='highlight'>200,000 DP</span> points in the first season, the target has been increased to <span class='highlight'>250,000</span> from the second season.">২০২৫ সালে এফটিজি (FTG) গেমে 'স্পেশাল লিজেন্ডারি ক্লাসিক প্লেয়ার' ফিচারটি নিয়ে আসে। যারা ফুটবল থেকে অবসর নিয়েছেন, তাদের নির্দিষ্ট সময়ের পারফরম্যান্স অনুযায়ী আলাদা স্পেশাল কার্ড হিসেবে গেমে ফিরিয়ে আনা হয়। এগুলো প্রাইজ লিডারের মাধ্যমে পেতে হয়, যার জন্য নির্ধারিত ডিপি (DP) পয়েন্ট অর্জন করা প্রয়োজন। গড়ে একটি ক্যারিয়ার ম্যাচ জিতলে ১১০ ডিপি পাওয়া যায়। প্রথম সিজনে ২ লাখ ডিপি পয়েন্টে ৪ জন প্লেয়ার দেওয়া হলেও দ্বিতীয় সিজন থেকে লক্ষ্যমাত্রা বাড়িয়ে ২.৫ লাখ করা হয়েছে।</span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Champions Player Event - চ্যাম্পিয়নস খেলোয়াড়দের ইভেন্ট:" data-en="Champions Player Event:">Champions Player Event - চ্যাম্পিয়নস খেলোয়াড়দের ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="ডিএলএস ইতিহাসের সবচেয়ে আকর্ষণীয় ইভেন্ট এটি। এখানে <span class='highlight'>৯৮ রেটিংয়ের মেসি-রোনালদো</span> এবং <span class='highlight'>৯৬ রেটিংয়ের মদরিচসহ</span> অনেক চ্যাম্পিয়ন প্লেয়ার ছিল। এই প্লেয়ারগুলো নেওয়ার জন্য <span class='highlight'>লিজেন্ডারি এজেন্টের</span> মাধ্যমে স্পিন করতে হয়। <span class='highlight'>২০২৫ সালের ১৭ জুলাই</span> <span class='highlight'>ডিএলএস ২৫</span>-এ প্রথম এই ইভেন্ট আসে। এই ইভেন্টটি বেশ অনিশ্চয়তার ছিল, কারণ অনেকে হাজার হাজার ডায়মন্ড খরচ করেও প্লেয়ার পায়নি, আবার কেউ কেউ একটি এজেন্টেই পেয়ে গেছে। <span class='highlight'>ডিএলএস ২৬</span>-এ এমন ইভেন্টের জন্য আমাদের <span class='highlight'>জুলাই</span> পর্যন্ত অপেক্ষা করতে হবে।" data-en="This is the most attractive event in DLS history. There were many champion players here, including <span class='highlight'>98-rated Messi and Ronaldo</span>, and <span class='highlight'>96-rated Modric</span>. To get these players, you have to spin through the <span class='highlight'>Legendary Agent</span>. This event first appeared in <span class='highlight'>DLS 25</span> on <span class='highlight'>July 17, 2025</span>. This event was quite uncertain because many did not get a player even after spending thousands of diamonds, while some got one with just a single agent. We will have to wait until <span class='highlight'>July</span> for such an event in <span class='highlight'>DLS 26</span>.">ডিএলএস ইতিহাসের সবচেয়ে আকর্ষণীয় ইভেন্ট এটি। এখানে ৯৮ রেটিংয়ের মেসি-রোনালদো এবং ৯৬ রেটিংয়ের মদরিচসহ অনেক চ্যাম্পিয়ন প্লেয়ার ছিল। এই প্লেয়ারগুলো নেওয়ার জন্য লিজেন্ডারি এজেন্টের মাধ্যমে স্পিন করতে হয়। ২০২৫ সালের ১৭ জুলাই ডিএলএস ২৫-এ প্রথম এই ইভেন্ট আসে। এই ইভেন্টটি বেশ অনিশ্চয়তার ছিল, কারণ অনেকে হাজার হাজার ডায়মন্ড খরচ করেও প্লেয়ার পায়নি, আবার কেউ কেউ একটি এজেন্টেই পেয়ে গেছে। ডিএলএস ২৬-এ এমন ইভেন্টের জন্য আমাদের জুলাই পর্যন্ত অপেক্ষা করতে হবে।</span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Team of the Year (TOTY) Event - বর্ষসেরা দলের ইভেন্ট:" data-en="Team of the Year or TOTY Event:">Team of the Year (TOTY) Event - বর্ষসেরা দলের ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>২০২৬ সালের জানুয়ারি</span> মাস থেকে এই ইভেন্টটি আনুষ্ঠানিকভাবে শুরু হয়। এখানে ২০২৫ সালের সেরা ফর্মে থাকা <span class='highlight'>এমবাপ্পে, ডেম্বেলে, হ্যারি কেইনদের</span> মতো পারফর্মারদের রাখা হয়েছে। এই প্লেয়ারগুলো আনলক করতেও <span class='highlight'>লিজেন্ডারি এজেন্টের</span> প্রয়োজন হয়, তবে এখানে অনিশ্চয়তা কম। সর্বোচ্চ <span class='highlight'>১৬টি এজেন্ট</span> খরচ করলেই একটি স্পেশাল প্লেয়ার নিশ্চিতভাবে পাওয়া যায়।" data-en="This event officially started in <span class='highlight'>January 2026</span>. Top performers in their best form from 2025 like <span class='highlight'>Mbappe, Dembele, and Harry Kane</span> are featured here. A <span class='highlight'>Legendary Agent</span> is also required to unlock these players, but there is less uncertainty here. Spending a maximum of <span class='highlight'>16 agents</span> guarantees a special player.">২০২৬ সালের জানুয়ারি মাস থেকে এই ইভেন্টটি আনুষ্ঠানিকভাবে শুরু হয়। এখানে ২০২৫ সালের সেরা ফর্মে থাকা এমবাপ্পে, ডেম্বেলে, হ্যারি কেইনদের মতো পারফর্মারদের রাখা হয়েছে। এই প্লেয়ারগুলো আনলক করতেও লিজেন্ডারি এজেন্টের প্রয়োজন হয়, তবে এখানে অনিশ্চয়তা কম। সর্বোচ্চ ১৬টি এজেন্ট খরচ করলেই একটি স্পেশাল প্লেয়ার নিশ্চিতভাবে পাওয়া যায়।</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-star"></i>
+                <span data-bn="স্টার ইভেন্ট" data-en="STAR EVENTS">স্টার ইভেন্ট</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="Dream Stars, Kick Off ও Dynamic Stars ইভেন্ট" data-en="Dream Stars, Kick Off & Dynamic Stars Events">Dream Stars, Kick Off ও Dynamic Stars ইভেন্ট</span>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Dream Stars Event - ড্রিম স্টার্স ইভেন্ট:" data-en="Dream Stars Event:">Dream Stars Event - ড্রিম স্টার্স ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>ডিএলএস ২৫</span> থেকে এই ইভেন্টের যাত্রা শুরু হয়। বর্তমান ফুটবল বিশ্বের উদীয়মান এবং প্রতিভাবান তরুণ খেলোয়াড়দের স্পেশাল হাই-রেটেড কার্ড এখানে যুক্ত করা হয়। তাছাড়া <span class='highlight'>আন্ডাররেটেড সিনিয়ন প্লেয়ারও</span> যুক্ত করা হয় যারা সাম্প্রতিক সময়ে ভালো পারফরম্যান্স করে থাকে। এটা সম্পূর্ণ নির্ভর করে গেম ডেভেলপার কোম্পানি <span class='highlight'>এফটিজির</span> ওপর যে তারা কার কার্ড নিয়ে আসবে। ডিএলএস ২৫-এ এটি <span class='highlight'>জুন মাসে</span> আসলেও ডিএলএস ২৬-এ <span class='highlight'>এপ্রিল মাসে</span> এসেছে। এবার গত বছরের তুলনায় প্লেয়ার সংখ্যা বাড়িয়ে <span class='highlight'>১২ জন</span> করা হয়েছে এবং ১২তম প্লেয়ারটি ভোটিংয়ের মাধ্যমে নির্বাচন করা হয়েছে।" data-en="This event started in <span class='highlight'>DLS 25</span>. Special high-rated cards of emerging and talented young players in the current football world are added here. Moreover, <span class='highlight'>underrated senior players</span> who have been performing well recently are also included. It entirely depends on the game developer company, <span class='highlight'>FTG</span>, as to whose cards they will bring. Although it arrived in <span class='highlight'>June in DLS 25</span>, it came in <span class='highlight'>April in DLS 26</span>. This time, the number of players has been increased to <span class='highlight'>12</span> compared to last year, and the <span class='highlight'>12th player</span> was selected through voting.">ডিএলএস ২৫ থেকে এই ইভেন্টের যাত্রা শুরু হয়। বর্তমান ফুটবল বিশ্বের উদীয়মান এবং প্রতিভাবান তরুণ খেলোয়াড়দের স্পেশাল হাই-রেটেড কার্ড এখানে যুক্ত করা হয়। তাছাড়া আন্ডাররেটেড সিনিয়ন প্লেয়ারও যুক্ত করা হয় যারা সাম্প্রতিক সময়ে ভালো পারফরম্যান্স করে থাকে। এটা সম্পূর্ণ নির্ভর করে গেম ডেভেলপার কোম্পানি এফটিজির ওপর যে তারা কার কার্ড নিয়ে আসবে। ডিএলএস ২৫-এ এটি জুন মাসে আসলেও ডিএলএস ২৬-এ এপ্রিল মাসে এসেছে। এবার গত বছরের তুলনায় প্লেয়ার সংখ্যা বাড়িয়ে ১২ জন করা হয়েছে এবং ১২তম প্লেয়ারটি ভোটিংয়ের মাধ্যমে নির্বাচন করা হয়েছে।</span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Kick Off Stars Event - কিক অফ স্টার্স ইভেন্ট:" data-en="Kick Off Stars Event:">Kick Off Stars Event - কিক অফ স্টার্স ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="গেমের অ্যাম্বাসেডর বা কভার স্টারদের নিয়ে এই আকর্ষণীয় ইভেন্টটি সাজানো হয়। <span class='highlight'>ডিএলএস ১৬ (DLS 16)</span> থেকে শুরু করে বিভিন্ন সংস্করণে তারকারা গেমটির অ্যাম্বাসেডর হিসেবে ছিলেন। যেমন: ডিএলএস ১৬ ও ১৭-তে <span class='highlight'>ডিয়েগো কস্তা এবং অ্যারন রামসে</span>; ডিএলএস ১৮-তে <span class='highlight'>গ্যারেথ বেল ও আন্দ্রেস ইনিয়েস্তা</span>; ডিএলএস ১৯-এ <span class='highlight'>গ্যারেথ বেল</span>; ডিএলএস ২০-তে <span class='highlight'>লুইস সুয়ারেজ ও গ্যারেথ বেল</span>; ডিএলএস ২১-এ <span class='highlight'>রবার্তো ফিরমিনো ও কেভিন ডি ব্রুইনা</span>; ডিএলএস ২২-এ <span class='highlight'>কেভিন ডি ব্রুইনা ও সার্জিনো ডেস্ট</span>; ডিএলএস ২৩-এ <span class='highlight'>ডি ব্রুইনা ও আশরাফ হাকিমি</span>; ডিএলএস ২৪-এ <span class='highlight'>ডি ব্রুইনা ও রদ্রিগো</span> এবং ডিএলএস ২৫-এ ছিলেন <span class='highlight'>রদ্রিগো ও হুলিয়ান আলভারেজ</span>। সর্বশেষ ডিএলএস ২৬-এ হুলিয়ান আলভারেজের সাথে নতুন যুক্ত হয়েছেন <span class='highlight'>রাফিনহা</span>।<br><br>দীর্ঘদিন ধরে অ্যাম্বাসেডর থাকার এই প্রথা চললেও, &quot;<span class='highlight'>কিক অফ স্টার্স</span>&quot; নামের স্পেশাল ইভেন্টটি মূলত এই বছর অর্থাৎ <span class='highlight'>ডিএলএস ২৬ (DLS 26)</span>-এর অ্যাম্বাসেডরদের কার্ড দিয়েই প্রথমবারের মতো শুরু হয়েছে। আশা করা যাচ্ছে, ভবিষ্যৎ সংস্করণগুলোতেও প্রতি বছর এই ইভেন্টটি নিয়মিত দেখা যাবে। এই ইভেন্টের স্পেশাল লিজেন্ডারি কার্ডগুলো মূলত <span class='highlight'>সিজন পাসের</span> মাধ্যমে আনলক করতে হয়।" data-en="This exciting event revolves around the game's ambassadors or cover stars. Starting from <span class='highlight'>DLS 16</span>, various stars have featured as the game's ambassadors. For example: <span class='highlight'>Diego Costa and Aaron Ramsey</span> in DLS 16 & 17; <span class='highlight'>Gareth Bale and Andrés Iniesta</span> in DLS 18; <span class='highlight'>Gareth Bale</span> in DLS 19; <span class='highlight'>Luis Suárez and Gareth Bale</span> in DLS 20; <span class='highlight'>Roberto Firmino and Kevin De Bruyne</span> in DLS 21; <span class='highlight'>Kevin De Bruyne and Sergiño Dest</span> in DLS 22; <span class='highlight'>Kevin De Bruyne and Achraf Hakimi</span> in DLS 23; <span class='highlight'>Kevin De Bruyne and Rodrygo</span> in DLS 24; and <span class='highlight'>Rodrygo and Julián Álvarez</span> in DLS 25. Most recently, <span class='highlight'>Raphinha</span> joined Julián Álvarez as the new ambassador in DLS 26.<br><br>Although the tradition of having ambassadors has been around for a long time, the specific &quot;<span class='highlight'>Kick Off Stars</span>&quot; event officially debuted this year with the ambassador cards of <span class='highlight'>DLS 26</span>. It is expected that this event will become a regular yearly feature in future editions. The special legendary cards for this event mainly have to be unlocked through the <span class='highlight'>Season Pass</span>.">গেমের অ্যাম্বাসেডর বা কভার স্টারদের নিয়ে এই আকর্ষণীয় ইভেন্টটি সাজানো হয়। ডিএলএস ১৬ (DLS 16) থেকে শুরু করে বিভিন্ন সংস্করণে তারকারা গেমটির অ্যাম্বাসেডর হিসেবে ছিলেন। যেমন: ডিএলএস ১৬ ও ১৭-তে ডিয়েগো কস্তা এবং অ্যারন রামসে; ডিএলএস ১৮-তে গ্যারেথ বেল ও আন্দ্রেস ইনিয়েস্তা; ডিএলএস ১৯-এ গ্যারেথ বেল; ডিএলএস ২০-তে লুইস সুয়ারেজ ও গ্যারেথ বেল; ডিএলএস ২১-এ রবার্তো ফিরমিনো ও কেভিন ডি ব্রুইনা; ডিএলএস ২২-এ কেভিন ডি ব্রুইনা ও সার্জিনো ডেস্ট; ডিএলএস ২৩-এ ডি ব্রুইনা ও আশরাফ হাকিমি; ডিএলএস ২৪-এ ডি ব্রুইনা ও রদ্রিগো এবং ডিএলএস ২৫-এ ছিলেন রদ্রিগো ও হুলিয়ান আলভারেজ। সর্বশেষ ডিএলএস ২৬-এ হুলিয়ান আলভারেজের সাথে নতুন যুক্ত হয়েছেন রাফিনহা।<br><br>দীর্ঘদিন ধরে অ্যাম্বাসেডর থাকার এই প্রথা চললেও, "কিক অফ স্টার্স" নামের স্পেশাল ইভেন্টটি মূলত এই বছর অর্থাৎ ডিএলএস ২৬ (DLS 26)-এর অ্যাম্বাসেডরদের কার্ড দিয়েই প্রথমবারের মতো শুরু হয়েছে। আশা করা যাচ্ছে, ভবিষ্যৎ সংস্করণগুলোতেও প্রতি বছর এই ইভেন্টটি নিয়মিত দেখা যাবে। এই ইভেন্টের স্পেশাল লিজেন্ডারি কার্ডগুলো মূলত সিজন পাসের মাধ্যমে আনলক করতে হয়।</span>
+                </div>
+            </div>
+            
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Dynamic Stars Event - ডাইনামিক স্টার্স ইভেন্ট:" data-en="Dynamic Stars Event:">Dynamic Stars Event - ডাইনামিক স্টার্স ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>DLS 26</span>-এ প্রথমবারের মতো ডাইনামিক স্টার্স (Dynamic Stars) ইভেন্টটি গেমে যুক্ত হয়। মূলত বিশ্বকাপ বা বড় টুর্নামেন্টকে সামনে রেখেই এই ধরনের ইভেন্ট আনা হয়। যেমন, ২০২৬ সালের বিশ্বকাপে অংশগ্রহণকারী দলগুলোর মধ্য থেকে বাছাইকৃত প্লেয়ারদের এই ইভেন্টে যুক্ত করা হয়েছিল। এখানে মূলত জাতীয় দলকে প্রতিনিধিত্ব করা প্লেয়ার, উদীয়মান তরুণ এবং হাইপে থাকা প্লেয়ারদের প্রাধান্য দেওয়া হয়。<br><br>ডাইনামিক স্টার্সের সবচেয়ে গুরুত্বপূর্ণ দিক হলো এটি <span class='highlight'>রিয়েল-লাইফ ফুটবলের</span> সাথে সরাসরি সম্পর্কিত। সাধারণত গেমে কোচিং করিয়ে প্লেয়ার ম্যাক্স করতে হয়, কিন্তু এই ইভেন্টে বাস্তব টুর্নামেন্টে দলের অগ্রগতির ওপর ভিত্তি করে প্লেয়ারের রেটিং স্বয়ংক্রিয়ভাবে বাড়তে থাকে। ইভেন্টের শুরুতে প্লেয়ারদের একটি নির্দিষ্ট বেস রেটিং (যেমন ৮২) থাকে, যা টুর্নামেন্ট চলাকালীন পরিবর্তিত হতে থাকে এবং চ্যাম্পিয়ন দলের প্লেয়ারের রেটিং সর্বোচ্চ (যেমন ৯৬) পর্যন্ত পৌঁছাতে পারে。<br><br>ডাইনামিক স্টার্স প্লেয়ারদের দলে ভেড়াতে <span class='highlight'>ডাইনামিক এজেন্ট (Dynamic Agent)</span>-এর প্রয়োজন হয়। এই স্পেশাল এজেন্টগুলো সাধারণত নিচের মাধ্যমগুলো থেকে সংগ্রহ করা যায়:<br>• লাইভ ইভেন্ট (Live Event)<br>• ফ্রি পাস (Free Pass)<br>• সিজন পাস (Season Pass)<br>• ড্রিম ড্রাফট (Dream Draft) {সম্ভাব্য}<br>• ক্ল্যান রিওয়ার্ড (Clan Rewards)<br>• লিমিটেড প্রমোশন (Limited Promotions)<br><br>টুর্নামেন্টের বিভিন্ন ধাপে দল উত্তীর্ণ হওয়ার সাথে সাথে রেটিং যেভাবে বৃদ্ধি পায় (একটি সাধারণ উদাহরণ):<br>জাতীয় দল গ্রুপ পর্বে থাকাকালীন: <span class='highlight'>বেস রেটিং (যেমন ৮২)</span><br>জাতীয় দল রাউন্ড ৩২-এ উঠলে: <span class='highlight'>+৩ (যেমন ৮৫)</span><br>জাতীয় দল রাউন্ড ১৬-তে উঠলে: <span class='highlight'>+৫ (যেমন ৮৭)</span><br>জাতীয় দল কোয়ার্টার ফাইনালে উঠলে: <span class='highlight'>+৭ (যেমন ۸৯)</span><br>জাতীয় দল সেমিফাইনালে উঠলে: <span class='highlight'>+৯ (যেমন ৯১)</span><br>জাতীয় দল ফাইনালে উঠলে: <span class='highlight'>+১১ (যেমন ৯৩)</span><br>টুর্নামেন্ট জয়ী দলের প্লেয়ার: <span class='highlight'>সর্বোচ্চ রেটিং (যেমন ৯৬)</span><br><br>ডাইনামিক এজেন্টগুলো টুর্নামেন্টের গ্রুপ পর্ব শেষ হওয়ার আগেই রিডিম বা ক্লেইম করতে হয়। নির্দিষ্ট সময় পার হয়ে গেলে এই এজেন্টগুলো স্বয়ংক্রিয়ভাবে বাতিল হয়ে যায় এবং তা থেকে আর কোনো প্লেয়ার পাওয়া যায় না। সাধারণত টুর্নামেন্ট শুরুর কিছু দিন আগে থেকে এই এজেন্টগুলো কালেক্ট বা রিডিম করার সুযোগ দেওয়া হয় এবং গ্রুপ পর্বের শেষ দিন পর্যন্ত তা কার্যকর থাকে。<br><br>ডাইনামিক স্টার্সের কোনো প্লেয়ারকে রিলিজ দিলে একটি <span class='highlight'>কমন স্পেশাল কোচ (Common Special Coach)</span> পাওয়া যায়। তবে চাইলেই যেকোনো সময় এই প্লেয়ারদের রিলিজ দেওয়া যায় না; এর জন্য টুর্নামেন্টের ফাইনাল পর্যন্ত অপেক্ষা করতে হয়। টুর্নামেন্ট শেষের ফাইনাল আপগ্রেডগুলো গেমে সম্পূর্ণভাবে অ্যাপ্লাই হওয়ার <span class='highlight'>৪৮ ঘণ্টা পর</span> প্লেয়ারটিকে রিলিজ দেওয়ার অপশন আনলক হয়।" 
+                    
+                    data-en="The Dynamic Stars event was first introduced to the game in <span class='highlight'>DLS 26</span>. This type of event is usually brought in anticipation of major tournaments like the World Cup. For instance, selected players from the participating teams of the 2026 World Cup were included in this event. Priority is mainly given to players representing their national teams, emerging talents, and highly-hyped players.<br><br>The most important aspect of Dynamic Stars is its direct connection to <span class='highlight'>real-life football</span>. Usually, players are maxed out through coaching, but in this event, a player's rating automatically increases based on their team's real-life progression in the tournament. Initially, players have a specific base rating (e.g., 82), which keeps changing during the tournament, and the rating of a player from the winning team can reach the maximum level (e.g., 96).<br><br>To get Dynamic Stars players, <span class='highlight'>Dynamic Agents</span> are required. These special agents can generally be obtained through the following ways:<br>• Live Event<br>• Free Pass<br>• Season Pass<br>• Dream Draft {Probable}<br>• Clan Rewards<br>• Limited Promotions<br><br>As the team advances through various stages of the tournament, the rating increases. Here is a general example of the progression:<br>National team in Group Stage: <span class='highlight'>Base Rating (e.g., 82)</span><br>National team reaches Round of 32: <span class='highlight'>+3 (e.g., 85)</span><br>National team reaches Round of 16: <span class='highlight'>+5 (e.g., 87)</span><br>National team reaches Quarter-Finals: <span class='highlight'>+7 (e.g., 89)</span><br>National team reaches Semi-Finals: <span class='highlight'>+9 (e.g., 91)</span><br>National team reaches Final: <span class='highlight'>+11 (e.g., 93)</span><br>Tournament winning team's player: <span class='highlight'>Max Rating (e.g., 96)</span><br><br>Dynamic Agents must be redeemed or claimed before the group stage of the tournament ends. Once the specific timeframe passes, these agents automatically expire, and players can no longer be obtained from them. Generally, the opportunity to collect or redeem these agents is given a few days before the tournament starts and remains valid until the end of the group stage.<br><br>Releasing a Dynamic Stars player yields a <span class='highlight'>Common Special Coach</span>. However, these players cannot be released at any time; you have to wait until the tournament final. The option to release the player unlocks <span class='highlight'>48 hours</span> after the final upgrades of the tournament are completely applied to the game."><span class='highlight'>DLS 26</span>-এ প্রথমবারের মতো ডাইনামিক স্টার্স (Dynamic Stars) ইভেন্টটি গেমে যুক্ত হয়। মূলত বিশ্বকাপ বা বড় টুর্নামেন্টকে সামনে রেখেই এই ধরনের ইভেন্ট আনা হয়। যেমন, ২০২৬ সালের বিশ্বকাপে অংশগ্রহণকারী দলগুলোর মধ্য থেকে বাছাইকৃত প্লেয়ারদের এই ইভেন্টে যুক্ত করা হয়েছিল। এখানে মূলত জাতীয় দলকে প্রতিনিধিত্ব করা প্লেয়ার, উদীয়মান তরুণ এবং হাইপে থাকা প্লেয়ারদের প্রাধান্য দেওয়া হয়。<br><br>ডাইনামিক স্টার্সের সবচেয়ে গুরুত্বপূর্ণ দিক হলো এটি <span class='highlight'>রিয়েল-লাইফ ফুটবলের</span> সাথে সরাসরি সম্পর্কিত। সাধারণত গেমে কোচিং করিয়ে প্লেয়ার ম্যাক্স করতে হয়, কিন্তু এই ইভেন্টে বাস্তব টুর্নামেন্টে দলের অগ্রগতির ওপর ভিত্তি করে প্লেয়ারের রেটিং স্বয়ংক্রিয়ভাবে বাড়তে থাকে। ইভেন্টের শুরুতে প্লেয়ারদের একটি নির্দিষ্ট বেস রেটিং (যেমন ৮২) থাকে, যা টুর্নামেন্ট চলাকালীন পরিবর্তিত হতে থাকে এবং চ্যাম্পিয়ন দলের প্লেয়ারের রেটিং সর্বোচ্চ (যেমন ৯৬) পর্যন্ত পৌঁছাতে পারে。<br><br>ডাইনামিক স্টার্স প্লেয়ারদের দলে ভেড়াতে <span class='highlight'>ডাইনামিক এজেন্ট (Dynamic Agent)</span>-এর প্রয়োজন হয়। এই স্পেশাল এজেন্টগুলো সাধারণত নিচের মাধ্যমগুলো থেকে সংগ্রহ করা যায়:<br>• লাইভ ইভেন্ট (Live Event)<br>• ফ্রি পাস (Free Pass)<br>• সিজন পাস (Season Pass)<br>• ড্রিম ড্রাফট (Dream Draft) {সম্ভাব্য}<br>• ক্ল্যান রিওয়ার্ড (Clan Rewards)<br>• লিমিটেড প্রমোশন (Limited Promotions)<br><br>টুর্নামেন্টের বিভিন্ন ধাপে দল উত্তীর্ণ হওয়ার সাথে সাথে রেটিং যেভাবে বৃদ্ধি পায় (একটি সাধারণ উদাহরণ):<br>জাতীয় দল গ্রুপ পর্বে থাকাকালীন: <span class='highlight'>বেস রেটিং (যেমন ৮২)</span><br>জাতীয় দল রাউন্ড ৩২-এ উঠলে: <span class='highlight'>+৩ (যেমন ৮৫)</span><br>জাতীয় দল রাউন্ড ১৬-তে উঠলে: <span class='highlight'>+৫ (যেমন ৮৭)</span><br>জাতীয় দল কোয়ার্টার ফাইনালে উঠলে: <span class='highlight'>+৭ (যেমন ৮৯)</span><br>জাতীয় দল সেমিফাইনালে উঠলে: <span class='highlight'>+৯ (যেমন ৯১)</span><br>জাতীয় দল ফাইনালে উঠলে: <span class='highlight'>+১১ (যেমন ৯৩)</span><br>টুর্নামেন্ট জয়ী দলের প্লেয়ার: <span class='highlight'>সর্বোচ্চ রেটিং (যেমন ৯৬)</span><br><br>ডাইনামিক এজেন্টগুলো টুর্নামেন্টের গ্রুপ পর্ব শেষ হওয়ার আগেই রিডিম বা ক্লেইম করতে হয়। নির্দিষ্ট সময় পার হয়ে গেলে এই এজেন্টগুলো স্বয়ংক্রিয়ভাবে বাতিল হয়ে যায় এবং তা থেকে আর কোনো প্লেয়ার পাওয়া যায় না। সাধারণত টুর্নামেন্ট শুরুর কিছু দিন আগে থেকে এই এজেন্টগুলো কালেক্ট বা রিডিম করার সুযোগ দেওয়া হয় এবং গ্রুপ পর্বের শেষ দিন পর্যন্ত তা কার্যকর থাকে。<br><br>ডাইনামিক স্টার্সের কোনো প্লেয়ারকে রিলিজ দিলে একটি <span class='highlight'>কমন স্পেশাল কোচ (Common Special Coach)</span> পাওয়া যায়। তবে চাইলেই যেকোনো সময় এই প্লেয়ারদের রিলিজ দেওয়া যায় না; এর জন্য টুর্নামেন্টের ফাইনাল পর্যন্ত অপেক্ষা করতে হয়। টুর্নামেন্ট শেষের ফাইনাল আপগ্রেডগুলো গেমে সম্পূর্ণভাবে অ্যাপ্লাই হওয়ার <span class='highlight'>৪৮ ঘণ্টা পর</span> প্লেয়ারটিকে রিলিজ দেওয়ার অপশন আনলক হয়।</span>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <script>
+        function applyTranslations() {
+            const lang = document.documentElement.getAttribute('data-lang') || 'bn';
+            document.querySelectorAll('[data-bn]').forEach(el => {
+                const translatedText = el.getAttribute('data-' + lang);
+                if (translatedText) {
+                    el.innerHTML = translatedText; 
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations();
+            document.body.style.visibility = 'visible'; 
+        });
+    </script>
+
+</body>
+</html>

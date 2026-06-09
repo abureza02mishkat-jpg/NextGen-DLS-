@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NEXTGEN DLS - Players Coaching Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        // জুম এবং স্ক্রিন নড়াচড়া লক করার ম্যাজিক
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) { event.preventDefault(); }
+        }, { passive: false });
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            let now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+    <script>
+        let initTheme = localStorage.getItem('savedTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', initTheme);
+    </script>
+
+    <style>
+        /* লেখা একদম পিওর সেন্টারে রাখার ম্যাজিক কোড */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* মডার্ন গেমিং প্যালেট */
+        :root {
+            --bg-main: #0a0e17; 
+            --text-color: #f3f4f6;
+            --text-muted: #8492a6;
+            --card-bg: #111827;
+            --inner-bg: #0d121c;
+            --primary-orange: #f97316; /* আপনার ব্র্যান্ড অরেঞ্জ কালার */
+            
+            /* বক্সের সব কালার এখন সলিড অরেঞ্জ করে দেওয়া হলো */
+            --clr-intro: var(--primary-orange);   
+            --clr-gkr: var(--primary-orange);     
+            --clr-gkh: var(--primary-orange);     
+            --clr-mistake: var(--primary-orange); 
+            --clr-pro: var(--primary-orange);     
+            --clr-outro: var(--primary-orange);   
+            
+            --soft-shadow: 4px 4px 12px rgba(0,0,0,0.5), -4px -4px 12px rgba(255,255,255,0.01);
+            --inset-shadow: inset 2px 2px 8px rgba(0,0,0,0.5), -2px -2px 8px rgba(255,255,255,0.01);
+            --border-glow: 1px solid rgba(255,255,255,0.03);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f3f4f6;
+            --text-color: #111827;
+            --text-muted: #6b7280;
+            --card-bg: #ffffff;
+            --inner-bg: #f9fafb;
+            --border-glow: 1px solid rgba(0,0,0,0.05);
+            --soft-shadow: 4px 4px 12px rgba(0,0,0,0.1), -4px -4px 12px rgba(255,255,255,0.5);
+            --inset-shadow: inset 2px 2px 6px rgba(0,0,0,0.05), inset -2px -2px 6px rgba(255,255,255,0.5);
+        }
+        html, body { 
+            background-color: var(--bg-main); color: var(--text-color); 
+            font-family: 'Poppins', sans-serif; padding-bottom: 50px;
+            transition: 0.3s ease; 
+            /* 🔥 overflow-x: hidden সড়িয়ে clip দেওয়া হলো যাতে sticky কাজ করে 🔥 */
+            overflow-x: clip; 
+            
+            /* নিচের এই লাইনে সব auto করে দেওয়া হয়েছে */
+            user-select: auto; 
+            -webkit-user-select: auto;
+            
+            width: 100vw; max-width: 100%;
+        }
+
+        
+        /* 🔥 নিউজ হাবের মতো ফিক্সড হেডার সেকশন 🔥 */
+        .header { 
+            background: var(--card-bg); 
+            padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--primary-orange);
+            /* সাফারি/আইফোনে কাজ করার জন্য -webkit-sticky দেওয়া হলো */
+            position: -webkit-sticky; 
+            position: sticky; top: 0; z-index: 1000;
+            display: flex; 
+            justify-content: center; /* এটি লেখাকে একদম পিওর মাঝখানে রাখবে */
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+        
+        .header-title-wrapper { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 10px; 
+        }
+        
+        .page-title { 
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--primary-orange); 
+            text-transform: uppercase; 
+        }
+
+        /* হেডার স্টিকি হওয়ায় স্পেস কমানো হলো যাতে গ্যাপ সুন্দর থাকে */
+        .guide-container { padding: 25px 15px 10px 15px; max-width: 600px; margin: 0 auto; }
+
+        /* Neumorphic Soft Button (মেনু বাটন) */
+        .menu-item-box {
+            background: var(--card-bg); border-radius: 16px; 
+            margin-bottom: 25px; overflow: hidden;
+            box-shadow: var(--soft-shadow); transition: 0.3s ease;
+            border: var(--border-glow);
+        }
+
+        .menu-btn {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 22px; cursor: pointer; transition: 0.2s;
+        }
+        
+        .menu-item-box.active .menu-btn { box-shadow: var(--inset-shadow); }
+
+        .btn-left { display: flex; align-items: center; gap: 15px; }
+        .icon-box {
+            width: 45px; height: 45px; background: var(--card-bg); color: var(--primary-orange);
+            border-radius: 12px; display: flex; justify-content: center; align-items: center;
+            font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 16px; box-shadow: var(--soft-shadow);
+            border: var(--border-glow);
+        }
+        .menu-item-box.active .icon-box { box-shadow: var(--inset-shadow); color: var(--text-muted); }
+        
+        .btn-text { font-size: 15px; font-weight: 800; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.5px;}
+        .arrow-icon { font-size: 16px; color: var(--text-muted); transition: transform 0.4s ease; }
+
+        .menu-item-box.active .arrow-icon { transform: rotate(180deg); color: var(--primary-orange); }
+
+        /* =======================================
+           বাগ-ফ্রি স্লাইড অ্যানিমেশন (কখনো আটকাবে না)
+        ======================================= */
+        .guide-content { 
+            display: none; 
+        }
+        
+        .menu-item-box.active .guide-content { 
+            display: block; 
+            animation: fadeSlideDown 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeSlideDown {
+            0% { opacity: 0; transform: translateY(-15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .article-wrapper {
+            padding: 30px 15px; background: var(--inner-bg);
+            border-radius: 16px; margin: 10px; box-shadow: var(--inset-shadow);
+        }
+
+        .article-header { text-align: center; margin-bottom: 30px; }
+        .article-title { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900; margin: 0; color: var(--text-color); text-transform: uppercase; letter-spacing: 1px;}
+        .article-subtitle { font-size: 12px; color: var(--primary-orange); font-weight: 700; margin-top: 5px; text-transform: uppercase; letter-spacing: 0px;}
+
+        /* শুধুমাত্র বাম পাশে গ্লোয়িং বর্ডার এবং লেখা বাম দিক থেকে শুরু */
+        .guide-card {
+            background: var(--card-bg); 
+            padding: 22px; 
+            border-radius: 12px;
+            margin-bottom: 25px; 
+            box-shadow: var(--soft-shadow);
+            border: var(--border-glow);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; 
+            align-items: flex-start;
+            text-align: left;
+            border-left: 5px solid;
+            border-top: none; border-right: none; border-bottom: none;
+        }
+        
+        /* বক্সের কালার অনুযায়ী বর্ডার কালার */
+        .card-intro { border-left-color: var(--clr-intro); }
+        .card-gkr { border-left-color: var(--clr-gkr); }
+        .card-gkh { border-left-color: var(--clr-gkh); }
+        .card-mistake { border-left-color: var(--clr-mistake); }
+        .card-pro-tips { border-left-color: var(--clr-pro); }
+        .card-outro { border-left-color: var(--clr-outro); }
+
+        .guide-card p { margin: 0; font-size: 13.5px; line-height: 1.8; color: var(--text-color); opacity: 0.9; width: 100%;}
+
+        /* বক্সের হেডার ডিজাইন */
+        .card-header { 
+            display: flex; align-items: center; justify-content: flex-start; gap: 8px; 
+            margin-bottom: 18px; width: 100%;
+        }
+        .card-title { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* স্ট্যাটস হেডার (GKR/GKH - এক লাইনে সেম কালার) */
+        .stat-header { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 15px; width: 100%; }
+        .stat-title { font-family: 'Montserrat', sans-serif; font-size: 17px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* সফট অ্যালার্ট বক্স হেডার */
+        .alert-header { display: flex; align-items: center; justify-content: flex-start; gap: 10px; margin-bottom: 15px; width: 100%;}
+        .alert-icon { font-size: 17px; }
+        .alert-title { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
+
+        /* --- বক্স অনুযায়ী হেডার কালার --- */
+        .card-intro .card-title { color: var(--clr-intro); }
+        .card-gkr .stat-title { color: var(--clr-gkr); }
+        .card-gkh .stat-title { color: var(--clr-gkh); }
+        .card-mistake .alert-header { color: var(--clr-mistake); }
+        .card-pro-tips .alert-header { color: var(--clr-pro); }
+        .card-outro .card-title { color: var(--clr-outro); }
+
+        /* নেক্সট ডিএলএস সিগনেচার */
+        .article-signature { 
+            text-align: center; margin-top: 40px; padding-top: 30px; 
+            border-top: 2px dashed rgba(255,255,255,0.05); 
+        }
+        .signature-logo { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; color: var(--text-muted); letter-spacing: 1.5px;}
+        .signature-logo span { color: var(--primary-orange); }
+        .sig-sub { font-size: 11px; margin-top: 4px; color: var(--text-muted); opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;}
+
+        .lang-en { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- হেডার (আইকন ও টেক্সট একদম পিওর সেন্টারে থাকবে) -->
+    <div class="header">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-chalkboard-user" style="color: var(--primary-orange); font-size: 22px;"></i> 
+            <div class="page-title">
+                <span data-bn="কোচিং গাইড" data-en="COACHING GUIDE">কোচিং গাইড</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="guide-container">
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">GK</div>
+
+                    <div class="btn-text" data-bn="জিকে কোচিং" data-en="GK COACHING">জিকে কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">GOALKEEPER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>অনেকেই গোলকিপার কোচিং নিয়ে একটা বড় ভুল করে, কিভাবে কোচিং করালে আসল পারফরম্যান্স বের হবে সেটা ঠিকমতো বোঝে না। অথচ DLS-এ ম্যাচ জেতা–হারার পার্থক্য গড়ে দেয় একজন গোলকিপারই!</p>
+                            <p style="margin-top: 15px;">গোলকিপার (GK) কোচিং করলে মূলত <b>দুইটা স্ট্যাটসই</b> বাড়ে। বাকি স্ট্যাটসগুলো আনম্যাক্স কার্ডের মতোই থাকে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">GKR - রিফ্লেক্স দক্ষতা</span>
+                            </div>
+                            <p>এটা হলো গোলকিপারের রিফ্লেক্স, মানে কত দ্রুত সে শটের দিকে রিয়্যাক্ট করতে পারে। হঠাৎ আসা শট, ডিফ্লেকশন বা ক্লোজ রেঞ্জ ফিনিশ—এসব ক্ষেত্রে GKR-ই নির্ধারণ করে সে বল ঠেকাতে পারবে কিনা। ধরুন কোনো গোলকিপারের <b>GKR ৯৯</b>, এর মানে সে প্রায় বিদ্যুতগতিতে রিয়্যাক্ট করতে পারে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">GKH - হ্যান্ডলিং দক্ষতা</span>
+                            </div>
+                            <p>এটা নির্ধারণ করে গোলকিপার বল কতটা পরিষ্কারভাবে ধরে রাখতে পারে। GKH কম হলে কী হয়? বল হাত থেকে ছিটকে যায়, রিবাউন্ড তৈরি হয়, আর সেখান থেকেই গোল খাওয়ার ঝুঁকি বাড়ে। যদি <b>GKH ৯২</b> বা তার বেশি হয়, তাহলে বুঝবেন সে বেশিরভাগ বল নিরাপদে ধরে রাখতে সক্ষম।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">সাধারণ ভুল</span>
+                            </div>
+                            <p>এখানেই বেশিরভাগ প্লেয়ার ভুল করে। কেউ শুধু রিফ্লেক্স বাড়াতে গিয়ে <b>হ্যান্ডলিং দুর্বল</b> করে ফেলে। ফলে শট ঠেকালেও <b>রিবাউন্ড থেকে ঠিকই গোল খায়</b>।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস</span>
+                            </div>
+                            <p>যদি <b>GKH ৯০</b> হয়, তাহলে <b>GKR ideally ৯০–৯৩</b> এর মধ্যে হলে সেটা প্রায় <b>“বেস্ট কার্ড”</b>। অর্থাৎ, GKR ১–৩ পয়েন্ট বেশি থাকলে সেটা সবচেয়ে কার্যকর কম্বিনেশন।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>এই ছোট্ট পার্থক্যটাই ম্যাচে বিশাল ইমপ্যাক্ট ফেলে। আপনি খেলার সময় নিজেই বুঝতে পারবেন, কোন গোলকিপার শুধু শট ঠেকাচ্ছে, আর কোন গোলকিপার ম্যাচ বাঁচাচ্ছে।</p>
+                            <p style="margin-top: 15px;">গোলকিপার কোচিং শুধু স্ট্যাটস বাড়ানো না, এটা হলো <b>“ম্যাচ কন্ট্রোল”</b> করার একটা কৌশল।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">GOALKEEPER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>Many players make a big mistake when coaching goalkeepers, not understanding how to unlock their true potential. In DLS, a goalkeeper often makes the difference between winning and losing!</p>
+                            <p style="margin-top: 15px;">GK coaching primarily upgrades <b>two main stats</b>. Rest of the stats remain unchanged like an unmaxed card.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">GKR - Goalkeeper Reflexes</span>
+                            </div>
+                            <p>This is the GK's reflex, meaning how fast they can react to a shot. For sudden shots, deflections, or close-range finishes, GKR determines if the ball will be saved. For example, a GK with <b>99 GKR</b> reacts almost at lightning speed.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">GKH - Goalkeeper Handling</span>
+                            </div>
+                            <p>This determines how cleanly the GK can catch and hold the ball. If GKH is low, the ball slips away, creating rebounds and conceding easy goals. If <b>GKH is 92</b> or higher, they can safely catch most balls.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COMMON MISTAKE</span>
+                            </div>
+                            <p>This is where most players fail. Some only focus on increasing reflexes, leaving <b>handling weak</b>. As a result, they save the shot but <b>concede from the rebound</b>.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS</span>
+                            </div>
+                            <p>If <b>GKH is 90</b>, ideally <b>GKR should be between 90–93</b> to be considered the <b>"Best Card"</b>. GKR being 1–3 points higher is the most effective combo.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>This tiny difference makes a huge impact in matches. During gameplay, you will clearly notice which GK only parries shots, and which GK actually saves the match.</p>
+                            <p style="margin-top: 15px;">GK coaching isn't just about boosting stats; it's a strategy for <b>"Match Control"</b>.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">CB</div>
+
+                    <div class="btn-text" data-bn="সিবি কোচিং" data-en="CB COACHING">সিবি কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">CENTER BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>ফুটবলে ডিফেন্সই হলো দলের ভিত্তি। যত শক্তিশালী আক্রমণই থাকুক, রক্ষণ দুর্বল হলে ম্যাচ জেতা কঠিন হয়ে যায়। DLS 26-এ এই বাস্তবতা আরও স্পষ্ট, একজন ভুলভাবে কোচিং করা CB পুরো ম্যাচ নষ্ট করে দিতে পারে। তাই সঠিকভাবে Center Back (CB) তৈরি করা মানে শুধু ডিফেন্স শক্ত করা নয়, পুরো দলের স্থিতি নিশ্চিত করা।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ফুল ফিটনেস</span>
+                            </div>
+                            <p>একজন পারফেক্ট CB-এর প্রথম শর্ত হলো ফুল ফিটনেস। <b>SPE 100, ACC 100, STA 100, STR 100</b>—এই চারটি স্ট্যাট 100 না হলে CB ডিফেন্সে ধারাবাহিকতা রাখতে পারবে না। ডিফেন্ডারকে সবসময় স্প্রিন্ট, শারীরিক লড়াই ও পজিশনিংয়ের জন্য প্রস্তুত থাকতে হয়।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">প্রধান অস্ত্র - ট্যাকেল (TAC)</span>
+                            </div>
+                            <p>একজন CB-এর জন্য ট্যাকেলই সবচেয়ে গুরুত্বপূর্ণ। <b>ideally 100</b> হওয়া ভালো, তবে <b>97–100</b> থাকলেই কার্যকর পারফরম্যান্স পাওয়া যায়। সঠিক টাইমিংয়ে একটি পারফেক্ট ট্যাকেলই নিশ্চিত গোল বাঁচাতে পারে।</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">টেকনিক্যাল ব্যালেন্স</span>
+                            </div>
+                            <p><b>PAS 80+ ও CON 80+:</b> ভালো পাসিং না থাকলে বল ক্লিয়ার করা বা বিল্ডআপ শুরু করা কঠিন। কন্ট্রোল ভালো না হলে চাপের মধ্যে ভুল হওয়ার সম্ভাবনা বাড়ে。<br><br><b>SHO 60+:</b> শুটিং খুব বেশি দরকার না হলেও 60+ থাকলে কর্নার বা সেট-পিসে হেড থেকে গোল করার সুযোগ কাজে লাগানো যায়।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - হাইট</span>
+                            </div>
+                            <p>একজন CB ideally <b>190+ cm</b> হলে এয়ারিয়াল ডুয়েলে অনেক বেশি শক্তিশালী হয়। কর্নার ডিফেন্ড করা, হেড ক্লিয়ার করা, সবকিছুতেই এটি বড় সুবিধা দেয়। মেইন CB হিসেবে Virgil van Dijk-এর মতো শারীরিকভাবে শক্তিশালী এবং লম্বা কাউকে খেলানো উচিত।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং সতর্কবার্তা</span>
+                            </div>
+                            <p>CB কোচিং সবচেয়ে খরচসাপেক্ষ। প্রথমে একটি <b>Rare Technical Coach</b> ব্যবহার করুন। যদি সেটি TAC-এ লাগে, তাহলে ফুল ফিটনেসে যান। কিন্তু যদি প্রথম Rare Technical Coach TAC-এ না লাগে, তাহলে সেখানে থামুন। জোর করে চালিয়ে গেলে কয়েন ও ডায়মন্ড নষ্ট হবে, কার্ড রিলিজ করে নতুনভাবে শুরু করাই সবচেয়ে বুদ্ধিমানের কাজ।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন শক্তিশালী CB মানে শুধু গোল বাঁচানো নয়, বরং পুরো ডিফেন্সকে নেতৃত্ব দেওয়া। সঠিকভাবে কোচিং করাতে পারলে সে আপনার দলের সবচেয়ে নির্ভরযোগ্য খেলোয়াড় হয়ে উঠবে, যার উপর ভরসা করে আপনি নির্ভয়ে আক্রমণে যেতে পারবেন।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং CB এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন। সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">CENTER BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In football, defense is the foundation of the team. No matter how strong the attack is, winning is hard if the defense is weak. In DLS 26, a wrongly coached CB can ruin the whole match. Building a proper Center Back (CB) ensures the stability of the entire squad.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">FULL FITNESS</span>
+                            </div>
+                            <p>The first requirement for a perfect CB is full fitness. <b>SPE 100, ACC 100, STA 100, STR 100</b>—without these four stats at 100, a CB cannot maintain consistency. Defenders must always be ready for sprints, physical battles, and positioning.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">MAIN WEAPON - TACKLE (TAC)</span>
+                            </div>
+                            <p>Tackling is the most important stat for a CB. <b>Ideally 100</b> is preferred, but <b>97–100</b> provides highly effective performance. A single perfectly timed tackle can save a guaranteed goal.</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">TECHNICAL BALANCE</span>
+                            </div>
+                            <p><b>PAS 80+ & CON 80+:</b> Without good passing, clearing the ball or starting a buildup is difficult. Poor control increases the chance of making mistakes under pressure.<br><br><b>SHO 60+:</b> While shooting isn't highly necessary, having 60+ helps capitalize on heading opportunities from corners or set-pieces.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - HEIGHT</span>
+                            </div>
+                            <p>A CB ideally <b>190+ cm</b> tall is much stronger in aerial duels. It gives a massive advantage in defending corners and clearing headers. You should use a tall and physically strong player like Virgil van Dijk as your main CB.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING WARNING</span>
+                            </div>
+                            <p>CB coaching is the most expensive. First, use a <b>Rare Technical Coach</b>. If it hits TAC, proceed to full fitness. But if the first Rare Technical Coach doesn't hit TAC, stop there. Forcing upgrades will only waste coins and gems; releasing the card and starting over is the smartest choice.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A strong CB doesn't just save goals; they lead the entire defense. Coached correctly, they will become your team's most reliable player, giving you the confidence to attack fearlessly.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated CB players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        
+  
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">LB</div>
+<div class="btn-text" data-bn="এলবি কোচিং" data-en="LB COACHING">এলবি কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>ফুটবলের মাঠে Left Back (LB) শুধু ডিফেন্ডার নয়, প্লেমেকার ও অ্যাটাকিং সাপোর্টও বটে। DLS 26-এ ফরোয়ার্ডকে থামানোর পাশাপাশি বল কন্ট্রোল, সঠিক পাস, ওভারল্যাপ এবং কাউন্টার অ্যাটাক তৈরিতে LB-এর ভূমিকা অপরিসীম। অনেক ক্ষেত্রে ক্রস ব্লক করতে এরা CB-এর চেয়েও বেশি কার্যকর!</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ফুল ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STA 100</b> করা বাধ্যতামূলক, কারণ তাকে পুরো ম্যাচ জুড়ে আপ-ডাউন করতে হয়। ফিজিক্যাল ডুয়েলে টিকে থাকতে <b>STR 85–90</b> এর মধ্যে থাকা উচিত।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল মাস্টারি</span>
+                            </div>
+                            <p><b>TAC 90+ ও PAS 90+:</b> ট্যাকেল ছাড়া ডিফেন্সে কাজ হবে না, আর পাস দুর্বল হলে বিল্ডআপ নষ্ট হবে।</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">টেকনিক্যাল ব্যালেন্স</span>
+                            </div>
+                            <p><b>CON 85+ & SHO 70:</b> প্রেসারে বল ধরে রাখতে ৮৫+ কন্ট্রোল জরুরি। শুটিংয়ের জন্য ৭০ এর আশেপাশে থাকলেই যথেষ্ট।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - হাইট ও ফুট</span>
+                            </div>
+                            <p>ফরোয়ার্ডদের সাথে এয়ারিয়াল ডুয়েলে পারতে LB অন্তত <b>১৮০ সেমি+</b> হওয়া উচিত। পাশাপাশি সে <b>Left-footed</b> (বাঁ-পায়ের) হলে পাসিং এবং ক্রসিং আরও অনেক বেশি স্মুথ হয়।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং সতর্কবার্তা</span>
+                            </div>
+                            <p>শুরুতে <b>Fitness Coach</b> ব্যবহার করুন। SPE, ACC, STA ১০০ হওয়ার আগেই যদি STR অস্বাভাবিক বেড়ে যায়, তাহলে কার্ড রিলিজ করে নতুনভাবে শুরু করাই লাভজনক। ফিটনেস পারফেক্ট হওয়ার পর Technical Coach দিয়ে বাকি স্ট্যাটস ব্যালেন্সড করবেন।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন ভালো LB মানে দলের ব্যালেন্সের একটি মূল স্তম্ভ। সঠিকভাবে কোচিং করাতে পারলে সে আপনার ডিফেন্সকে স্থিতিশীল রাখবে, আবার আক্রমণকেও ধারালো করে তুলবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং LB এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>On the football pitch, a Left Back (LB) is not just a defender, but also a playmaker and attacking support. In DLS 26, besides stopping forwards, an LB plays an immense role in ball control, accurate passing, overlapping, and creating counter-attacks. In many cases, they are even more effective than a CB at blocking crosses!</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">FULL FITNESS</span>
+                            </div>
+                            <p>Making <b>SPE 100, ACC 100, and STA 100</b> is mandatory because they have to run up and down the pitch throughout the entire match. To survive physical duels, <b>STR should be between 85–90</b>.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL MASTERY</span>
+                            </div>
+                            <p><b>TAC 90+ & PAS 90+:</b> Defense won't work without tackling, and if passing is weak, the buildup will be ruined.</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">TECHNICAL BALANCE</span>
+                            </div>
+                            <p><b>CON 85+ & SHO 70:</b> 85+ control is essential to hold the ball under pressure. For shooting, around 70 is more than enough.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - HEIGHT & FOOT</span>
+                            </div>
+                            <p>To compete in aerial duels against forwards, an LB should be at least <b>180+ cm</b> tall. Additionally, if they are <b>left-footed</b>, passing and crossing become much smoother.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING WARNING</span>
+                            </div>
+                            <p>Use a <b>Fitness Coach</b> at the beginning. If STR increases abnormally before SPE, ACC, and STA reach 100, it is more profitable to release the card and start anew. After fitness is perfect, use a Technical Coach to balance the remaining stats.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A good LB is a core pillar of the team's balance. If coached properly, they will keep your defense stable while sharpening your attack.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated LB players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">RB</div>
+<div class="btn-text" data-bn="আরবি কোচিং" data-en="RB COACHING">আরবি কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>ফুটবলে Right Back (RB) শুধু ডিফেন্ডিং নয়, বরং গতি, শক্তি, ট্যাকেল ও পাসিংয়ের নিখুঁত সমন্বয়। DLS 26-এ প্রতিপক্ষের দ্রুতগামী Left Winger (LW) এবং ফরোয়ার্ডদের সঠিক পজিশনিং আর টাইমিং দিয়ে থামানোই এর মূল কাজ।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ফুল ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STA 100</b> করা বাধ্যতামূলক, কারণ পুরো ম্যাচজুড়ে ডান দিক দিয়ে নিরবচ্ছিন্নভাবে দৌড়াতে হয়। ফিজিক্যাল ডুয়েলে টিকে থাকতে <b>STR 85+</b> থাকলেই যথেষ্ট, এতে অপ্রয়োজনীয় ওভারলোড হয় না。</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল মাস্টারি</span>
+                            </div>
+                            <p><b>TAC 85+ ও PAS 90:</b> ট্যাকেল প্রধান ডিফেন্সিভ অস্ত্র, আর বিল্ডআপের জন্য পাসিং জরুরি।</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">টেকনিক্যাল ব্যালেন্স</span>
+                            </div>
+                            <p><b>CON 85+ & SHO 75+:</b> চাপের মুখে বল সামলাতে ৮৫+ কন্ট্রোল এবং সুযোগ পেলে কাজে লাগাতে ৭৫+ শুটিং প্রয়োজন।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - ক্রস ব্লক ও ওভারল্যাপ</span>
+                            </div>
+                            <p>ক্রস প্রতিরোধ করার ক্ষেত্রে অনেক সময় CB-এর চেয়ে RB/LB বেশি কার্যকর হয়। Achraf Hakimi-এর মতো ওভারল্যাপ করে উপরে ওঠা এবং কাউন্টার অ্যাটাক তৈরি করা আধুনিক RB-এর অন্যতম কাজ।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>সঠিকভাবে ব্যালেন্স বজায় রেখে কোচিং করাতে পারলে আপনার RB শুধু ডিফেন্স সামলাবে না, পুরো ডান দিক নিয়ন্ত্রণ করবে। সে হয়তো স্কোরবোর্ডে সবসময় থাকবে না, কিন্তু ম্যাচের ভেতরের গল্পটা সে-ই লিখবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং RB এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In football, a Right Back (RB) is not just about defending; it's a perfect blend of pace, power, tackling, and passing. In DLS 26, stopping the opponent's fast Left Wingers (LW) and forwards with proper positioning and timing is their primary job.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">FULL FITNESS</span>
+                            </div>
+                            <p>Reaching <b>SPE 100, ACC 100, and STA 100</b> is mandatory because they have to run continuously down the right flank throughout the match. To survive physical duels, having <b>STR 85+</b> is enough, avoiding unnecessary overload.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL MASTERY</span>
+                            </div>
+                            <p><b>TAC 85+ & PAS 90:</b> Tackling is the main defensive weapon, and passing is essential for the buildup.</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">TECHNICAL BALANCE</span>
+                            </div>
+                            <p><b>CON 85+ & SHO 75+:</b> 85+ control is needed to handle the ball under pressure, and 75+ shooting is required to capitalize on chances.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - CROSS BLOCK & OVERLAP</span>
+                            </div>
+                            <p>In preventing crosses, an RB/LB is often more effective than a CB. Overlapping and creating counter-attacks, much like Achraf Hakimi, is one of the main tasks of a modern RB.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>If coached with the right balance, your RB won't just manage the defense; they will control the entire right flank. They might not always be on the scoreboard, but they will write the inside story of the match.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated RB players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+                <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">DM</div>
+<div class="btn-text" data-bn="ডিএম কোচিং" data-en="DM COACHING">ডিএম কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">DEFENSIVE MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS-এ Defensive Midfielder (DM) পজিশনটি দলের ভারসাম্য ধরে রাখার মূল চাবিকাঠি। একজন DM মূলত Defender এবং Midfielder—এই দুই রোল একসাথে পালন করে। তাই এখানে শক্তি, বুদ্ধিমত্তা এবং সঠিক পজিশনিংয়ের প্রয়োজন।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কমন মিস্টেক</span>
+                            </div>
+                            <p>অনেকেই DM-কে CB-এর মতো বানিয়ে ফেলে, যা মস্ত বড় ভুল। CB শুধু ডিফেন্স সামলায়, কিন্তু DM-কে একইসাথে বল জেতা, বল ধরে রাখা এবং সঠিক পাস দিয়ে খেলা এগিয়ে নিতে হয়।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ফিটনেস স্ট্র্যাটেজি</span>
+                            </div>
+                            <p>DM-এর কাজ শুধু দৌড়ানো না, বরং সঠিক সময়ে সঠিক জায়গায় থাকা। তাই <b>SPE ~85 ও ACC ~85</b> মাঝামাঝি হলেও চলে। তবে <b>STA 95+ এবং STR 95+</b> থাকা বাধ্যতামূলক।</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">টেকনিক্যাল ব্যালেন্স</span>
+                            </div>
+                            <p><b>TAC 90+:</b> ভালো ট্যাকেল ছাড়া ডিফেন্সে কাজ হবে না।<br><br><b>CON ~90 ও PAS ~90:</b> পাসিং ও কন্ট্রোল ভালো না হলে সে বল হারাবে এবং পুরো টিম চাপে পড়ে যাবে। এখানে ব্যালেন্সই সবচেয়ে গুরুত্বপূর্ণ।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - হাইট</span>
+                            </div>
+                            <p>লম্বা DM সবসময় বেশি কার্যকর হয়। সে এয়ারিয়াল ডুয়েল জিততে পারে, কর্নার বা লং বল ক্লিয়ার করতে পারে এবং মিডফিল্ডে শারীরিকভাবে আধিপত্য দেখাতে পারে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">কোচিং ফ্লো</span>
+                            </div>
+                            <p>শুরুতে Fitness বা Technical যেকোনোটি দিয়ে শুরু করতে পারেন। আগে শক্তি ও স্ট্যামিনা ঠিক করুন, তারপর পাসিং, কন্ট্রোল ও ট্যাকেল ফাইন-টিউন করে ব্যালেন্স করুন।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন ভালো DM এমন একজন খেলোয়াড় যাকে হয়তো সবসময় চোখে পড়ে না, কিন্তু পুরো ম্যাচ তার উপরই নির্ভর করে। সঠিকভাবে কোচিং করালে সে আপনার দলের সবচেয়ে গুরুত্বপূর্ণ "অদৃশ্য শক্তি" হয়ে উঠবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং DM এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">DEFENSIVE MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS, the Defensive Midfielder (DM) position is the key to maintaining the team's balance. A DM essentially plays two roles at once—Defender and Midfielder. Therefore, strength, intelligence, and proper positioning are required here.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COMMON MISTAKE</span>
+                            </div>
+                            <p>Many make the mistake of building a DM like a CB, which is a huge blunder. A CB only handles defense, but a DM has to win the ball, keep possession, and advance the play with accurate passes.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">FITNESS STRATEGY</span>
+                            </div>
+                            <p>A DM's job isn't just running; it's about being in the right place at the right time. So, having <b>SPE ~85 and ACC ~85</b> is perfectly fine. However, having <b>STA 95+ and STR 95+</b> is mandatory.</p>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">TECHNICAL BALANCE</span>
+                            </div>
+                            <p><b>TAC 90+:</b> Defense won't work without good tackling.<br><br><b>CON ~90 & PAS ~90:</b> Without good passing and control, they will lose the ball and put the entire team under pressure. Balance is the most crucial factor here.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - HEIGHT</span>
+                            </div>
+                            <p>A tall DM is always more effective. They can win aerial duels, clear corners or long balls, and physically dominate the midfield.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">COACHING FLOW</span>
+                            </div>
+                            <p>You can start with either Fitness or Technical coaches. First, fix the strength and stamina, then fine-tune passing, control, and tackling to achieve perfect balance.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A good DM is a player you might not always notice, but the whole match depends on them. Coached correctly, they will become your team's most important "invisible force."</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated DM players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+            <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">CM</div>
+<div class="btn-text" data-bn="সিএম কোচিং" data-en="CM COACHING">সিএম কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">CENTRAL MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS-এ Center Midfielder (CM) হলো দলের ইঞ্জিন। খেলার ছন্দ, গতি এবং নিয়ন্ত্রণ নির্ধারণ করাই এই পজিশনের মূল কাজ। সে ডিফেন্স এবং অ্যাটাকের মধ্যে সেতুবন্ধন তৈরি করে পুরো ম্যাচের প্রবাহ নিজের নিয়ন্ত্রণে রাখে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল মাস্টারি</span>
+                            </div>
+                            <p><b>CON 93+, PAS 93+, SHO 90+:</b> এই তিনটি স্ট্যাট CM-এর মূল ভিত্তি। ভালো কন্ট্রোল ছাড়া বল রাখা, পাস ছাড়া গতি তৈরি এবং শুটিং ছাড়া দূরপাল্লার সুযোগ কাজে লাগানো সম্ভব নয়।<br><br><b>TAC 70–82:</b> মাঝমাঠে বল পুনরুদ্ধারের জন্য এই পরিমাণ ট্যাকেল থাকা অত্যন্ত কার্যকর।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ফিটনেস ব্যালেন্স</span>
+                            </div>
+                            <p><b>STA 95+:</b> CM-কে পুরো ম্যাচ জুড়ে সক্রিয় থাকতে হয়, তাই হাই-স্ট্যামিনা বাধ্যতামূলক।<br><br><b>SPE 85+, ACC 85+ এবং STR 80+:</b> স্পিড ও স্ট্রেংথ মাঝামাঝি থাকলেও এগুলোর মধ্যে সুন্দর ভারসাম্য থাকতে হবে।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - বোথ ফুট</span>
+                            </div>
+                            <p>যদি CM দুই পায়েই সমান দক্ষ (Both Footed) হয়, তবে সে যেকোনো দিক থেকে নির্ভুল পাস বা শট নিতে পারে। এতে চাপের মুখে ভুল কম হয় এবং প্লেয়ারের কার্যকারিতা বহুগুণ বেড়ে যায়।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং ফ্লো</span>
+                            </div>
+                            <p>শুরুতে <b>Technical Coach</b> দিয়ে তার মূল শক্তি (পাসিং, কন্ট্রোল) বাড়িয়ে নিন। এরপর ধীরে ধীরে <b>Fitness</b> বাড়িয়ে তাকে পুরো ম্যাচে খেলার জন্য স্থিতিশীল করুন। নির্দিষ্ট সংখ্যার চেয়ে স্ট্যাটের ভারসাম্যের দিকে নজর দিন।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন ভালো CM শুধু মিডফিল্ডার নয়, বরং পুরো দলের নিয়ন্ত্রক। সঠিকভাবে কোচিং করাতে পারলে সে আপনার দলের সবচেয়ে নির্ভরযোগ্য এবং প্রভাবশালী খেলোয়াড় হয়ে উঠবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং CM এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন। সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">CENTRAL MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS, the Center Midfielder (CM) is the engine of the team. Determining the rhythm, pace, and control of the game is the primary task of this position. They create a bridge between defense and attack, keeping the flow of the entire match under their control.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL MASTERY</span>
+                            </div>
+                            <p><b>CON 93+, PAS 93+, SHO 90+:</b> These three stats are the core foundation of a CM. Holding the ball without good control, creating pace without passing, and capitalizing on long-range chances without shooting is impossible.<br><br><b>TAC 70–82:</b> Having this amount of tackling is highly effective for recovering the ball in the midfield.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">FITNESS BALANCE</span>
+                            </div>
+                            <p><b>STA 95+:</b> A CM needs to stay active throughout the entire match, so high stamina is mandatory.<br><br><b>SPE 85+, ACC 85+, and STR 80+:</b> Although speed and strength are moderate, there must be a beautiful balance among them.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - BOTH FOOTED</span>
+                            </div>
+                            <p>If a CM is equally skilled with both feet (Both Footed), they can execute accurate passes or shots from any direction. This reduces mistakes under pressure and multiplies the player's effectiveness.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING FLOW</span>
+                            </div>
+                            <p>Start with a <b>Technical Coach</b> to enhance their core strengths (passing, control). Then gradually increase <b>Fitness</b> to make them stable for playing the whole match. Focus more on the balance of the stats rather than specific numbers.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A good CM is not just a midfielder but the controller of the entire team. If coached properly, they will become the most reliable and influential player in your squad.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated CM players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">AM</div>
+                  <div class="btn-text" data-bn="এএম কোচিং" data-en="AM COACHING">এএম কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">ATTACKING MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ Attacking Midfielder (AM) হলো সেই খেলোয়াড়, যার একটি নিখুঁত পাস বা হঠাৎ নেওয়া শট মুহূর্তেই ম্যাচের মোড় ঘুরিয়ে দিতে পারে। সিদ্ধান্ত নেওয়ার গতি এবং বলের উপর পূর্ণ নিয়ন্ত্রণই এই পজিশনের মূল শক্তি।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল উইপনস</span>
+                            </div>
+                            <p><b>CON, PAS, SHO (95–100):</b> এই তিনটি স্ট্যাটই AM-এর মূল অস্ত্র। চাপের মধ্যে বল ধরে রাখা (Control), সঠিক সময়ে থ্রু পাস দেওয়া (Pass) এবং নির্ভুল ফিনিশিংয়ের (Shooting) জন্য এগুলো সর্বোচ্চ পর্যায়ে থাকা জরুরি।<br><br><b>TAC:</b> এই স্ট্যাটটি AM-এর জন্য গুরুত্বপূর্ণ নয়, তাই এখানে অতিরিক্ত ইনভেস্ট করার প্রয়োজন নেই।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ফিটনেস ব্যালেন্স</span>
+                            </div>
+                            <p><b>STA 95–100:</b> AM পুরো ম্যাচে ক্রমাগত মুভ করে, তাই হাই-স্ট্যামিনা বাধ্যতামূলক।<br><br><b>SPE & ACC (92–100):</b> দ্রুত মুভমেন্টের জন্য এটি প্রয়োজন।<br><br><b>STR ~85:</b> ফিজিক্যাল ডুয়েলে টিকে থাকার জন্য এই পরিমাণ স্ট্রেংথ যথেষ্ট।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - দ্য ব্রেইন</span>
+                            </div>
+                            <p>AM শুধু একজন খেলোয়াড় নয়, সে পুরো দলের "মস্তিষ্ক"। তাই অবশ্যই চেষ্টা করবেন হাই রেটিং এবং বেস্ট কোচিংয়ের প্লেয়ারকে ইউজ করাতে। অনেক সময় স্ট্যামিনা বেশি লস হয় তাই সময়মতো সাবস্টিটিউট করানোও জরুরি।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং সতর্কবার্তা</span>
+                            </div>
+                            <p>ভুল পাস, দুর্বল কন্ট্রোল বা ধীরগতির মুভমেন্ট একজন AM-কে অকার্যকর করে দেয়। তাই শুরুতে Technical বা Fitness যেকোনোটি দিয়ে শুরু করলেও শেষ পর্যন্ত দুই দিকেই নিখুঁত ভারসাম্য নিশ্চিত করতে হবে।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>সঠিকভাবে কোচিং করাতে পারলে AM আপনার দলের সবচেয়ে প্রভাবশালী খেলোয়াড় হয়ে উঠবে। তার একটি সঠিক সিদ্ধান্তই আপনাকে ম্যাচ জিতিয়ে দিতে পারে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং AM এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন। সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">ATTACKING MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the Attacking Midfielder (AM) is the player whose single perfect pass or sudden shot can turn the tide of the match in an instant. The speed of decision-making and full control over the ball are the main strengths of this position.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL WEAPONS</span>
+                            </div>
+                            <p><b>CON, PAS, SHO (95–100):</b> These three stats are the main weapons of an AM. Holding the ball under pressure (Control), delivering through passes at the right time (Pass), and accurate finishing (Shooting) require these to be at the highest level.<br><br><b>TAC:</b> This stat is not important for an AM, so there is no need to over-invest here.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">FITNESS BALANCE</span>
+                            </div>
+                            <p><b>STA 95–100:</b> An AM moves constantly throughout the match, making high stamina mandatory.<br><br><b>SPE & ACC (92–100):</b> Needed for quick movements.<br><br><b>STR ~85:</b> This amount of strength is enough to survive physical duels.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - THE BRAIN</span>
+                            </div>
+                            <p>An AM is not just a player; they are the "brain" of the entire team. Always try to use a high-rated and best-coached player. Since they often lose a lot of stamina, making timely substitutions is also crucial.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING WARNING</span>
+                            </div>
+                            <p>Wrong passes, weak control, or slow movement make an AM ineffective. Therefore, whether you start with Technical or Fitness coaches, you must ensure a perfect balance on both sides by the end.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>If coached correctly, an AM will become the most influential player on your team. One right decision from them can win you the match.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated AM players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+                <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">RWB</div>
+                   <div class="btn-text" data-bn="আরডব্লিউবি কোচিং" data-en="RWB COACHING">আরডব্লিউবি কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT WING BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ RWB-এর ভূমিকা সাধারণ RB-এর চেয়ে আলাদা। সে শুধু ডিফেন্স সামলায় না, বরং পুরো ডান উইং কভার করে। সে একদিকে প্রতিপক্ষের অ্যাটাক থামায়, আবার অন্যদিকে কাউন্টার অ্যাটাকে ক্রস বা পাসের মাধ্যমে সুযোগ তৈরি করে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">এলিট ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STA 100:</b> RWB-কে পুরো ম্যাচজুড়ে আপ-ডাউন করতে হয়, তাই এই তিনটি স্ট্যাট ফুল রাখা বাধ্যতামূলক।<br><br><b>STR 80–85:</b> স্পিড ও স্ট্যামিনাকে প্রাধান্য দিতে স্ট্রেংথ এই সীমার মধ্যে রাখাই যথেষ্ট।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল স্কিলস</span>
+                            </div>
+                            <p><b>PAS 90+ & CON 85+:</b> নিখুঁত ক্রস ডেলিভারি এবং চাপের মুখে ড্রিবলিং করে উপরে ওঠার জন্য এটি জরুরি।<br><br><b>SHO 85+ & TAC 60+:</b> RWB প্রায়ই অ্যাটাকিং পজিশনে চলে আসে, তাই ভালো শুটিং দক্ষতা থাকা দরকার। ডিফেন্সে কার্যকর থাকতে 60+ ট্যাকেল সহায়ক।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - উইং ডমিনেশন</span>
+                            </div>
+                            <p>RWB মূলত একজন “অ্যাটাকিং ডিফেন্ডার”। তার প্রধান কাজ প্রতিপক্ষের ক্রস ব্লক করা এবং নিজে ডি-বক্সে নিখুঁত ক্রস দেওয়া। সঠিকভাবে কোচিং করাতে পারলে সে একাই আপনার পুরো ডান উইং ডমিনেট করতে পারবে।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন আদর্শ RWB মানে গতি, স্ট্যামিনা এবং পজিশনিংয়ের সেরা সমন্বয়। সে আপনার ডিফেন্সকে যেমন সুরক্ষা দেবে, তেমনি আক্রমণভাগকেও করে তুলবে আরও ধারালো।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং RWB এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT WING BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the role of an RWB is different from a regular RB. They don't just manage the defense but cover the entire right wing. On one hand, they stop the opponent's attacks, and on the other, they create chances through crosses or passes during counter-attacks.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ELITE FITNESS</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STA 100:</b> An RWB has to run up and down throughout the match, so keeping these three stats maxed is mandatory.<br><br><b>STR 80–85:</b> To prioritize speed and stamina, keeping strength within this limit is enough.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL SKILLS</span>
+                            </div>
+                            <p><b>PAS 90+ & CON 85+:</b> This is crucial for accurate cross deliveries and dribbling forward under pressure.<br><br><b>SHO 85+ & TAC 60+:</b> An RWB often gets into attacking positions, so good shooting skills are needed. Having 60+ tackling is helpful to remain effective in defense.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - WING DOMINATION</span>
+                            </div>
+                            <p>An RWB is basically an 'attacking defender.' Their main job is to block the opponent's crosses and deliver perfect crosses into the box themselves. If coached properly, they alone can dominate your entire right wing.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>An ideal RWB means the best combination of pace, stamina, and positioning. They will protect your defense while making your attack even sharper.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated RWB players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+                <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">LWB</div>
+<div class="btn-text" data-bn="এলডব্লিউবি কোচিং" data-en="LWB COACHING">এলডব্লিউবি কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT WING BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ LWB-এর ভূমিকা সাধারণ LB-এর চেয়ে আলাদা। সে শুধু ডিফেন্স সামলায় না, বরং পুরো বাম উইং কভার করে। সে একদিকে প্রতিপক্ষের Right Winger-দের থামায়, আবার অন্যদিকে কাউন্টার অ্যাটাকে ক্রস বা পাসের মাধ্যমে সুযোগ তৈরি করে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">এলিট ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STA 100:</b> LWB-কে পুরো ম্যাচজুড়ে আপ-ডাউন করতে হয়, তাই এই তিনটি স্ট্যাট ফুল রাখা অত্যন্ত জরুরি।<br><br><b>STR 80–85:</b> স্পিড ও স্ট্যামিনাকে প্রাধান্য দিতে স্ট্রেংথ এই সীমার মধ্যে রাখাই যথেষ্ট।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল স্কিলস</span>
+                            </div>
+                            <p><b>PAS 90+ & CON 85+:</b> নিখুঁত ক্রস ডেলিভারি এবং চাপের মুখে ড্রিবলিং করে উপরে ওঠার জন্য এটি জরুরি।<br><br><b>SHO 80+ & TAC 60+:</b> LWB প্রায়ই অ্যাটাকিং পজিশনে চলে আসে, তাই ভালো শুটিং দক্ষতা থাকা দরকার। ডিফেন্সে কার্যকর থাকতে ৬০+ ট্যাকেল সহায়ক।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - উইং ডমিনেশন</span>
+                            </div>
+                            <p>LWB মূলত একজন “অ্যাটাকিং ডিফেন্ডার”। তার প্রধান কাজ প্রতিপক্ষের ক্রস ব্লক করা এবং নিজে ডি-বক্সে নিখুঁত ক্রস দেওয়া। সঠিকভাবে কোচিং করাতে পারলে সে একাই আপনার পুরো বাম উইং ডমিনেট করতে পারবে।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন আদর্শ LWB মানে গতি, স্ট্যামিনা এবং পজিশনিংয়ের সেরা সমন্বয়। সে আপনার ডিফেন্সকে যেমন সুরক্ষা দেবে, তেমনি আক্রমণভাগকেও করে তুলবে আরও ধারালো।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং LWB এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT WING BACK COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the role of an LWB is different from a regular LB. They don't just manage the defense but cover the entire left wing. On one hand, they stop the opponent's Right Wingers, and on the other, they create chances through crosses or passes during counter-attacks.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ELITE FITNESS</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STA 100:</b> An LWB has to run up and down throughout the match, so keeping these three stats maxed is absolutely crucial.<br><br><b>STR 80–85:</b> To prioritize speed and stamina, keeping strength within this limit is enough.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL SKILLS</span>
+                            </div>
+                            <p><b>PAS 90+ & CON 85+:</b> This is crucial for accurate cross deliveries and dribbling forward under pressure.<br><br><b>SHO 80+ & TAC 60+:</b> An LWB often gets into attacking positions, so good shooting skills are needed. Having 60+ tackling is helpful to remain effective in defense.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - WING DOMINATION</span>
+                            </div>
+                            <p>An LWB is basically an 'attacking defender.' Their main job is to block the opponent's crosses and deliver perfect crosses into the box themselves. If coached properly, they alone can dominate your entire left wing.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>An ideal LWB means the best combination of pace, stamina, and positioning. They will protect your defense while making your attack even sharper.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated LWB players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">LM</div>
+
+<div class="btn-text" data-bn="এলএম কোচিং" data-en="LM COACHING">এলএম কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ Left Midfielder (LM) হলো দলের ভারসাম্য ধরে রাখার অন্যতম কারিগর। সে শুধু বাম উইং ধরে দৌড়ায় না, বরং ডিফেন্স থেকে অ্যাটাক—দুই দিকেই যোগসূত্র তৈরি করে। কাউন্টার অ্যাটাকের সময় LM হয়ে ওঠে সবচেয়ে বিপজ্জনক অস্ত্র।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">এলিট ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> উইংয়ে ডিফেন্ডার কাটানোর জন্য সর্বোচ্চ গতি থাকা জরুরি।<br><br><b>STA 90+ এবং STR 80+:</b> পুরো ম্যাচ জুড়ে আপ-ডাউন করতে ৯০+ স্ট্যামিনা এবং ফিজিক্যাল ডুয়েলের জন্য ভালো স্ট্রেংথ প্রয়োজন।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল ব্যালেন্স</span>
+                            </div>
+                            <p><b>CON 90+, PAS 90+, SHO 90+:</b> ডি-বক্সে নিখুঁত ক্রস দেওয়া এবং সুযোগ বুঝে গোল করার জন্য এই তিনটি স্ট্যাট অত্যন্ত গুরুত্বপূর্ণ।<br><br><b>TAC 60+:</b> নিজের দলের ফুল-ব্যাককে সাপোর্ট দিতে কিছুটা ট্যাকেল দক্ষতা থাকা প্রয়োজন।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - ফর্মেশন</span>
+                            </div>
+                            <p>LM পজিশনটি 4-4-2, 4-1-4-1 এবং 4-5-1 ফর্মেশনে সবচেয়ে কার্যকর। যদি আপনার LM ডান পায়ের (Right-footed) হয়, তবে তাকে ভেতরের দিকে ইনসাইড রান করিয়ে শুটিং করানোর কৌশলটি অনেক ক্ষেত্রে ডিফেন্স ভেঙে দেয়।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং ফ্লো</span>
+                            </div>
+                            <p>শুরুতে <b>Fitness Coach</b> ব্যবহার করে স্পিড ও অ্যাক্সেলারেশন ১০০-এ নিয়ে আসুন। এরপর <b>Technical Coach</b> দিয়ে কন্ট্রোল, পাস এবং শুটিং ব্যালেন্সড করুন।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>সঠিকভাবে কোচিং করাতে পারলে LM আপনার দলের সবচেয়ে পরিশ্রমী এবং নির্ভরযোগ্য খেলোয়াড় হয়ে উঠবে। সে একাই ডিফেন্স থেকে আক্রমণের প্রবাহ তৈরি করতে সক্ষম।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং LM এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the Left Midfielder (LM) is one of the key architects in maintaining the team's balance. They don't just run down the left wing but create a link between defense and attack. During counter-attacks, an LM becomes the most dangerous weapon.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ELITE FITNESS</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> Maximum speed is essential to bypass defenders on the wing.<br><br><b>STA 90+ & STR 80+:</b> 90+ stamina is required to run up and down throughout the match, along with good strength for physical duels.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL BALANCE</span>
+                            </div>
+                            <p><b>CON 90+, PAS 90+, SHO 90+:</b> These three stats are extremely important for delivering perfect crosses into the box and scoring when the opportunity arises.<br><br><b>TAC 60+:</b> Some tackling skill is needed to support the team's full-backs.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - FORMATION</span>
+                            </div>
+                            <p>The LM position is most effective in 4-4-2, 4-1-4-1, and 4-5-1 formations. If your LM is right-footed, making them perform inside runs to shoot often breaks down the defense.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING FLOW</span>
+                            </div>
+                            <p>Initially use a <b>Fitness Coach</b> to bring speed and acceleration to 100. Then use a <b>Technical Coach</b> to balance control, passing, and shooting.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>If coached correctly, an LM will become the most hardworking and reliable player in your team. They alone are capable of creating a flow from defense to attack.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated LM players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">RM</div>
+<div class="btn-text" data-bn="আরএম কোচিং" data-en="RM COACHING">আরএম কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ Right Midfielder (RM) হলো দলের ভারসাম্য ধরে রাখার অন্যতম চাবিকাঠি। সে শুধু ডান উইং ধরে দৌড়ায় না, বরং ডিফেন্স থেকে অ্যাটাক—সবখানেই সংযোগ তৈরি করে। কাউন্টার অ্যাটাকের সময় RM হয়ে ওঠে আপনার সবচেয়ে বিপজ্জনক অস্ত্র।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">এলিট ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> প্রতিপক্ষের ডিফেন্স ভাঙতে সর্বোচ্চ গতি থাকা বাধ্যতামূলক।<br><br><b>STA 90+ এবং STR 80+:</b> পুরো ম্যাচ জুড়ে কভার করতে ৯০+ স্ট্যামিনা এবং শারীরিক লড়াইয়ের জন্য ভালো স্ট্রেংথ প্রয়োজন।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল ব্যালেন্স</span>
+                            </div>
+                            <p><b>CON 90+, PAS 90+, SHO 90+:</b> নিখুঁত ক্রস ডেলিভারি এবং সুযোগ বুঝে গোল করার জন্য এই তিনটি স্ট্যাট অত্যন্ত গুরুত্বপূর্ণ।<br><br><b>TAC 60+:</b> নিজের দলের রাইট-ব্যাককে রক্ষণে সাপোর্ট দিতে ৬০+ ট্যাকেল দক্ষতা থাকা জরুরি।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - ফর্মেশন</span>
+                            </div>
+                            <p>RM পজিশনটি 4-4-2, 4-1-4-1 এবং 4-5-1 ফর্মেশনে সবচেয়ে সেরা পারফর্ম করে। যদি আপনার RM বাম পায়ের (Left-footed) হয়, তবে তাকে ইনসাইড রান করিয়ে দূরপাল্লার শট নেওয়ার কৌশলটি ব্যবহার করুন।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং ফ্লো</span>
+                            </div>
+                            <p>শুরুতে <b>Fitness Coach</b> ব্যবহার করে স্পিড ও অ্যাক্সেলারেশন ১০০-এ নিয়ে আসুন। এরপর <b>Technical Coach</b> দিয়ে কন্ট্রোল, পাস এবং শুটিং ব্যালেন্স করুন।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>সঠিকভাবে কোচিং করাতে পারলে RM আপনার দলের সবচেয়ে পরিশ্রমী এবং নির্ভরযোগ্য খেলোয়াড় হয়ে উঠবে। সে একাই মাঠের ডান দিক নিয়ন্ত্রণ করে ডিফেন্স ও অ্যাটাককে শক্তিশালী করে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং RM এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT MIDFIELDER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the Right Midfielder (RM) is one of the key factors in maintaining the team's balance. They don't just run down the right wing but create connections everywhere—from defense to attack. During counter-attacks, an RM becomes your most dangerous weapon.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ELITE FITNESS</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> Maximum speed is mandatory to break through the opponent's defense.<br><br><b>STA 90+ & STR 80+:</b> 90+ stamina to cover the pitch throughout the match, and good strength for physical battles are needed.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL BALANCE</span>
+                            </div>
+                            <p><b>CON 90+, PAS 90+, SHO 90+:</b> These three stats are extremely important for delivering perfect crosses and scoring when the opportunity arises.<br><br><b>TAC 60+:</b> 60+ tackling skill is essential to support your team's right-back in defense.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - FORMATION</span>
+                            </div>
+                            <p>The RM position performs best in 4-4-2, 4-1-4-1, and 4-5-1 formations. If your RM is left-footed, use the strategy of making them perform inside runs to take long-range shots.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING FLOW</span>
+                            </div>
+                            <p>Initially use a <b>Fitness Coach</b> to bring speed and acceleration to 100. Then use a <b>Technical Coach</b> to balance control, passing, and shooting.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>If coached correctly, an RM will become the most hardworking and reliable player in your team. They alone can control the right side of the pitch, strengthening both defense and attack.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated RM players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">RW</div>
+<div class="btn-text" data-bn="আরডব্লিউ কোচিং" data-en="RW COACHING">আরডব্লিউ কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT WINGER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ RW হলো আপনার আক্রমণের ডান দিকের মূল চালিকাশক্তি। প্রতিপক্ষের ডিফেন্স যতই শক্তিশালী হোক, একজন দক্ষ RW তার স্পিড, ড্রিবলিং এবং কন্ট্রোল দিয়ে সহজেই জায়গা বের করে নিয়ে ম্যাচের গতিপথ বদলে দিতে পারে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">এলিট ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> উইঙ্গার হিসেবে গতির সাথে কোনো আপস করা যাবে না।<br><br><b>STA 95–100 এবং STR 80+:</b> বারবার স্প্রিন্ট করা এবং পজিশনে ফেরার জন্য হাই-স্ট্যামিনা এবং ন্যূনতম ৮০ স্ট্রেংথ থাকা জরুরি।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল মাস্টারি</span>
+                            </div>
+                            <p><b>CON 95–100:</b> আত্মবিশ্বাসী ড্রিবলিংয়ের জন্য পূর্ণ নিয়ন্ত্রণ প্রয়োজন।<br><br><b>PAS 95–100:</b> সতীর্থদের জন্য নিখুঁত অ্যাসিস্ট তৈরি করতে সহায়ক।<br><br><b>SHO 95–100:</b> সুযোগ পেলেই গোল করার জন্য ফিনিশিং সর্বোচ্চ হতে হবে। <b>TAC</b> এখানে প্রয়োজনীয় নয়।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - ফুট ডমিনেশন</span>
+                            </div>
+                            <p>RW যদি Left Footed (বাঁ-পায়ের) হয়, তবে ডান দিক থেকে ভেতরের দিকে কাট-ইন করে শট নেওয়ার সময় গোল করার সম্ভাবনা বহুগুণ বেড়ে যায়। এটি বর্তমানে গেমে উইঙ্গারদের জন্য সবচেয়ে কার্যকর কৌশল।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং ফ্লো</span>
+                            </div>
+                            <p>শুরুতে <b>Fitness Coach</b> ব্যবহার করে স্পিড, অ্যাক্সেলারেশন ও স্ট্যামিনা ১০০-এ নিয়ে আসুন। এরপর <b>Technical Coach</b> দিয়ে কন্ট্রোল, পাস এবং শুটিং ব্যালেন্স করুন। পারফেক্ট RW তৈরি করতে স্ট্যাটসের ব্যালেন্সটাই আসল।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন ভালো RW শুধু দ্রুতগতির খেলোয়াড় নয়, সে এমন একজন যে এক মুহূর্তেই ম্যাচের ফলাফল বদলে দিতে পারে। সঠিকভাবে কোচিং করাতে পারলে সে আপনার দলের সবচেয়ে ভয়ংকর অস্ত্রে পরিণত হবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং RW এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">RIGHT WINGER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the RW is the main driving force of your right-sided attack. No matter how strong the opponent's defense is, a skilled RW can easily create space using their speed, dribbling, and control, completely changing the course of the match.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ELITE FITNESS</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> As a winger, there can be no compromise with speed.<br><br><b>STA 95–100 & STR 80+:</b> High stamina and a minimum of 80 strength are essential for repetitive sprinting and getting back into position.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL MASTERY</span>
+                            </div>
+                            <p><b>CON 95–100:</b> Full control is needed for confident dribbling.<br><br><b>PAS 95–100:</b> Helpful for creating perfect assists for teammates.<br><br><b>SHO 95–100:</b> Finishing must be maxed out to score whenever there is an opportunity. <b>TAC</b> is not necessary here.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - FOOT DOMINANCE</span>
+                            </div>
+                            <p>If the RW is Left-Footed, the chances of scoring multiply when cutting inside from the right to take a shot. This is currently the most effective strategy for wingers in the game.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING FLOW</span>
+                            </div>
+                            <p>Start by using a <b>Fitness Coach</b> to bring speed, acceleration, and stamina to 100. After that, use a <b>Technical Coach</b> to balance control, passing, and shooting. Achieving the perfect balance in stats is the real key to building a perfect RW.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A good RW is not just a fast player; they are someone who can change the outcome of a match in an instant. Coached correctly, they will turn into the most terrifying weapon in your team.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated RW players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">LW</div>
+<div class="btn-text" data-bn="এলডব্লিউ কোচিং" data-en="LW COACHING">এলডব্লিউ কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT WINGER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ LW শুধু একজন উইঙ্গার নয়, বরং সৃজনশীল আক্রমণের মূল কেন্দ্র। একজন দক্ষ LW তার গতি, ড্রিবলিং এবং নিখুঁত কন্ট্রোল দিয়ে প্রতিপক্ষের শক্তিশালী ডিফেন্স ভেঙে ম্যাচের গতিপথ বদলে দিতে পারে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">এলিট ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> এলডব্লিউ-এর জন্য গতির সাথে কোনো আপস করা যাবে না।<br><br><b>STA 95–100 ও STR 80+:</b> বারবার স্প্রিন্ট করা এবং পজিশনে ফেরার জন্য সর্বোচ্চ স্ট্যামিনা ও অন্তত ৮০ স্ট্রেংথ থাকা জরুরি।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল মাস্টারি</span>
+                            </div>
+                            <p><b>CON 95–100, PAS 95–100, SHO 95–100:</b> আত্মবিশ্বাসী ড্রিবলিং, নিখুঁত অ্যাসিস্ট এবং সুযোগ পেলেই গোল করার জন্য এই তিনটি স্ট্যাট সর্বোচ্চ পর্যায়ে রাখা জরুরি। <b>TAC</b> এই পজিশনের জন্য খুব একটা গুরুত্বপূর্ণ নয়।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - বোথ ফুট</span>
+                            </div>
+                            <p>যদি আপনার LW Both Footed (উভয় পায়ে দক্ষ) হয়, তবে তার কার্যকারিতা বহুগুণ বেড়ে যায়। এতে সে যেকোনো দিক থেকে শট বা পাস নিতে পারে, যা প্রতিপক্ষের ডিফেন্সের জন্য অনুমান করা কঠিন হয়ে পড়ে।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং ফ্লো</span>
+                            </div>
+                            <p>শুরুতে <b>Fitness Coach</b> দিয়ে SPE, ACC ও স্ট্যামিনা ১০০ করুন। এরপর <b>Technical Coach</b> ব্যবহার করে কন্ট্রোল, পাস ও শুটিং বাড়ান।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন ভালো LW শুধু দ্রুতগতির প্লেয়ার নয়, সে দলের গেম চেঞ্জার। সঠিকভাবে কোচিং করাতে পারলে সে আপনার দলের সবচেয়ে শক্তিশালী আক্রমণাত্মক অস্ত্রে পরিণত হবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং LW এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">LEFT WINGER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the LW is not just a winger but the main hub of creative attacks. A skilled LW can break through strong opponent defenses using their speed, dribbling, and perfect control, changing the course of the match.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ELITE FITNESS</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100:</b> For an LW, there can be no compromise with speed.<br><br><b>STA 95–100 & STR 80+:</b> Maximum stamina and at least 80 strength are essential for repetitive sprinting and getting back into position.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL MASTERY</span>
+                            </div>
+                            <p><b>CON 95–100, PAS 95–100, SHO 95–100:</b> Confident dribbling, perfect assists, and scoring whenever there is an opportunity require these three stats to be kept at the highest level. <b>TAC</b> is not very important for this position.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - BOTH FOOTED</span>
+                            </div>
+                            <p>If your LW is Both Footed, their effectiveness multiplies significantly. This allows them to take shots or passes from any direction, making it hard for the opponent's defense to predict.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING FLOW</span>
+                            </div>
+                            <p>Start by using a <b>Fitness Coach</b> to bring SPE, ACC, and stamina to 100. After that, use a <b>Technical Coach</b> to increase control, passing, and shooting.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A good LW is not just a fast player; they are a game changer for the team. Coached correctly, they will turn into your team's most powerful attacking weapon.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated LW players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">CF</div>
+<div class="btn-text" data-bn="সিএফ কোচিং" data-en="CF COACHING">সিএফ কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">CENTER FORWARD COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ CF বা মূল স্ট্রাইকারই হলো দলের ফিনিশিং মেশিন। একজন ক্লিনিক্যাল CF মানেই অর্ধেক ম্যাচ জিতে রাখা। সে বক্সের ভেতরে জায়গা খুঁজে নেয়, ডিফেন্ডারদের ফাঁকি দিয়ে পজিশন তৈরি করে এবং আক্রমণের শেষ স্পর্শটা নিশ্চিত করে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">এলিট ফিটনেস</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STR 100, STA 100:</b> ফরোয়ার্ড হিসেবে ফিটনেসে কোনো আপস করা যাবে না। গতি দিয়ে ডিফেন্স ভাঙতে হবে এবং শক্তি দিয়ে ডিফেন্ডারদের সাথে লড়াই করে বল ধরে রাখতে হবে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল প্রিসিশন</span>
+                            </div>
+                            <p><b>SHO 100:</b> এটি না হলে CF ধারাবাহিকভাবে গোল করতে পারবে না।<br><br><b>CON 93+:</b> বল রিসিভ করার সময় যেন পা থেকে ছিটকে না যায়।<br><br><b>PAS 80–85:</b> পাসিং এখানে সাপোর্টিভ, অতিরিক্ত বাড়ানোর প্রয়োজন নেই।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">স্মার্ট স্টার্ট</span>
+                            </div>
+                            <p>শুরুতেই দুটি <b>Rare Technical Coach</b> ব্যবহার করুন। যদি দ্রুতই (SHO) শুট ১০০ হয়, তবেই ফুল ফিটনেসে যান। অন্যথায় কার্ড রিলিজ করে নতুন করে শুরু করা বুদ্ধিমানের কাজ, এতে কয়েন ও ডায়মন্ড সাশ্রয় হয়।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - ফুট ডমিনেশন</span>
+                            </div>
+                            <p>Left Footed স্ট্রাইকার হলে ডান দিক থেকে এবং Right Footed হলে বাম দিক থেকে কাট-ইন করে শট নেওয়া সবচেয়ে কার্যকর। লম্বা CF (যেমন Haaland) এয়ারিয়াল ডুয়েলে অনেক বেশি আধিপত্য বিস্তার করতে পারে।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন ভালো CF শুধু গোলদাতা নয়, সে পুরো আক্রমণের কেন্দ্রবিন্দু। সঠিকভাবে কোচিং করাতে পারলে সে প্রতিটি ম্যাচে আপনার সবচেয়ে নির্ভরযোগ্য এবং ভয়ংকর অস্ত্রে পরিণত হবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং CF এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">CENTER FORWARD COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the CF or main striker is the team's finishing machine. Having a clinical CF means half the match is already won. They find space inside the box, evade defenders to create positioning, and ensure the final touch of the attack.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ELITE FITNESS</span>
+                            </div>
+                            <p><b>SPE 100, ACC 100, STR 100, STA 100:</b> As a forward, there can be no compromise on fitness. You must break the defense with pace and hold the ball by fighting off defenders with strength.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL PRECISION</span>
+                            </div>
+                            <p><b>SHO 100:</b> Without this, a CF cannot score consistently.<br><br><b>CON 93+:</b> Needed so the ball doesn't slip away from the feet while receiving.<br><br><b>PAS 80–85:</b> Passing is supportive here; there is no need to increase it excessively.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">SMART START</span>
+                            </div>
+                            <p>Initially use two <b>Rare Technical Coaches</b>. If shooting (SHO) reaches 100 quickly, only then proceed to full fitness. Otherwise, it is wise to release the card and start anew, as it saves coins and diamonds.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - FOOT DOMINANCE</span>
+                            </div>
+                            <p>If it is a Left-Footed striker, cutting inside from the right to take a shot is most effective, and vice-versa for a Right-Footed striker. A tall CF (like Haaland) can dominate much more in aerial duels.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A good CF is not just a goalscorer; they are the focal point of the entire attack. Coached correctly, they will become your most reliable and terrifying weapon in every match.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated CF players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">SS</div>
+
+    <div class="btn-text" data-bn="এসএস কোচিং" data-en="SS COACHING">এসএস কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">SECOND STRIKER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>DLS 26-এ Second Striker (SS) হলো একাধারে স্কোরার এবং প্লে-মেকার। সে মূল স্ট্রাইকারের পেছনে থেকে আক্রমণ তৈরি করে, আবার প্রয়োজনে নিজেই ফিনিশারের ভূমিকা পালন করে। একে "গেম ব্রেইন ফরোয়ার্ড" বলা হয় কারণ সে পুরো আক্রমণভাগকে নিয়ন্ত্রণ করে।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">টেকনিক্যাল মাস্টারি</span>
+                            </div>
+                            <p><b>CON 92–100, PAS 92–100, SHO 92–100:</b> ড্রিবলিং (Control), লিংক-আপ প্লে (Pass) এবং ক্লিনিক্যাল ফিনিশিং (Shooting)—এই তিনটিই একজন SS-এর মূল অস্ত্র। <b>TAC</b> এখানে তেমন গুরুত্বপূর্ণ নয়।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">ফিটনেস প্রিসিশন</span>
+                            </div>
+                            <p><b>SPE 95+, ACC 95+, STA 95+:</b> SS-কে মাঠের বড় একটা অংশ জুড়ে মোবাইল থাকতে হয়। তাই দ্রুত গতি এবং পুরো ৯০ মিনিট একই ইনটেনসিটি ধরে রাখার জন্য হাই-স্ট্যামিনা থাকা বাধ্যতামূলক।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">এক্সপার্ট টিপস - ফলস ৯ রোল</span>
+                            </div>
+                            <p>SS অনেক সময় False 9 হিসেবে নিচে নেমে এসে প্রতিপক্ষের ডিফেন্স ভেঙে দেয় এবং উইঙ্গারদের জন্য জায়গা তৈরি করে। এই "ফ্রি রোল" প্লেয়ার হিসেবে সেরা আউটপুট পেতে টেকনিক্যাল এবং ফিটনেস স্ট্যাটের মধ্যে নিখুঁত ভারসাম্য রাখা জরুরি।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং ফ্লো</span>
+                            </div>
+                            <p>শুরুতে Fitness বা Technical যেকোনো কোচ দিয়ে শুরু করা যায়। তবে আগে SPE, ACC এবং STA ৯৫+ নিশ্চিত করে নিয়ে পরে টেকনিক্যাল স্ট্যাটগুলো ফাইন-টিউন করলে সবচেয়ে বিপজ্জনক কার্ড তৈরি করা সম্ভব।</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">উপসংহার</span>
+                            </div>
+                            <p>একজন ভালো SS শুধু স্কোরার নয়, বরং আক্রমণের মূল কারিগর। সঠিকভাবে কোচিং করাতে পারলে সে আপনার দলের সবচেয়ে ক্রিয়েটিভ এবং নির্ভরযোগ্য খেলোয়াড় হয়ে উঠবে।</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">এখানে শুধুমাত্র হাই রেটিং SS এর কোচিং গাইড দেয়া হয়েছে। যদি প্লেয়ারের রেটিং কম হয় তাহলে স্ট্যাটস কিছুটা মাইনাস ধরে হিসাব করবেন।সেক্ষেত্রে আপনি ১ রেটিংয়ের জন্য টোটাল ৮-১০ স্ট্যাটস কম ধরে হিসাব করবেন।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">SECOND STRIKER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>In DLS 26, the Second Striker (SS) is both a scorer and a playmaker. They create attacks from behind the main striker and also play the role of a finisher when needed. They are called the "game brain forward" because they control the entire attacking line.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">TECHNICAL MASTERY</span>
+                            </div>
+                            <p><b>CON 92–100, PAS 92–100, SHO 92–100:</b> Dribbling (Control), link-up play (Pass), and clinical finishing (Shooting)—these three are the main weapons of an SS. <b>TAC</b> is not that important here.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">FITNESS PRECISION</span>
+                            </div>
+                            <p><b>SPE 95+, ACC 95+, STA 95+:</b> An SS has to remain mobile over a large part of the pitch. Therefore, high speed and stamina are mandatory to maintain the same intensity for the full 90 minutes.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">EXPERT TIPS - FALSE 9 ROLE</span>
+                            </div>
+                            <p>An SS often drops deep as a False 9 to break the opponent's defense and create space for the wingers. To get the best output as a "free role" player, it is essential to keep a perfect balance between technical and fitness stats.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">COACHING FLOW</span>
+                            </div>
+                            <p>You can start with either Fitness or Technical coaches. However, ensuring SPE, ACC, and STA are 95+ first, and then fine-tuning the technical stats, will help you build the most dangerous card.</p>
+                        </div>
+
+                        <div class="guide-card card-outro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">CONCLUSION</span>
+                            </div>
+                            <p>A good SS is not just a scorer but the main architect of the attack. Coached correctly, they will become the most creative and reliable player in your team.</p>
+                            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">This coaching guide is specifically for high-rated SS players. If the player's rating is lower, calculate the stats with a slight deduction. In that case, reduce a total of 8-10 stats per 1 overall rating drop.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+             <div class="menu-item-box">
+            
+            <div class="menu-btn" onclick="toggleAccordion(this)">
+                <div class="btn-left">
+                    <div class="icon-box">SP</div>
+<div class="btn-text" data-bn="স্পেশাল প্লেয়ার কোচিং" data-en="SPECIAL PLAYER COACHING">স্পেশাল প্লেয়ার কোচিং</div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="guide-content">
+                <div class="article-wrapper">
+                    
+                    <div class="lang-bn">
+                        <div class="article-header">
+                            <h3 class="article-title">SPECIAL PLAYER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">কোচিং ওভারভিউ</span>
+                            </div>
+                            <p>একজন স্পেশাল প্লেয়ারের কোচিং কীভাবে করালে একদম মনের মতো সঠিক কোচিং হবে। স্পেশাল প্লেয়ারের ক্ষেত্রে সবচেয়ে হার্ড বা কঠিন কোচিং হলো CF এবং CB এর কোচিং। তাই আমরা একজন CF এর কোচিং গাইডলাইন শেয়ার করব যাতে করে সকল পজিশনের স্পেশাল প্লেয়ার কোচিং টেকনিক আপনাদের কাছে ক্লিয়ার হয়ে যায়।</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">মেইন টার্গেট ও স্ট্যাটস</span>
+                            </div>
+                            <p>প্রথমে আমাদের জানতে হবে যে একজন CF এর ক্ষেত্রে মূল স্ট্যাটগুলো হলো স্পিড (Speed), অ্যাক্সিলারেশন (Acc), স্ট্যামিনা (Stamina), স্ট্রেন্থ (Str), ও শুটিং (Shoot)। তাই সবসময় প্রধান টার্গেট থাকবে এই স্ট্যাটগুলো ১০০ করা। এখন প্রথমে আপনি একটি লিজেন্ডারি স্পেশাল কোচ সিলেক্ট করবেন, যেখানে চারটা অপশনে ২ টা করে টোটাল ৮ ধরনের স্ট্যাটস শো করবে। সেখান থেকে আপনি মোট চারটি অপশন সিলেক্ট করতে পারবেন।</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">কোচিং ধাপসমূহ</span>
+                            </div>
+                            <p><b>১.</b> প্রথম ধাপে Speed ও Acc আসলে আপনার পছন্দমতো একটি (যেমন: Speed) সিলেক্ট করুন।<br><br><b>২.</b> দ্বিতীয় ধাপে Acc-এর সাথে অন্য কিছু আসলে Acc সিলেক্ট করুন।<br><br><b>৩.</b> তৃতীয় ধাপে Shooting আসলে সেটি নিশ্চিত করুন।<br><br><b>৪.</b> চতুর্থ ধাপে Stamina আসলে সেটি সিলেক্ট করে Finalize করে দিন।</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">কোচিং এর মূল থিম</span>
+                            </div>
+                            <p>কোচিং করার সময় সবসময় 'Finalize' করার আগে অপশনগুলো চেক করে নিন। যদি লিজেন্ডারি কোচের ৪টি অপশনই আপনার অনুকূলে থাকে তবেই লিজেন্ডারি দিন। ৩টি অপশন ঠিক থাকলে রেয়ার কোচ ব্যবহার করুন। আর যদি মাত্র ১-২টি অপশন মনের মতো হয়, তবে কমন কোচ ব্যবহার করে স্ট্যাটস ঠিক রাখুন।<br><br>মনে রাখবেন, Finalize করার আগে পর্যন্ত কোনো কোচিং কার্যকর হয় না, তাই অপশনগুলো দেখে ব্যাক করার সুযোগ সবসময় থাকছে।</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">গুরুত্বপূর্ণ টেকনিক</span>
+                            </div>
+                            <p>কোচিং এর শেষ পর্যায়ে অনেক সময় অপ্রয়োজনীয় স্ট্যাটস চলে আসে। যেহেতু স্পেশাল প্লেয়ার একবারই ম্যাক্স করা যায়, তাই ভুল স্ট্যাটস এড়াতে আপনি প্লেয়ারটিকে Release করে দিতে পারেন। এরপর ৪৮০ Diamond খরচ করে 'Recover' অপশন থেকে তাকে আবার ফিরিয়ে আনুন।<br><br>এতে আপনার পূর্বের অর্জন করা স্ট্যাটসগুলো ঠিক থাকবে, কিন্তু বর্তমানে যে অপ্রয়োজনীয় স্ট্যাটসগুলো শো করছিল সেগুলো পরিবর্তন হয়ে নতুন স্ট্যাটস আসার সুযোগ তৈরি হবে। তবে এই ট্রিকটি শুধুমাত্র তখনই ব্যবহার করবেন যখন আপনার আইডিতে পর্যাপ্ত অতিরিক্ত ডায়মন্ড থাকবে।</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">গেমিং হাব বাংলাদেশ</div>
+                        </div>
+                    </div>
+
+                    <div class="lang-en">
+                        <div class="article-header">
+                            <h3 class="article-title">SPECIAL PLAYER COACHING</h3>
+                        </div>
+
+                        <div class="guide-card card-intro">
+                            <div class="card-header">
+                                <span class="card-title" style="font-size: 18px;">COACHING OVERVIEW</span>
+                            </div>
+                            <p>How to coach a special player to get the exact desired outcome. For special players, the hardest coaching is for CF and CB. Therefore, we will share a CF coaching guideline so that the special player coaching techniques for all positions become clear to you.</p>
+                        </div>
+
+                        <div class="guide-card card-gkr">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">MAIN TARGET & STATS</span>
+                            </div>
+                            <p>First, we need to know that the main stats for a CF are Speed, Acceleration (Acc), Stamina, Strength (Str), and Shooting (Shoot). So, the main target will always be to make these stats 100. Now, first you will select a legendary special coach, where a total of 8 types of stats will show in 4 options, 2 in each. From there you can select a total of four options.</p>
+                        </div>
+
+                        <div class="guide-card card-gkh">
+                            <div class="stat-header">
+                                <span class="stat-title" style="font-size: 18px;">COACHING STEPS</span>
+                            </div>
+                            <p><b>1.</b> If Speed and Acc appear in the first step, select one of your choice (e.g., Speed).<br><br><b>2.</b> In the second step, if something else appears with Acc, select Acc.<br><br><b>3.</b> In the third step, if Shooting appears, confirm it.<br><br><b>4.</b> In the fourth step, if Stamina appears, select it and Finalize.</p>
+                        </div>
+
+                        <div class="guide-card card-pro-tips">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">CORE THEME</span>
+                            </div>
+                            <p>While coaching, always check the options before clicking 'Finalize'. Apply legendary only if all 4 options of the legendary coach are in your favor. If 3 options are right, use a rare coach. And if only 1-2 options are to your liking, then use a common coach to keep the stats right.<br><br>Remember, no coaching takes effect until you Finalize, so you always have the option to check the options and go back.</p>
+                        </div>
+
+                        <div class="guide-card card-mistake">
+                            <div class="alert-header">
+                                <span class="alert-title" style="font-size: 18px;">IMPORTANT TECHNIQUE</span>
+                            </div>
+                            <p>At the final stage of coaching, unnecessary stats often arrive. Since a special player can only be maxed once, to avoid wrong stats you can Release the player. After that, spend 480 Diamonds to bring him back from the 'Recover' option.<br><br>By doing this, your previously achieved stats will remain intact, but the unnecessary stats that were currently showing will change, creating an opportunity for new stats to appear. However, only use this trick when you have enough extra diamonds in your ID.</p>
+                        </div>
+
+                        <div class="article-signature">
+                            <div class="signature-logo">NEXTGEN <span>DLS</span></div>
+                            <div class="sig-sub" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD">GAMING HUB BD</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+  <script>
+        function toggleAccordion(element) {
+            const itemBox = element.parentElement;
+            
+            // অন্য বক্স বন্ধ করা
+            document.querySelectorAll('.menu-item-box').forEach(otherItem => {
+                if (otherItem !== itemBox) {
+                    otherItem.classList.remove('active');
+                }
+            });
+
+            // বর্তমান বক্স খোলা/বন্ধ করা (CSS-এ Display Block দিয়ে কন্ট্রোল হবে)
+            itemBox.classList.toggle('active');
+        }
+
+        (function() {
+            function updateSettings() {
+                const theme = localStorage.getItem('savedTheme') || 'dark';
+                document.body.setAttribute('data-theme', theme);
+
+                const lang = localStorage.getItem('savedLang') || 'bn';
+                
+                document.querySelectorAll('[data-bn]').forEach(el => {
+                    const translatedText = el.getAttribute('data-' + lang);
+                    if (translatedText) el.innerText = translatedText;
+                });
+
+                if (lang === 'en') {
+                    document.querySelectorAll('.lang-bn').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'block');
+                } else {
+                    document.querySelectorAll('.lang-bn').forEach(el => el.style.display = 'block');
+                    document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+                }
+            }
+
+            updateSettings();
+            document.addEventListener('DOMContentLoaded', updateSettings);
+        })();
+    </script>
+</body>
+</html>

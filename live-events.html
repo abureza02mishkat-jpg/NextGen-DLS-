@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Live Events</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); }
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg-main: #0b1120;
+            --card-bg: #1e293b;
+            --card-hover: #27354c;
+            --text-title: #ffffff;
+            --text-body: #94a3b8;
+            --border-color: #334155;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        html[data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --card-bg: #ffffff;
+            --card-hover: #f8fafc;
+            --text-title: #0f172a;
+            --text-body: #475569;
+            --border-color: #cbd5e1;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* এখানে -webkit-tap-highlight-color যোগ করা হয়েছে যাতে ক্লিক করলে কোনো কালার না আসে */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent !important; }
+        
+        body { background-color: var(--bg-main); color: var(--text-title); overflow-x: hidden; width: 100vw; max-width: 100%; touch-action: pan-y; transition: background-color 0.3s, color 0.3s; margin: 0; padding: 0; padding-bottom: 50px; }
+        
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        .header { 
+            background: var(--card-bg); 
+            padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--accent-orange);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .header-title-wrapper { display: flex; align-items: center; gap: 10px; }
+        
+        .page-title { 
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--accent-orange); 
+            text-transform: uppercase; 
+        }
+
+        .container { max-width: 550px; margin: 0 auto; }
+        .content-body { padding: 20px 15px; }
+
+        /* একদম শান্ত ও প্রিমিয়াম লাইভ আপডেট বক্স */
+        .live-update-box {
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-orange); /* বামে স্মার্ট একটা লাইন */
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .live-update-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+        
+        .live-update-header .icon-wrapper {
+            background: rgba(249, 115, 22, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+        
+        .live-update-header i { 
+            color: var(--accent-orange); 
+            font-size: 14px;
+            animation: pulse 2s infinite; 
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .live-update-title { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 15px; 
+            font-weight: 800; 
+            color: var(--text-title); 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        
+        .live-event-desc { 
+            font-size: 14px; 
+            color: var(--text-body); 
+            font-weight: 500; 
+            line-height: 1.8; 
+            text-align: justify; 
+        }
+
+        .guide-intro {
+            background: linear-gradient(180deg, rgba(249, 115, 22, 0.05) 0%, transparent 100%);
+            border-top: 1px solid rgba(249, 115, 22, 0.15);
+            padding: 25px 20px;
+            border-radius: 20px;
+            margin-bottom: 35px;
+        }
+        .guide-intro p {
+            font-size: 14.5px;
+            color: var(--text-body);
+            line-height: 1.8;
+            font-weight: 500;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+        .guide-intro p:last-child { margin-bottom: 0; }
+
+        .tournaments-container { display: flex; flex-direction: column; gap: 20px; }
+        
+        /* কার্ডের আউটলাইন ও ট্যাপ হাইলাইট পুরোপুরি রিমুভ করা হয়েছে */
+        .t-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 16px; 
+            padding: 25px 20px; 
+            position: relative; 
+            transition: 0.3s; 
+            box-shadow: var(--shadow); 
+            -webkit-tap-highlight-color: transparent !important; 
+            outline: none !important; 
+        }
+        .t-card:hover, .t-card:focus, .t-card:active { 
+            border-color: var(--accent-orange); 
+            transform: translateY(-2px); 
+            outline: none !important; 
+            -webkit-tap-highlight-color: transparent !important; 
+        }
+        
+        .t-title-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .t-icon-wrapper { 
+            width: 50px; 
+            height: 50px; 
+            min-width: 50px;
+            background: rgba(249, 115, 22, 0.1); 
+            color: var(--accent-orange); 
+            border-radius: 12px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 22px; 
+        }
+        
+        .t-title { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--accent-orange); 
+            line-height: 1.3; 
+        }
+        
+        .t-desc { font-size: 14px; color: var(--text-body); line-height: 1.8; font-weight: 500; text-align: justify; }
+        .t-desc p { margin-bottom: 10px; }
+        
+        .sub-type { margin-top: 15px; }
+        .sub-title { font-size: 14px; font-weight: 700; color: var(--text-title); margin-bottom: 5px; }
+    </style>
+
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-calendar-check" style="color: var(--accent-orange); font-size: 22px;"></i> 
+            <div class="page-title">
+                <span class="lang-bn">লাইভ ইভেন্ট</span>
+                <span class="lang-en">LIVE EVENTS</span>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="content-body">
+            
+            <div class="live-update-box">
+                <div class="live-update-header">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-bolt"></i> </div>
+                    <div class="lang-bn live-update-title">বর্তমান ইভেন্ট আপডেট</div>
+                    <div class="lang-en live-update-title">Current Event Update</div>
+                </div>
+                
+                <div class="lang-bn live-event-desc">
+                    বর্তমানে ডিএলএস গেমে 'মে সিজন' উপলক্ষে একটি দারুণ লাইভ টুর্নামেন্ট চলছে। এটি একটি রিয়েল টিম ইভেন্ট, যেখানে স্পিন করে পাওয়া গেমের নির্দিষ্ট টিম নিয়ে খেলতে হবে। চ্যাম্পিয়ন হলে বিশাল রিওয়ার্ড জেতার সুযোগ রয়েছে!
+                </div>
+
+                <div class="lang-en live-event-desc">
+                    A massive live tournament is currently running in DLS for the 'May Season'. This is a Real Team Event where you must play with a pre-defined team obtained via spin. Win the cup to grab huge rewards!
+                </div>
+            </div>
+
+            <div class="guide-intro">
+                <div class="lang-bn">
+                    <p>Dream League Soccer (DLS) গেমের 'Dream League Live' (লাইভ ইভেন্ট) সেকশনে প্রতিনিয়তই নতুন নতুন টুর্নামেন্ট আসে, যা গেমটিকে আরও আকর্ষণীয় করে তোলে এবং ইভেন্ট জিতলে প্রচুর রিওয়ার্ড পাওয়া যায়। এসব টুর্নামেন্টে অংশগ্রহণের জন্য নির্দিষ্ট এন্ট্রি ফি দিতে হয়। ইভেন্ট অনুযায়ী কখনো একাধিকবার, আবার কখনো মাত্র একবার এন্ট্রি নেওয়ার সুযোগ থাকে।</p>
+                    <p>টুর্নামেন্টের নিয়ম অনুযায়ী, যদি নিজের টিম নিয়ে খেলা হয়, তবে ইচ্ছেমতো ফর্মেশন পরিবর্তন করার সুযোগ থাকে। কিন্তু যেসব টুর্নামেন্টে গেম থেকে নির্দিষ্ট টিম দেওয়া হয়, সেখানে টিমের নির্ধারিত ফর্মেশন নিয়েই খেলতে হয়; ফর্মেশন পরিবর্তনের কোনো সুযোগ থাকে না।</p>
+                    <p>গেমে সাধারণত ৫ ধরনের টুর্নামেন্ট বা ইভেন্ট দেখতে পাওয়া যায়:</p>
+                </div>
+                <div class="lang-en">
+                    <p>In the 'Dream League Live' (Live Events) section of the Dream League Soccer (DLS) game, new tournaments constantly appear, making the game more engaging, and winning events yields huge rewards. A specific entry fee is required to participate in these tournaments. Depending on the event, there is sometimes the opportunity to enter multiple times, and sometimes only once.</p>
+                    <p>According to the tournament rules, if you play with your own team, you have the opportunity to change the formation as you wish. But in tournaments where a specific team is provided by the game, you have to play with the team's designated formation; there is no opportunity to change the formation.</p>
+                    <p>Generally, 5 types of tournaments or events are seen in the game:</p>
+                </div>
+            </div>
+
+            <div class="tournaments-container">
+                <div class="t-card">
+                    <div class="t-title-row">
+                        <div class="t-icon-wrapper"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="lang-bn t-title">পয়েন্ট-ভিত্তিক টুর্নামেন্ট</div>
+                        <div class="lang-en t-title">Point-Based Tournament</div>
+                    </div>
+                    
+                    <div class="t-desc lang-bn">
+                        এই টুর্নামেন্ট সাধারণত নিজের টিম দিয়ে খেলতে হয়। এখানে আনলিমিটেড ম্যাচ খেলে একটি নির্দিষ্ট টার্গেট পয়েন্ট পূরণ করতে হয়। ফুটবলের সাধারণ নিয়ম অনুযায়ী—জয়ে ৩ পয়েন্ট, ড্রতে ১ পয়েন্ট এবং হারে ০ পয়েন্ট পাওয়া যায়। গেমের যতগুলো ইভেন্ট আছে, তার মধ্যে সবচেয়ে সহজ ইভেন্ট হলো এই পয়েন্ট-ভিত্তিক ইভেন্ট, তবে এটি শেষ করতে বেশ কিছুটা সময় ব্যয় হয়।
+                    </div>
+                    
+                    <div class="t-desc lang-en">
+                        This tournament is usually played with your own team. Here, you have to fulfill a specific target point by playing unlimited matches. According to standard football rules—you get 3 points for a win, 1 point for a draw, and 0 points for a loss. Among all the events in the game, this point-based event is the easiest, but it takes quite some time to complete.
+                    </div>
+                </div>
+
+                <div class="t-card">
+                    <div class="t-title-row">
+                        <div class="t-icon-wrapper"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <div class="lang-bn t-title">উইন স্ট্রিক টুর্নামেন্ট</div>
+                        <div class="lang-en t-title">Win Streak Tournament</div>
+                    </div>
+                    
+                    <div class="t-desc lang-bn">
+                        এই টুর্নামেন্টও সাধারণত নিজের টিম দিয়ে খেলা হয় এবং সর্বোচ্চ পুরস্কার পেতে হলে টানা ৫টি ম্যাচ জিততে হয়। এখানে হারলেই যে শুধু বাদ, তা নয়—বরং এন্ট্রি নেওয়ার পর টানা ৪টি ম্যাচ জেতার পর ৫ম ম্যাচটি ড্র করলেও উইন স্ট্রিক ভেঙে যায়। উইন স্ট্রিক ধরে রাখতে না পারলে আবার শুরু থেকে জয় কাউন্ট হয়। গেমারদের ধারাবাহিকতা এবং দক্ষতার পরীক্ষা নেওয়া এই ইভেন্টটি বেশ কঠিন।
+                    </div>
+                    
+                    <div class="t-desc lang-en">
+                        This tournament is also generally played with your own team, and you must win 5 consecutive matches to get the highest reward. It's not just that losing eliminates you—rather, after entering and winning 4 consecutive matches, even if you draw the 5th match, the win streak breaks. If you fail to maintain the win streak, the win count starts from the beginning again. This event, which tests gamers' consistency and skill, is quite difficult.
+                    </div>
+                </div>
+
+                <div class="t-card">
+                    <div class="t-title-row">
+                        <div class="t-icon-wrapper"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div class="lang-bn t-title">লাইফ-ভিত্তিক টুর্নামেন্ট</div>
+                        <div class="lang-en t-title">Life-Based Tournament</div>
+                    </div>
+                    
+                    <div class="t-desc lang-bn">
+                        এই টুর্নামেন্ট নিজের টিম অথবা গেমের দেওয়া টিম—উভয় ক্ষেত্রেই আসতে পারে। নিজের টিম নিয়ে খেলার সময় সবাই স্বাচ্ছন্দ্যবোধ করলেও, গেম থেকে যখন যে টিম দেওয়া হবে, তখন সেটি নিয়েই টুর্নামেন্ট খেলতে হয়।<br><br>
+                        নিয়মাবলি: এই ইভেন্টে সাধারণত ৩টি 'লাইফ' (❤️) থাকে। এর মানে হলো, আপনি সর্বোচ্চ ৩টি ম্যাচ হারতে পারবেন। ৩টি ম্যাচ হারার আগেই লক্ষ্য অনুযায়ী ৫, ৭ বা ৯টি জয় তুলে নিতে হয়। তবে ম্যাচ ড্র হলে লাইফের ওপর কোনো নেতিবাচক প্রভাব পড়ে না।
+                    </div>
+                    
+                    <div class="t-desc lang-en">
+                        This tournament can appear for both your own team or a team provided by the game. While everyone feels comfortable playing with their own team, when a team is provided by the game, you have to play the tournament with that specific team.<br><br>
+                        Rules: There are usually 3 'Lifes' (❤️) in this event. This means you can lose a maximum of 3 matches. You have to achieve the target of 5, 7, or 9 wins before losing 3 matches. However, if a match is drawn, it has no negative impact on your lives.
+                    </div>
+                </div>
+
+                <div class="t-card">
+                    <div class="t-title-row">
+                        <div class="t-icon-wrapper"><i class="fa-solid fa-trophy"></i></div>
+                        <div class="lang-bn t-title">নকআউট টুর্নামেন্ট</div>
+                        <div class="lang-en t-title">Knockout Tournament</div>
+                    </div>
+                    
+                    <div class="t-desc lang-bn">
+                        এই টুর্নামেন্ট সাধারণত গেম থেকে দেওয়া টিম বা নিজের টিম দিয়ে খেলতে হয়। এখানে রাউন্ড অব ১৬, কোয়ার্টার ফাইনাল, সেমি-ফাইনাল এবং ফাইনাল—এই ধাপে ম্যাচ অনুষ্ঠিত হয়। এটি সম্পূর্ণ 'ডু অর ডাই' ম্যাচ; জিতলে পরের রাউন্ডে যাবেন, আর হারলে সরাসরি টুর্নামেন্ট থেকে বাদ পড়বেন। নির্ধারিত সময়ে ম্যাচ ড্র হলে অতিরিক্ত সময় (Extra Time) এবং পেনাল্টি শুটআউটের (Penalties) মাধ্যমে বিজয়ী নির্ধারণ করা হয়।
+                    </div>
+                    
+                    <div class="t-desc lang-en">
+                        This tournament is usually played with a team provided by the game or your own team. Matches are held in stages here—Round of 16, Quarter-Final, Semi-Final, and Final. This is a completely 'do or die' match; if you win, you go to the next round, and if you lose, you are directly eliminated from the tournament. If the match is drawn in regulation time, the winner is determined through Extra Time and Penalty Shootouts.
+                    </div>
+                </div>
+
+                <div class="t-card">
+                    <div class="t-title-row">
+                        <div class="t-icon-wrapper"><i class="fa-solid fa-users-viewfinder"></i></div>
+                        <div class="lang-bn t-title">গেমের নির্ধারিত টিম টুর্নামেন্ট</div>
+                        <div class="lang-en t-title">Pre-defined Team Tournament</div>
+                    </div>
+                    
+                    <div class="t-desc lang-bn">
+                        এখানে নিজের তৈরি করা স্কোয়াডের বদলে গেম থেকে দেওয়া টিম নিয়ে খেলতে হয়। এন্ট্রির জন্য সাধারণত কয়েন খরচ করতে হয় এবং এটিও লাইফ (❤️) ভিত্তিক হয়ে থাকে (অর্থাৎ ৩টি ম্যাচ হারার আগে নির্দিষ্ট সংখ্যক ম্যাচ জিততে হয়)। এই ইভেন্টগুলো মূলত দুটি সিস্টেমে গেমে আসে:
+                        <div class="sub-type">
+                            <div class="sub-title">- ড্রাফট সিস্টেম:</div>
+                            এক্ষেত্রে গেম থেকে ঐচ্ছিক দুটি ফর্মেশন দেওয়া হয়, যার মধ্য থেকে যেকোনো একটি বেছে নিয়ে টিম সাজাতে হয়। পুরো টুর্নামেন্ট সেই একটি ফর্মেশনেই খেলতে হয়। এখানে গেমের দেওয়া অপশনগুলো থেকে প্লেয়ার পিক করে মূল ১১ জনসহ বেঞ্চের জন্য মোট ১৯ জন প্লেয়ার বেছে নেওয়ার সুযোগ থাকে। সবার দলের রেটিং প্রায় সমান থাকে বলে এখানে গেমারের স্কিল সবচেয়ে বেশি কাজে লাগে।
+                        </div>
+                        <div class="sub-type">
+                            <div class="sub-title">- রিয়েল টিম সিস্টেম:</div>
+                            এখানে সাধারণত গেম থেকে ৮টি বাস্তব বিশ্বের ক্লাব বা জাতীয় দল দেওয়া হয়। এটি আবার দুই ধরনের হয়ে থাকে। 'Optional' (ঐচ্ছিক) হলে গেমের দেওয়া ৮টি টিমের মধ্য থেকে নিজের পছন্দমতো যেকোনো একটি টিম বেছে নিয়ে খেলা যায়। আর 'Mandatory' (বাধ্যতামূলক) হলে নিজের পছন্দের সুযোগ থাকে না, বরং স্পিন (Spin)-এর মাধ্যমে গেম থেকে যে নির্দিষ্ট টিমটি (ক্লাব বা জাতীয় দল) সিলেক্ট করে দেয়, সেটি নিয়েই টুর্নামেন্ট খেলতে হয়।
+                        </div>
+                    </div>
+                    
+                    <div class="t-desc lang-en">
+                        Here, instead of the squad you created, you have to play with a team provided by the game. You usually have to spend coins for entry, and this is also Life (❤️) based (meaning you have to win a specific number of matches before losing 3 matches). These events basically come to the game in two systems:
+                        <div class="sub-type">
+                            <div class="sub-title">- Draft System:</div>
+                            In this case, two optional formations are provided by the game, from which you have to choose one to organize your team. The entire tournament must be played in that single formation. Here, you have the opportunity to pick players from the options provided by the game to choose a total of 19 players, including the starting 11 and the bench. Since everyone's team rating is almost equal, the gamer's skill is most useful here.
+                        </div>
+                        <div class="sub-type">
+                            <div class="sub-title">- Real Team System:</div>
+                            Here, 8 real-world clubs or national teams are usually provided by the game. This again is of two types. If it's 'Optional', you can choose any one team of your preference from the 8 given teams. But if it's 'Mandatory', you don't have the choice of your preference; instead, you have to play the tournament with the specific team (club or national team) that the game selects for you via a Spin.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

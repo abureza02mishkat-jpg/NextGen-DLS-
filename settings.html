@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Settings</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            // 🔥 জাভাস্ক্রিপ্ট দিয়ে জুম আটকানোর চরম ম্যাজিক 🔥
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); } // দুই আঙুলের জুম বন্ধ
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); } // ডাবল ট্যাপ জুম বন্ধ
+                lastTouchEnd = now;
+            }, false);
+            
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey) event.preventDefault();
+            }, { passive: false });
+        })();
+    </script>
+
+    <style>
+        /* ডিফল্ট ডার্ক থিম */
+        :root {
+            --bg: #0b1120;
+            --card: #1e293b;
+            --accent: #f97316;
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #334155;
+            --red: #ef4444;
+        }
+
+        /* লাইট থিম */
+        html[data-theme="light"] {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body.light-mode {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --border: #e2e8f0;
+        }
+
+        /* 🔥 ডানে-বামে নড়াচড়া এবং ডাবল-ট্যাপ জুম সম্পূর্ণ বন্ধ করার ম্যাজিক 🔥 */
+        html, body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            margin: 0; padding: 0;
+            transition: background-color 0.3s;
+            width: 100vw;
+            max-width: 100%;
+            overflow-x: hidden; /* ডানে-বামে নড়বে না */
+            touch-action: pan-y; /* শুধু ওপরে-নিচে স্ক্রল হবে */
+            user-select: none;
+            -webkit-user-select: none; /* ডাবল ট্যাপে টেক্সট সিলেক্ট বা জুম হবে না */
+        }
+
+        /* লিংকে চাপ দিয়ে ধরে রাখলে যে পপআপ আসে, সেটা বন্ধ করা */
+        a { -webkit-user-drag: none; }
+
+        /* ভাষার ঝলকানি বন্ধ */
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        .container { padding: 20px 15px 50px 15px; max-width: 450px; margin: auto; overflow-x: hidden; }
+        .group-title { font-size: 13px; color: var(--text-dim); font-weight: 700; margin: 25px 0 10px 15px; text-transform: uppercase; letter-spacing: 1.2px; }
+
+        .settings-list { background: var(--card); border-radius: 18px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .setting-item { display: flex; align-items: center; padding: 18px; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; transition: 0.2s; }
+        .setting-item:active { background: rgba(0,0,0,0.05); }
+        .setting-item:last-child { border-bottom: none; }
+
+        .icon-box { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; background: rgba(249, 115, 22, 0.1); color: var(--accent); }
+
+        .item-content { flex: 1; }
+        .item-title { display: block; font-size: 15px; font-weight: 600; }
+        .item-sub { display: block; font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+        /* Auth Buttons */
+        .auth-container { padding: 18px; }
+        .btn-auth { width: 100%; padding: 14px; border-radius: 14px; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; font-size: 14px; font-family: 'Poppins', sans-serif;}
+        .google-btn { background: #ffffff; color: #000; border: 1px solid #cbd5e1; }
+        .fb-btn { background: #1877f2; color: #fff; }
+
+        /* Switch */
+        .switch { position: relative; width: 46px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--text-dim); transition: .3s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Professional Footer */
+        .app-footer { text-align: center; margin-top: 50px; padding-bottom: 30px; }
+        .app-footer .brand { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; color: var(--accent); letter-spacing: 1.5px; }
+        .app-footer .version { font-size: 13px; color: var(--text-dim); margin-top: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .app-footer .dev-info { font-size: 12px; color: var(--text-dim); margin-top: 10px; font-weight: 500; }
+        .app-footer .copyright { font-size: 11px; color: var(--text-dim); margin-top: 4px; opacity: 0.7; letter-spacing: 0.5px; }
+
+        /* Premium Copyright Modal */
+        #copyrightModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 10000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+            overscroll-behavior: contain; /* মডাল ওপেন থাকলে পেজ স্ক্রল বন্ধ */
+        }
+        .modal-card { 
+            background: var(--card); border-radius: 24px; padding: 30px 25px; border: 1px solid var(--border); 
+            width: 100%; max-width: 360px; box-shadow: 0 15px 35px rgba(0,0,0,0.25); 
+            position: relative;
+        }
+        .modal-card h2 { color: var(--text); text-align: center; margin-top: 0; font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+        .modal-card p { font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: var(--text-dim); text-align: justify; }
+        
+        /* 3 নম্বর রুলসের জন্য স্পেশাল রেড কালার */
+        .modal-card p.warning-rule { color: var(--red); font-weight: 500; }
+
+        .btn-ok { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 15px; font-size: 15px; font-family: 'Poppins', sans-serif; transition: 0.2s;}
+        .btn-ok:active { transform: scale(0.97); }
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+<body>
+    <div class="container">
+        
+        <div class="group-title lang-bn">অ্যাকাউন্ট কানেক্ট</div>
+        <div class="group-title lang-en">Account Connect</div>
+        <div class="settings-list">
+            <div class="auth-container">
+                <button class="btn-auth google-btn" onclick="alert('Google Sign-in Portal Loading...')">
+                    <img src="https://www.google.com/favicon.ico" width="18"> 
+                    <span class="lang-bn">গুগল দিয়ে লগইন</span><span class="lang-en">Continue with Google</span>
+                </button>
+                <button class="btn-auth fb-btn" onclick="alert('Facebook Sign-in Portal Loading...')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" width="16" height="16"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/></svg>
+                    <span class="lang-bn">ফেসবুক দিয়ে লগইন</span><span class="lang-en">Continue with Facebook</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="group-title lang-bn">পছন্দসমূহ</div>
+        <div class="group-title lang-en">Preferences</div>
+        <div class="settings-list">
+            <div class="setting-item">
+                <div class="icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="20" height="20"><path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v118.8c0 47-17.3 92-48.4 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 512 32 512H416c12.6 0 24-7.4 29.1-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 418.8 384 373.8 384 326.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z"/></svg>
+                </div>
+                <div class="item-content">
+                    <span class="item-title lang-bn">পুশ নোটিফিকেশন</span><span class="item-title lang-en">Push Notifications</span>
+                    <span class="item-sub lang-bn">অটোমেটিক আপডেট এলার্ট</span><span class="item-sub lang-en">Auto update alerts</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="notiSwitch" onchange="saveNotiState()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="group-title lang-bn">সহযোগিতা ও আইনি</div>
+        <div class="group-title lang-en">Support & Legal</div>
+        <div class="settings-list">
+            <div class="setting-item" onclick="showLegal()">
+                <div class="icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="20" height="20"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
+                </div>
+                <div class="item-content">
+                    <span class="item-title lang-bn">কপিরাইট নীতিমালা</span><span class="item-title lang-en">Copyright Policy</span>
+                    <span class="item-sub lang-bn">আইনি সুরক্ষা নোটিশ</span><span class="item-sub lang-en">Legal protection notice</span>
+                </div>
+            </div>
+            <a href="mailto:nextgendls3456@gmail.com?subject=Support Request" class="setting-item">
+                <div class="icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="20" height="20"><path d="M192 208c0-17.7-14.3-32-32-32H112c-17.7 0-32 14.3-32 32v112c0 17.7 14.3 32 32 32h48c17.7 0 32-14.3 32-32V208zm128 0v112c0 17.7 14.3 32 32 32h48c17.7 0 32-14.3 32-32V208c0-17.7-14.3-32-32-32H352c-17.7 0-32 14.3-32 32zM256 0C114.6 0 0 114.6 0 256v32c0 17.7 14.3 32 32 32h16V208c0-114.9 93.1-208 208-208s208 93.1 208 208v112h16c17.7 0 32-14.3 32-32V256C512 114.6 397.4 0 256 0zM176 416h-16c-35.3 0-64-28.7-64-64v-32H48v32c0 53 43 96 96 96h32c17.7 0 32-14.3 32-32s-14.3-32-32-32zm160 0h16c35.3 0 64-28.7 64-64v-32h48v32c0 53-43 96-96 96h-32c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
+                </div>
+                <div class="item-content">
+                    <span class="item-title lang-bn">সাপোর্ট সেন্টার</span><span class="item-title lang-en">Support Center</span>
+                    <span class="item-sub">nextgendls3456@gmail.com</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="app-footer">
+            <div class="brand">NEXTGEN DLS</div>
+            <div class="version">Version 2.0.9</div>
+            <div class="dev-info">Developed by NextGen DLS</div>
+            <div class="copyright">© 2026 All Rights Reserved</div>
+        </div>
+    </div>
+
+    <div id="copyrightModal">
+        <div class="modal-card">
+            <h2 class="lang-bn">আইনি নোটিশ</h2>
+            <h2 class="lang-en">Legal Notice</h2>
+            <hr style="border: 0; border-top: 1px dashed var(--border); margin: 0 0 20px 0;">
+            
+            <div class="lang-bn">
+                <p>১. "NextGen DLS" অ্যাপের যাবতীয় ইন্টারফেস ডিজাইন, সোর্স কোড, ডাটাবেস, গ্রাফিক্স, টিউটোরিয়াল এবং সকল কন্টেন্ট সম্পূর্ণ আমাদের নিজস্ব মেধা ও শ্রমের ফসল। এই অ্যাপের ক্ষুদ্রতম অংশও আমাদের অনুমতি ছাড়া ব্যবহার করা আইনত নিষিদ্ধ।</p>
+                <p>২. আমাদের সোর্স কোড বা কন্টেন্ট আংশিক কিংবা পূর্ণাঙ্গভাবে অন্য কোনো অ্যাপ, ওয়েবসাইট বা সামাজিক মাধ্যমে (FB/YT) প্রচার, বিক্রয় কিংবা অনুলিপি তৈরি করা ডিজিটাল নিরাপত্তা আইনে একটি গুরুতর অপরাধ।</p>
+                <p class="warning-rule">৩. আমরা নিয়মিত আমাদের কন্টেন্ট মনিটর করি। কোনো চুরি বা অনুলিপি শনাক্ত হলে আমরা কোনো আগাম নোটিশ ছাড়াই সরাসরি DMCA স্ট্রাইক এবং ডিজিটাল নিরাপত্তা আইনে কঠোর আইনি পদক্ষেপ গ্রহণ করবো।</p>
+            </div>
+
+            <div class="lang-en">
+                <p>1. All interface designs, source codes, databases, graphics, tutorials, and content within the "NextGen DLS" app are our exclusive intellectual property. Use of any part without permission is strictly prohibited.</p>
+                <p>2. Redistributing, selling, or duplicating our source code or content, in part or in full, on any other platform is a serious offense under Digital Security Laws.</p>
+                <p class="warning-rule">3. We actively monitor our content. If any theft is detected, we will initiate immediate DMCA takedowns and legal prosecution without prior warning.</p>
+            </div>
+
+            <button class="btn-ok lang-bn" onclick="hideLegal()">আমি বুঝেছি</button>
+            <button class="btn-ok lang-en" onclick="hideLegal()">I Understand</button>
+        </div>
+    </div>
+
+    <script>
+        function initSettings() {
+            const noti = localStorage.getItem('noti_enabled') === 'true';
+            document.getElementById('notiSwitch').checked = noti;
+            
+            let initTheme = localStorage.getItem('savedTheme') || 'dark';
+            if (initTheme === 'light') { document.body.classList.add('light-mode'); }
+        }
+
+        function saveNotiState() {
+            const isChecked = document.getElementById('notiSwitch').checked;
+            localStorage.setItem('noti_enabled', isChecked);
+            if(isChecked) {
+                alert("Notifications Activated!");
+                Notification.requestPermission();
+            }
+        }
+
+        function showLegal() { document.getElementById('copyrightModal').style.display = 'flex'; }
+        function hideLegal() { document.getElementById('copyrightModal').style.display = 'none'; }
+
+        document.addEventListener('DOMContentLoaded', initSettings);
+    </script>
+</body>
+</html>

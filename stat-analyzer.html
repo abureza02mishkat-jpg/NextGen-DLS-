@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Stats Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        (function() {
+            let initTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', initTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+            
+            // দুই আঙুলের পিঞ্চ জুম লক
+            document.addEventListener('touchstart', function(event) { 
+                if (event.touches.length > 1) { event.preventDefault(); } 
+            }, { passive: false });
+            
+            // ডাবল ਟੈਪ জুম লক
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+        })();
+    </script>
+
+    <style>
+        /* === ডিফল্ট ডার্ক থিম ভেরিয়েবল === */
+        :root { 
+            --bg-main: #0a0e17; --bg-panel: #111827; --bg-inner: #06090f;
+            --text-main: #f1f2f6; --text-muted: #808e9b; --primary: #f97316; 
+            --primary-glow: rgba(249, 115, 22, 0.3);
+            --border-light: rgba(255,255,255,0.05);
+            --stat-color: #00f0ff;
+            --error-red: #ef4444; 
+        }
+
+        /* === লাইট থিম ভেরিয়েবল === */
+        html[data-theme="light"] {
+            --bg-main: #f1f4f9; --bg-panel: #ffffff; --bg-inner: #e5e7eb;
+            --text-main: #1e293b; --text-muted: #4b5563; --border-light: rgba(0,0,0,0.1);
+            --stat-color: #0097e6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-main); padding-bottom: 50px; 
+            transition: background-color 0.3s ease, color 0.3s ease; overflow-x: hidden; 
+            -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+        }
+
+        /* ভাষা পরিবর্তনের জন্য স্লাইডিং ফিল্টার */
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        input, textarea { -webkit-user-select: auto; user-select: auto; }
+
+        .header-area { 
+            background: var(--bg-panel); padding: 15px 20px 10px 20px; 
+            border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .brand-title { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; color: var(--primary); margin: 0; letter-spacing: 1px; text-transform: uppercase;}
+
+        .main-container { max-width: 600px; margin: 0 auto; padding: 10px; }
+
+        .sticky-header-wrapper { position: sticky; top: 52px; z-index: 90; background: var(--bg-main); padding: 5px 0 10px 0; transition: background-color 0.3s; }
+
+        .upload-section { background: var(--bg-main); border: 2px dashed var(--border-light); border-radius: 12px; padding: 10px; text-align: center; width: 100%; margin: 0 auto; transition: 0.3s; }
+        .upload-section.has-image { background: var(--bg-panel); border-style: solid; border-color: var(--primary); padding: 5px; width: fit-content; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        
+        .upload-placeholder i { font-size: 24px; color: var(--text-muted); margin-bottom: 5px;}
+        .upload-placeholder p { font-size: 11px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;}
+        
+        .btn-upload { background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; box-shadow: 0 4px 10px var(--primary-glow); transition: 0.2s; }
+        .btn-upload:active { transform: scale(0.95); }
+
+        #preview-img { max-width: 100%; max-height: 120px; border-radius: 8px; display: none; object-fit: contain; margin: 0 auto;}
+        
+        .change-img-btn { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: none; backdrop-filter: blur(5px); }
+
+        .analyzer-panel { background: var(--bg-panel); border-radius: 12px; padding: 15px 12px; border: 1px solid var(--border-light); box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: 0.3s; }
+        .panel-title { text-align: center; font-size: 11px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 15px; color: var(--text-muted); text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
+
+        .stats-input-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .input-group { display: flex; align-items: center; background: var(--bg-inner); border-radius: 8px; border: 1px solid var(--border-light); padding: 4px 10px; transition: 0.2s;}
+        .input-group:focus-within { border-color: var(--primary); box-shadow: 0 0 8px var(--primary-glow);}
+        
+        .stat-lbl { width: 35px; font-size: 10px; font-weight: 800; color: var(--text-muted); font-family: 'Montserrat', sans-serif;}
+        .stat-input { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 15px; font-weight: 900; outline: none; text-align: right; font-family: 'Montserrat', sans-serif; width: 100%; transition: 0.2s;}
+        
+        .result-container { display: flex; flex-direction: column; align-items: center; gap: 10px;}
+        .radar-wrapper { width: 100%; max-width: 190px; height: 190px; position: relative; display: flex; justify-content: center; align-items: center;}
+        
+        .total-box { background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05)); border: 2px solid var(--primary); border-radius: 12px; padding: 10px; width: 100%; max-width: 220px; text-align: center; box-shadow: 0 5px 15px var(--primary-glow); }
+        .total-lbl { font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px;}
+        .total-val { font-size: 32px; font-weight: 900; color: var(--text-main); font-family: 'Montserrat', sans-serif; text-shadow: 0 0 15px var(--primary-glow); line-height: 1;}
+
+        .action-btn { width: 100%; max-width: 280px; margin: 15px auto 0; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 900; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Montserrat', sans-serif; box-shadow: 0 4px 10px var(--primary-glow); }
+        .action-btn:active { transform: scale(0.97); }
+
+        /* 🔥 ডাইনামিক এক্সপোর্ট ক্যানভাস ডিজাইন (থিম অনুযায়ী গ্লো ও কালার পরিবর্তন হবে) 🔥 */
+        #export-canvas {
+            position: absolute; top: -9999px; left: -9999px; 
+            width: 950px; background: var(--bg-main); padding: 40px; 
+            display: flex; flex-direction: column; align-items: center;
+            border-radius: 0px; color: var(--text-main); opacity: 0; pointer-events: none;
+        }
+        .exp-header { font-family: 'Montserrat', sans-serif; font-size: 38px; font-weight: 900; color: var(--primary); margin-bottom: 40px; letter-spacing: 3px; text-transform: uppercase;}
+        .exp-body { display: flex; justify-content: center; align-items: center; width: 100%; gap: 40px;}
+        .exp-card-col { display: flex; justify-content: center; align-items: center;}
+        .exp-card { max-width: 260px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4);}
+        
+        .exp-stats-col { 
+            background: var(--bg-panel); padding: 30px; border-radius: 20px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); border: 1px solid var(--border-light);
+            display: flex; flex-direction: column; align-items: center; width: 340px;
+        }
+        .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 20px; width: 100%; margin-bottom: 25px;}
+        
+        .exp-stat-item { background: var(--bg-inner); padding: 12px; border-radius: 12px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-light); }
+        .exp-stat-lbl { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 800; color: var(--text-muted); width: 38px; text-align: left; margin-right: 6px; }
+        .exp-stat-val { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 900; width: 26px; text-align: left;}
+        
+        .exp-total-lbl { color: var(--primary); font-size: 16px; font-weight: 800; letter-spacing: 2px; text-align: center; margin-bottom: 5px;}
+        .exp-total-val { font-size: 55px; font-weight: 900; color: var(--text-main); font-family: 'Montserrat', sans-serif; line-height: 1; text-align: center; text-shadow: 0 0 20px var(--primary-glow);}
+        
+        .exp-radar-col { display: flex; justify-content: center; align-items: center;}
+        .exp-watermark { margin-top: 45px; font-size: 18px; color: var(--text-muted); font-weight: 900; letter-spacing: 5px; font-family: 'Montserrat', sans-serif;}
+    </style>
+    <script>
+        window.oncontextmenu = function(event) { event.preventDefault(); event.stopPropagation(); return false; };
+    </script>
+</head>
+
+<body>
+
+    <div class="header-area">
+        <i class="fa-solid fa-chart-column" style="color: var(--primary); font-size: 22px;"></i>
+        <h1 class="brand-title">
+            <span class="lang-bn">স্ট্যাট অ্যানালাইজার</span>
+            <span class="lang-en">STATS ANALYZER</span>
+        </h1>
+    </div>
+
+    <div class="main-container">
+        <div class="sticky-header-wrapper">
+            <div class="upload-section" id="upload-box">
+                <div class="upload-placeholder" id="placeholder-content">
+                    <i class="fa-solid fa-image"></i>
+                    <p id="lblUpload">Upload Player Card</p>
+                    <button class="btn-upload" onclick="document.getElementById('file-input').click()">
+                        <i class="fa-solid fa-upload"></i> CHOOSE IMAGE
+                    </button>
+                </div>
+                <img id="preview-img" src="" alt="Card Preview">
+                <button class="change-img-btn" id="change-btn" onclick="document.getElementById('file-input').click()"><i class="fa-solid fa-pen"></i></button>
+                <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleImage(event)">
+            </div>
+        </div>
+
+        <div class="analyzer-panel">
+            <div class="panel-title" id="lblEnterStats">/// ENTER STATS ///</div>
+            
+            <div class="stats-input-grid">
+                <div class="input-group"><span class="stat-lbl">SPE</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-spe" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+                <div class="input-group"><span class="stat-lbl">ACC</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-acc" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+                <div class="input-group"><span class="stat-lbl">STA</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-sta" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+                <div class="input-group"><span class="stat-lbl">STR</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-str" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+                <div class="input-group"><span class="stat-lbl">CON</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-con" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+                <div class="input-group"><span class="stat-lbl">PAS</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-pas" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+                <div class="input-group"><span class="stat-lbl">SHO</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-sho" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+                <div class="input-group"><span class="stat-lbl">TAC</span><input type="text" inputmode="numeric" pattern="[0-9]*" class="stat-input" id="in-tac" value="0" onfocus="clearZero(this)" onblur="restoreZero(this)" oninput="checkLimit(this)"></div>
+            </div>
+
+            <div class="result-container">
+                <div class="radar-wrapper" id="radar-box"></div>
+                <div class="total-box">
+                    <div class="total-lbl" id="lblTotal">TOTAL STATS</div>
+                    <div class="total-val" id="total-display">0</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="action-btn" onclick="downloadAnalysis()"><i class="fa-solid fa-camera"></i> <span id="lblSave">SAVE ANALYSIS</span></button>
+    </div>
+
+    <div id="export-canvas">
+        <div class="exp-header">PLAYER STATS</div>
+        <div class="exp-body">
+            <div class="exp-card-col">
+                <img id="exp-card-img" class="exp-card" src="" style="display:none;">
+            </div>
+            <div class="exp-stats-col">
+                <div id="exp-stats-container"></div>
+            </div>
+            <div class="exp-radar-col" id="exp-radar-container"></div>
+        </div>
+        <div class="exp-watermark">CREATED VIA NEXTGEN DLS</div>
+    </div>
+
+    <script>
+        const langDict = {
+            en: { upload: "Upload Player Card", enterStats: "/// ENTER STATS ///", total: "TOTAL STATS", save: "SAVE ANALYSIS", warning: "Max 100!" },
+            bn: { upload: "প্লেয়ার কার্ড আপলোড করুন", enterStats: "/// কার্ড স্ট্যাটস টাইপ করুন ///", total: "মোট স্ট্যাটস", save: "অ্যানালাইসিস সেভ করুন", warning: "সর্বোচ্চ ১০০!" }
+        };
+        let currentLang = localStorage.getItem('savedLang') || 'bn';
+        let currentThemeColor = '#00f0ff';
+        let uploadedImageSrc = '';
+        const statsKeys = ['spe', 'acc', 'sta', 'str', 'con', 'pas', 'sho', 'tac'];
+
+        function applyLanguage() {
+            const dict = langDict[currentLang];
+            document.getElementById('lblUpload').textContent = dict.upload;
+            document.getElementById('lblEnterStats').textContent = dict.enterStats;
+            document.getElementById('lblTotal').textContent = dict.total;
+            document.getElementById('lblSave').textContent = dict.save;
+            
+            currentThemeColor = document.documentElement.getAttribute('data-theme') === 'light' ? '#0097e6' : '#00f0ff';
+            updateStats(); 
+        }
+
+        function clearZero(el) { if (el.value === '0') el.value = ''; }
+        function restoreZero(el) { if (el.value === '') el.value = '0'; checkLimit(el); }
+
+        function checkLimit(el) {
+            if(el.dataset.locked === 'true') { el.value = langDict[currentLang].warning; return; }
+            let val = el.value.replace(/\D/g, ''); 
+            if(val === '') { updateStats(); return; }
+            let numVal = parseInt(val);
+
+            if (numVal > 100) {
+                el.dataset.locked = 'true';
+                el.value = langDict[currentLang].warning; 
+                el.style.color = "var(--error-red)"; 
+                el.style.fontSize = "9px"; 
+                el.style.textAlign = "center"; 
+                
+                setTimeout(() => {
+                    el.dataset.locked = 'false';
+                    el.value = '0'; el.style.color = ""; el.style.fontSize = ""; el.style.textAlign = "right"; 
+                    updateStats();
+                }, 1200);
+            } else {
+                el.value = numVal; 
+            }
+            updateStats();
+        }
+
+        function handleImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImageSrc = e.target.result;
+                    const img = document.getElementById('preview-img');
+                    img.src = uploadedImageSrc; img.style.display = 'block';
+                    
+                    document.getElementById('placeholder-content').style.display = 'none';
+                    document.getElementById('change-btn').style.display = 'block';
+                    document.getElementById('upload-box').classList.add('has-image');
+                    
+                    document.getElementById('exp-card-img').src = uploadedImageSrc;
+                    document.getElementById('exp-card-img').style.display = 'block';
+
+                    statsKeys.forEach(s => { document.getElementById('in-' + s).value = '0'; });
+                    updateStats();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function getRadarPoint(val, index, maxR) { 
+            const angle = index * 45 * Math.PI / 180; 
+            const r = (val / 100) * maxR; 
+            return `${125 + r * Math.sin(angle)},${125 - r * Math.cos(angle)}`; 
+        }
+
+        function generateRadarSVG(vals) {
+            const labels = ['SPE', 'ACC', 'STA', 'STR', 'CON', 'PAS', 'SHO', 'TAC'];
+            let isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            let webStrokeColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.05)';
+            let labelTextColor = isLight ? 'var(--text-main)' : 'rgba(255,255,255,0.7)';
+
+            let bgWeb = ''; 
+            for(let r=25; r<=75; r+=25) {
+                bgWeb += `<polygon points="${[0,1,2,3,4,5,6,7].map(i=>getRadarPoint(100,i,r)).join(' ')}" fill="none" stroke="${webStrokeColor}"/>`;
+            }
+            let lines = ''; 
+            for(let i=0; i<8; i++) {
+                lines += `<line x1="125" y1="125" x2="${getRadarPoint(100,i,75).split(',')[0]}" y2="${getRadarPoint(100,i,75).split(',')[1]}" stroke="${webStrokeColor}"/>`;
+            }
+            let poly = vals.map((v, i) => getRadarPoint(v, i, 75)).join(' ');
+            let texts = ''; 
+            labels.forEach((lbl, i) => {
+                let pt = getRadarPoint(100, i, 90); let [x,y] = pt.split(',');
+                texts += `<text x="${x}" y="${y}" fill="${labelTextColor}" font-size="11" font-weight="800" text-anchor="middle" dominant-baseline="middle" font-family="Montserrat">${lbl}</text>`;
+            });
+            return `<svg viewBox="0 0 250 250" width="100%" height="100%">${bgWeb} ${lines} <polygon points="${poly}" fill="${currentThemeColor}44" stroke="${currentThemeColor}" stroke-width="2.5"/> ${texts}</svg>`;
+        }
+
+        function getStatColor(val) {
+            if (val >= 90) return '#00e5ff'; if (val >= 80) return '#2ed573'; 
+            if (val >= 70) return '#f1c40f'; if (val >= 60) return '#e67e22'; 
+            return '#e84118';                
+        }
+
+        function updateStats() {
+            const vals = statsKeys.map(s => {
+                let v = parseInt(document.getElementById('in-' + s).value);
+                return isNaN(v) ? 0 : v;
+            });
+            const total = vals.reduce((a, b) => a + b, 0);
+            document.getElementById('total-display').innerText = total;
+
+            const svg = generateRadarSVG(vals);
+            document.getElementById('radar-box').innerHTML = svg;
+            prepareExportCanvas(statsKeys, vals, total, svg);
+        }
+
+        function prepareExportCanvas(stats, vals, total, radarSvg) {
+            let statsHtml = '<div class="exp-grid">';
+            stats.forEach((s, i) => {
+                let statColor = getStatColor(vals[i]); 
+                statsHtml += `<div class="exp-stat-item">
+                                <span class="exp-stat-lbl">${s.toUpperCase()}</span>
+                                <span class="exp-stat-val" style="color: ${statColor};">${vals[i]}</span>
+                              </div>`;
+            });
+            statsHtml += `</div>
+                          <div class="exp-total">
+                              <div class="exp-total-lbl">${langDict[currentLang].total}</div>
+                              <div class="exp-total-val">${total}</div>
+                          </div>`;
+            document.getElementById('exp-stats-container').innerHTML = statsHtml;
+            document.getElementById('exp-radar-container').innerHTML = `<div style="width:280px; height:280px;">${radarSvg}</div>`;
+        }
+
+        function downloadAnalysis() {
+            if(!uploadedImageSrc) {
+                alert(currentLang === 'bn' ? "আগে প্লেয়ার কার্ড আপলোড করুন বন্ধু!" : "Please upload a player card first!");
+                return;
+            }
+            const expArea = document.getElementById('export-canvas');
+            expArea.style.opacity = '1'; 
+
+            // মেইন স্ক্রিনের ব্যাকগ্রাউন্ড রিড করে জেনারেটরে অ্যাসাইন করার লজিক
+            let currentBgColor = window.getComputedStyle(document.body).backgroundColor;
+
+            html2canvas(expArea, { 
+                backgroundColor: currentBgColor,
+                scale: 2, 
+                useCORS: true 
+            }).then(canvas => {
+                let link = document.createElement('a');
+                link.download = 'NextGen_DLS_Stats_Analysis.png';
+                link.href = canvas.toDataURL('image/png', 1.0); 
+                link.click();
+                expArea.style.opacity = '0'; 
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</body>
+</html>
+

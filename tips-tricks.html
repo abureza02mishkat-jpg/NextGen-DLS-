@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Tips & Tricks</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- এখানে নিউজ হাবের Poppins ফন্ট যুক্ত করা হয়েছে যাতে লেখা পারফেক্ট বোল্ড হয় -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); }
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+            
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey) event.preventDefault();
+            }, { passive: false });
+        })();
+    </script>
+
+    <style>
+        :root { 
+            --bg-main: #0b1120; 
+            --card-bg: #1e293b; 
+            --card-hover: #27354c; 
+            --text-title: #ffffff; 
+            --text-body: #f8fafc; 
+            --border-color: #334155; 
+            --accent-orange: #f97316; 
+            --accent-cyan: #00F0FF; 
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
+        }
+        
+        html[data-theme="light"] { 
+            --bg-main: #f0f2f5; 
+            --card-bg: #ffffff; 
+            --card-hover: #f8fafc; 
+            --text-title: #0f172a; 
+            --text-body: #0f172a; 
+            --border-color: #e2e8f0; 
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05); 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-body); 
+            font-family: 'Montserrat', 'Noto Sans Bengali', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            padding-bottom: 50px; 
+            transition: background-color 0.3s; 
+            width: 100vw; 
+            max-width: 100%; 
+            overflow-x: hidden; 
+            touch-action: pan-y; 
+        }
+
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        /* --- নিউজ হাবের মতো ফিক্সড হেডার --- */
+        .header { 
+            background: var(--card-bg); 
+            padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--accent-orange);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+        
+        .header-title-wrapper { display: flex; align-items: center; gap: 10px; }
+        
+        .page-title { 
+            font-family: 'Poppins', sans-serif; /* টাইটেলের ফন্ট ফিক্স করা হয়েছে */
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--accent-orange); 
+            text-transform: uppercase; 
+        }
+
+        .container { 
+            max-width: 650px; 
+            margin: 0 auto; 
+            padding: 20px 15px;
+            overflow-x: hidden; 
+        }
+        
+        /* --- টিপস কার্ডের স্টাইল --- */
+        .tip-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .tip-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(to bottom, var(--accent-orange), var(--accent-cyan)); opacity: 0.5; transition: opacity 0.3s; }
+        .tip-card:hover { transform: translateY(-2px); background-color: var(--card-hover); }
+        .tip-card:hover::before, .tip-card.active::before { opacity: 1; box-shadow: 0 0 10px var(--accent-cyan); }
+        
+        .tip-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; gap: 15px; }
+        .tip-title-box { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .icon-box { width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 12px; background: rgba(249, 115, 22, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-orange); font-size: 20px; flex-shrink: 0; transition: all 0.3s; }
+        .tip-title { color: var(--text-title); font-size: 15.5px; font-weight: 600; line-height: 1.4; }
+        .arrow { color: var(--text-title); font-size: 14px; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 20px; text-align: center; opacity: 0.7; }
+        
+        .tip-card.active { border-color: rgba(0, 240, 255, 0.3); }
+        .tip-card.active .icon-box { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
+        .tip-card.active .arrow { transform: rotate(180deg); color: var(--accent-cyan); opacity: 1; }
+        
+        .tip-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0, 0, 0, 0.15); }
+        html[data-theme="light"] .tip-content { background: rgba(0, 0, 0, 0.02); }
+        .inner-content { padding: 0 20px 25px 20px; opacity: 0; transform: translateY(-10px); transition: all 0.4s 0.1s ease; }
+        .tip-card.active .inner-content { opacity: 1; transform: translateY(0); }
+        
+        .text-body { font-size: 15px; line-height: 1.8; font-weight: 500; letter-spacing: 0.2px; text-align: justify; color: var(--text-body); user-select: text; -webkit-user-select: text; }
+        .text-body p { margin-bottom: 12px; }
+        .highlight-title { color: var(--accent-orange); font-weight: 700; display: block; margin-top: 20px; margin-bottom: 6px; font-size: 16px; }
+        .star-color { color: var(--accent-orange); }
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+<body>
+
+    <!-- হেডার সেকশন -->
+    <div class="header">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-lightbulb" style="color: var(--accent-orange); font-size: 22px;"></i> 
+            <div class="page-title">
+                <span class="lang-bn">টিপস ও ট্রিকস</span>
+                <span class="lang-en">TIPS & TRICKS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- কার্ডগুলো রাখার কন্টেইনার -->
+    <div class="container">
+        <!-- বি.দ্র: এখানে আগের কোনো <div class="page-header"> রাখা যাবে না -->
+
+        <!-- আপনার প্রথম <div class="tip-card"> এখান থেকে শুরু করুন -->
+
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">নতুন অ্যাকাউন্ট তৈরি ও সম্পূর্ণ সিকিউরিটি গাইড</span>
+                        <span class="lang-en">New Account Creation & Complete Security Guide</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>ড্রিম লিগ সকার (DLS)-এ নতুন গেমারদের জন্য যাত্রা শুরু করা খুবই সহজ। তবে গেম শুরু করার পাশাপাশি আইডি সুরক্ষিত রাখাও অত্যন্ত গুরুত্বপূর্ণ। নতুন আইডি তৈরি এবং এর সম্পূর্ণ সিকিউরিটি নিশ্চিত করার জন্য নিচের বিষয়গুলো মেনে চলা উচিত:</p>
+
+                        <span class="highlight-title">১. নতুন অ্যাকাউন্ট তৈরি ও ক্যাপ্টেন নির্বাচন:</span>
+                        <p>গেমে প্রবেশ করে প্রথমেই টিমের এবং কোচের একটি সুন্দর নাম নির্ধারণ করতে হয়। এরপর একজন 'ক্যাপ্টেন' নির্বাচন করতে হয়, যিনি টিমের প্রথম লিজেন্ডারি প্লেয়ার হিসেবে যুক্ত হবেন। এক্ষেত্রে এমন একজনকে বেছে নেওয়া উচিত, যার স্পিড (Speed) সবচেয়ে বেশি থাকে। কারণ গেমের শুরুতে ফরোয়ার্ড পজিশনে একজন দ্রুতগতির প্লেয়ার থাকলে ম্যাচ জেতা অনেক সহজ হয়ে যায়。</p>
+
+                        <span class="highlight-title">২. গুগল সাইন-ইন (Google Sign-in) ও ব্যাকআপ জিমেইল:</span>
+                        <p>কষ্টের আইডিটি যেন হারিয়ে না যায়, সেজন্য শুরুতেই এটিকে সুরক্ষিত করা জরুরি। গেমের Advanced Settings-এ গিয়ে Sign in with Google অপশনটি (শুরুতে এটি Disconnected লেখা থাকতে পারে) থেকে একটি সুরক্ষিত জিমেইল (Gmail) কানেক্ট করে নিতে হবে।</p>
+                        <p>ডিএলএস গেমে একটি আইডিতে একাধিক জিমেইল কানেক্ট করার সুযোগ রয়েছে। একটি জিমেইল কানেক্ট করাই যথেষ্ট হলেও, নিরাপত্তার স্বার্থে দুটি সুরক্ষিত জিমেইল কানেক্ট করে রাখা সবচেয়ে বুদ্ধিমানের কাজ। এর বড় কারণ হলো— অনেক সময় টেকনিক্যাল কারণে গেম থেকে একটি জিমেইলের অ্যাক্সেস অটোমেটিক রিমুভ হয়ে যায়, অথবা জিমেইলটি ভুলবশত অন্য কোনো আইডির সাথে কানেক্ট হয়ে যেতে পারে। এমন পরিস্থিতিতে দ্বিতীয় আরেকটি জিমেইল কানেক্ট করা থাকলে, সেই ব্যাকআপ জিমেইলটি দিয়ে খুব সহজেই শখের আইডিটি ফিরে পাওয়া সম্ভব হয়。</p>
+
+                        <span class="highlight-title">৩. আইডি হ্যাক বা প্রতারণা থেকে বাঁচার উপায়:</span>
+                        <p>আইডির সুরক্ষা নিশ্চিত করার জন্য অপরিচিত কাউকে Generate Code বা জিমেইল শেয়ার করা থেকে সম্পূর্ণ বিরত থাকতে হবে। কেউ যদি একবার আইডিতে তার কোনো জিমেইল কানেক্ট করে অ্যাক্সেস নিয়ে নেয়, তবে সেই আইডি পুরোপুরি নিজের নিয়ন্ত্রণে রাখা প্রায় অসম্ভব হয়ে পড়ে।</p>
+                        <p>আইডি কেনার ক্ষেত্রেও একই ধরনের ঝুঁকি থাকে; সেলার হয়তো তার বর্তমান জিমেইলটি ডিসকানেক্ট করে দেখাতে পারে, কিন্তু অন্য কোনো জিমেইলে আইডির অ্যাক্সেস লুকিয়ে রেখে প্রতারণা করার সুযোগ থেকে যায়। তাই আইডি কেনাবেচা বা কোড শেয়ার করার ক্ষেত্রে সবসময় সর্বোচ্চ সতর্কতা অবলম্বন করা উচিত。</p>
+
+                        <span class="highlight-title">৪. রিসেট (Reset) বা ডিলিট (Delete) অপশন থেকে সতর্কতা:</span>
+                        <p>নতুন অবস্থায় অনেকেই না বুঝে আইডি Reset বা Delete করে ফেলেন, যা একেবারেই করা উচিত নয়। একবার আইডি রিসেট করলে বর্তমান আইডিটি চিরতরে হারিয়ে যায় এবং সম্পূর্ণ নতুন একটি আইডি চালু হয়, যা আর কখনোই ফিরে পাওয়া সম্ভব নয়। অন্যদিকে, আইডি ডিলিট করার পর পুনরায় লগইন করলে ফিরে পাওয়ার সামান্য সম্ভাবনা থাকলেও, এই ঝুঁকি না নেওয়াই সবচেয়ে ভালো। তাই শখের অ্যাকাউন্টটি সুরক্ষিত রাখতে গেমের সেটিংসে থাকা Reset বা Delete অপশনগুলো থেকে সবসময় দূরে থাকা উচিত。</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>Starting your journey in Dream League Soccer (DLS) is very easy for new gamers. However, alongside starting the game, keeping your account secure is extremely important. To create a new account and ensure its complete security, the following points should be followed:</p>
+
+                        <span class="highlight-title">1. New Account Creation & Captain Selection:</span>
+                        <p>Upon entering the game, first, set a beautiful name for your team and coach. Next, you must select a 'Captain', who will join as your team's first legendary player. It is best to choose someone with the highest Speed. Having a fast player in the forward position makes winning matches much easier at the start.</p>
+
+                        <span class="highlight-title">2. Google Sign-in & Backup Gmail:</span>
+                        <p>To ensure your hard-earned account is never lost, it is crucial to secure it immediately. Go to the game's Advanced Settings and find the 'Sign in with Google' option (it may say Disconnected initially) and connect a secure Gmail.</p>
+                        <p>DLS allows you to connect multiple Gmails to a single account. While connecting one Gmail is sufficient, it is wise to connect two secure Gmails for maximum safety. A major reason for this is that technical issues can sometimes automatically remove a Gmail's access, or it might accidentally link to another account. In such situations, having a second connected backup Gmail makes recovering your beloved account very easy.</p>
+
+                        <span class="highlight-title">3. How to Avoid Account Hacks or Scams:</span>
+                        <p>To ensure account security, absolutely refrain from sharing your Generate Code or Gmail with strangers. If someone connects their Gmail to your account and gains access, keeping full control of that account becomes almost impossible.</p>
+                        <p>Buying accounts carries a similar risk; the seller might disconnect their current Gmail to show you, but secretly keep access via another Gmail to scam you. Therefore, always exercise maximum caution when trading accounts or sharing codes.</p>
+
+                        <span class="highlight-title">4. Warning About Reset or Delete Options:</span>
+                        <p>Many new players unknowingly Reset or Delete their accounts, which should never be done. Resetting your account means your current account is lost forever, and a completely new account starts, which can never be recovered. On the other hand, while there is a slight chance of recovering an account if you log back in after deleting it, it's best not to take this risk. To keep your favorite account safe, always stay away from the Reset or Delete options in the game settings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-sliders"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">গেমের সকল সেটিংস কাস্টমাইজ করবেন কীভাবে?</span>
+                        <span class="lang-en">How to Customize All Game Settings?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>গেমে ভালো পারফর্ম করার জন্য গেমের সেটিংসগুলো সম্পর্কে বিস্তারিত জানা এবং সুবিধামতো কাস্টমাইজ করে নেওয়াটা খুব জরুরি। গেমের 'Settings' অপশনে ক্লিক করলে একদম নিচে ৫টি প্রধান অপশন দেখা যায়: GAME, DISPLAY, AUDIO, CONTROLS এবং ADVANCED। নিচে প্রতিটি সেটিংসের এ-টু-জেড বিস্তারিত আলোচনা করা হলো:</p>
+                        
+                        <span class="highlight-title">গেম সেটিংস (GAME):</span>
+                        <p>এখানে গেমপ্লে সম্পর্কিত বেশ কিছু অপশন রয়েছে-<br>
+                        ১. Select Language (ভাষা নির্বাচন): এর মাধ্যমে গেমের ভাষা পরিবর্তন করা যায়। ডিফল্ট হিসেবে এটি 'English' থাকে এবং এটিই সবচেয়ে সেরা অপশন।<br>
+                        ২. Difficulty (গেমের কঠিনতা): এখানে গেমের লেভেল বা কঠিনতা নির্ধারণ করা যায়। তবে মনে রাখতে হবে, এটি শুধুমাত্র ক্যারিয়ার ম্যাচের জন্য কাজ করে—অর্থাৎ যে ম্যাচগুলো কম্পিউটারের সাথে খেলা হয়। নতুন প্লেয়ারদের জন্য 'Medium' রাখা যেতে পারে, আর চ্যালেঞ্জ নিতে চাইলে 'Hard' মোড বেছে নেওয়া যায়। কিন্তু লাইভ ম্যাচ বা ফ্রেন্ডলি ম্যাচের ক্ষেত্রে এই সেটিংসের কোনো প্রভাব নেই; সেখানে নিজস্ব পারফরম্যান্স অনুযায়ী রেজাল্ট আসে।<br>
+                        ৩. Power Save (ব্যাটারি সাশ্রয়): ফোনের ব্যাটারি বাঁচাতে এই অপশনটি দারুণ কাজে লাগে। এটি 'Automatic' রাখলে গেম নিজেই ফোনের চার্জ অনুযায়ী পারফরম্যান্স ঠিক করে নেয়। আর যদি ব্যাটারি নিয়ে চিন্তা না থাকে, তবে সর্বোচ্চ পারফরম্যান্স পেতে এটি 'Off' রাখা যায়।<br>
+                        ৪. Camera Type (ক্যামেরার ধরন): এখানে 'Sideline', 'Goal-to-Goal', 'TV' এবং 'Ball' মোড দেখা যায়। বল ফোকাস করে খেলতে চাইলে 'Ball' অপশনটি ট্রাই করা যেতে পারে। তবে ৯৯% প্রো প্লেয়ার 'Sideline' ক্যামেরা ব্যবহার করেন, কারণ এতে পুরো মাঠ এবং প্লেয়ারদের পজিশন খুব ভালোভাবে বোঝা যায়।<br>
+                        ৫. Camera Distance (ক্যামেরার দূরত্ব): ক্যামেরা প্লেয়ারদের থেকে কতটা কাছে বা দূরে থাকবে তা এখান থেকে নিয়ন্ত্রণ করা যায়। যারা সাধারণ স্মার্টফোনে খেলেন, তাদের জন্য ২০% থেকে ৪০% এর মধ্যে রাখা ড্রিবলিং এবং পাসিংয়ের জন্য সেরা। তবে আইপ্যাড (iPad) বা পিসিতে (PC) খেললে, যেহেতু সেগুলোর স্ক্রিন অনেক বড়, তাই অনায়াসেই এটি ৫০% থেকে ৭০% এর উপরে রাখা যায়। এতে মাঠ বিশাল একটা অংশ একসাথে দেখা যায়।<br>
+                        ৬. Auto Replay (অটো রিপ্লে): যদি এটি অন করা থাকে, তাহলে ম্যাচে যখন গোল বা গোল কিক হয়, অথবা ফাউল বা অফসাইড হয়, তখন গেম নিজে থেকে রিপ্লে (Auto Replay) দেখায়। অফ করা থাকলে শুধুমাত্র গোলের রিপ্লে দেখায়, অন্য কোনো কিছুর রিপ্লে দেখায় না। তবে এটি শুধু ক্যারিয়ার ম্যাচের জন্য প্রযোজ্য।<br>
+                        ৭. Quick Subs (দ্রুত খেলোয়াড় পরিবর্তন): ম্যাচ চলাকালীন প্লেয়াররা ক্লান্ত হয়ে গেলে গেম নিজেই খেলোয়াড় পরিবর্তনের পরামর্শ দেয়। তবে গেমের সাজেশন না নিয়ে পছন্দের কোনো প্লেয়ারকে নামাতে চাইলে, গেম পজ (Pause) করে নিজের মতো করে সাবস্টিটিউট বা প্লেয়ার পরিবর্তন করে নেওয়া যায়।<br>
+                        ৮. Team Boosts (টিম বুস্ট): এটি একটি গুরুত্বপূর্ণ অপশন। টিম বুস্ট অন থাকলে হাফটাইমের পরপরই স্ক্রিনে ৩০ কয়েনের বিনিময়ে টিম বুস্ট করার একটি অপশন পাওয়া যায়। এটি ব্যবহার করলে সব প্লেয়ারের স্ট্যামিনা বা ক্ষমতা একবারে বেড়ে যায়, যা জেতার জন্য অনেক বড় সুবিধা। কিন্তু এটি অফ রাখলে ৩০ কয়েন হয়তো বাঁচবে, তবে প্লেয়ারদের স্ট্যামিনা কমে যাওয়ায় ম্যাচ হারা বা ইনজুরির ঝুঁকি বেড়ে যায়। তাই ভালো গেমপ্লের জন্য এটি 'On' রাখাই বেটার।<br>
+                        ৯. Multiplayer Chat (ইমোজি সেটিংস): এই গেমে মূলত চ্যাট করার কোনো অপশন নেই, এখানে শুধু ইমোজি ব্যবহার করা যায়। লাইভ বা ফ্রেন্ডলি ম্যাচের সময় প্রতিপক্ষের ইমোজি থেকে বাঁচতে বা ডিস্টার্ব ফিল করলে এটি 'Off' করে দেওয়া যায়। তবে এটি অফ রাখলে নিজেও কাউকে ইমোজি দেওয়া যায় না এবং প্রতিপক্ষ ইমোজি দিলেও তা দেখা যায় না। তাই নিরিবিলি খেলতে চাইলে এটি অফ রাখা যেতে পারে。</p>
+
+                        <span class="highlight-title">ডিসপ্লে সেটিংস (DISPLAY):</span>
+                        <p>এখানে ভিজ্যুয়াল সম্পর্কিত অপশনগুলো পাওয়া যায়-<br>
+                        ১. Player Names (খেলোয়াড়ের নাম): ম্যাচ চলাকালীন প্লেয়ারদের নাম কোথায় দেখা যাবে তা এখান থেকে ঠিক করা যায়। এটি 'Above Head' রাখলে প্রত্যেকটি প্লেয়ারের মাথার উপরে তাদের নাম শো করে, যা সঠিক প্লেয়ারকে চিনতে অনেক সুবিধা করে দেয়। আবার চাইলে 'Under Radar' সিলেক্ট করা যায়, তখন প্লেয়ারের নাম রাডারের নিচে শো করে। আবার চাইলে এটি 'Off' ও করে দেওয়া যায়।<br>
+                        ২. Radar (রাডার): খেলার সময় স্ক্রিনের নিচের দিকে একটি ছোট গোল ম্যাপ দেখা যায়, যেখানে ছোট বিন্দুর মতো প্লেয়ারদের অবস্থান বোঝা যায়—এটাই হলো রাডার। এটি সবসময় 'On' রাখা উচিত। কারণ এই রাডার দেখেই এক পলকে বুঝে নেওয়া যায় মাঠের কোন পজিশনে নিজেদের কোন প্লেয়ারটি একদম ফাঁকা দাঁড়িয়ে আছে। এতে করে খুব সহজেই সঠিক জায়গায় পাস দিয়ে আক্রমণ বা অ্যাটাক সাজানো যায়।<br>
+                        ৩. Opponent Player Names (প্রতিপক্ষের নাম): বিপক্ষ দলের প্লেয়ারদের নাম দেখতে চাইলে এটি 'On' রাখা যায়। এতে বিপক্ষ দলের কোন প্লেয়ারের কাছে বল আছে তা সহজেই বোঝা যায়।<br>
+                        ৪. Direction Marker (দিক নির্দেশক): প্লেয়ার কোন দিকে বল পাস দিচ্ছে বা কোন দিকে দৌড়াচ্ছে, তা একটি ছোট তীরের মতো চিহ্ন দিয়ে দেখায়। এটি 'On' রাখলে পাসিং এবং শুটিং অনেক বেশি নিখুঁত হয়।<br>
+                        ৫. Ball Colour (বলের রঙ): এখানে বলের রঙ পরিবর্তন করা যায়। এটি 'Automatic' রাখাটাই সেরা, কারণ গেম নিজেই মাঠের কন্ডিশন এবং আবহাওয়ার সাথে মিল রেখে বলের কালার সেট করে দেয়।<br>
+                        ৬. Bounce Marker (বাউন্স মার্কার): বল যখন ওপর থেকে নিচে পড়ে, তখন ঠিক কোথায় ড্রপ খাবে তা একটি গোল চিহ্ন দিয়ে দেখায়। এটি 'On' রাখলে আগে থেকেই বোঝা যায় বলটি কোথায় পড়বে, ফলে হেড দেওয়া বা বল রিসিভ করা অনেক সহজ হয়ে যায়।<br>
+                        ৭. Score Display (স্কোরবোর্ড): স্ক্রিনের এক কোণায় ম্যাচ টাইম এবং গোল সংখ্যা দেখার জন্য এটি ব্যবহার করা হয়। এটি অবশ্যই 'On' রাখা উচিত, যাতে ম্যাচের সময় এবং স্কোরের আপডেট সবসময় চোখের সামনে দেখা যায়।<br>
+                        ৮. Hide Multiplayer Opponent Data (প্রতিপক্ষের তথ্য গোপন): এটি একটি গুরুত্বপূর্ণ অপশন। যদি এটি 'On' করে দেওয়া হয়, তবে অনলাইন বা মাল্টিপ্লেয়ার ম্যাচে প্রতিপক্ষের আসল নাম বা তাদের টিমের নাম দেখা যায় না; সেখানে শুধু 'Dream FC' লেখা দেখায়। আর যদি এটি 'Off' রাখা হয়, তবে প্রতিপক্ষের আসল নাম এবং তাদের টিমের নাম পরিষ্কার দেখা যায়।<br>
+                        ৯. Colour Blind Mode (কালার ব্লাইন্ড মোড): এটি মূলত একটি বিশেষ অপশন। অনেকেরই নির্দিষ্ট কিছু রঙ চিনতে সমস্যা হয়—যেমন লাল এবং সবুজ রঙের পার্থক্য বুঝতে কষ্ট হওয়া। ফুটবলের মাঠ সবুজ হয় এবং অনেক সময় প্লেয়ারদের জার্সি লাল বা অন্য রঙের থাকে, যা কালার ব্লাইন্ড গেমারদের জন্য গুলিয়ে যেতে পারে। এটি 'On' করলে, গেমের ইন্টারফেস এবং মাঠের রঙের কন্ট্রাস্ট এমনভাবে বদলে যায় যাতে রঙ চিনতে সমস্যা থাকা গেমাররাও প্লেয়ার এবং বল পরিষ্কারভাবে দেখতে পান। তবে স্বাভাবিক দৃষ্টিতে মাঠের ঘাস বা প্লেয়ারের জার্সি চিনতে কোনো সমস্যা না থাকলে, এটি 'Off' রাখাই ভালো। কারণ অফ থাকলে গেমের অরিজিনাল এবং ন্যাচারাল কালারগুলো উপভোগ করা যায়。</p>
+
+                        <span class="highlight-title">অডিও সেটিংস (AUDIO):</span>
+                        <p>১. Commentary Language (ধারাভাষ্যের ভাষা): ম্যাচ চলাকালীন কোন ভাষায় ধারাভাষ্য বা কমেন্ট্রি শোনা যাবে, তা এখান থেকে সেট করা যায়। এখানে ইংরেজি ছাড়াও আরও চারটি জনপ্রিয় ভাষা রয়েছে— Spanish (স্প্যানিশ), Portuguese (পর্তুগিজ), Turkish (টার্কিশ) এবং Arabic (এরাবিক)। পছন্দমতো যেকোনো ভাষায় গেমের ধারাভাষ্য উপভোগ করা যায়। তবে বৈশ্বিক ফুটবলের আসল আমেজ পেতে ইংরেজি কমেন্ট্রিই সবচেয়ে সেরা।<br>
+                        ২. Commentary Volume (ধারাভাষ্যের শব্দ): ধারাভাষ্যকারের গলার আওয়াজ কতটুকু জোরে হবে, তা এখান থেকে নিয়ন্ত্রণ করা যায়। এটি সাধারণত ৫০% থেকে ৭০% এর মধ্যে রাখলে মাঠের অন্যান্য শব্দের সাথে সুন্দর সামঞ্জস্য বজায় থাকে।<br>
+                        ৩. Music Volume (মিউজিক ভলিউম): এটি মূলত গেমের মেনু বা লবিতে থাকা অবস্থায় যে গানগুলো বাজে সেটির ভলিউম। গেমের বাইরে থাকা অবস্থায় কোনো গান শুনতে না চাইলে, এটি একদম 'Off' রাখা যায়। এতে গেমের ইন্টারফেসে থাকার সময় বাড়তি কোনো মিউজিক ডিস্টার্ব করে না এবং শান্তিতে কাজ সারা যায়।<br>
+                        ৪. SFX Volume (সাউন্ড ইফেক্টস): মাঠে বল কিক করার শব্দ, রেফারির বাঁশি বা দর্শকদের আওয়াজ—এগুলোই হলো সাউন্ড ইফেক্টস। গেমের আসল ফিল পেতে এটি ৫০% বা তার বেশি রাখা যেতে পারে। এতে গেমপ্লে আরও রিয়েলিস্টিক এবং প্রাণবন্ত মনে হয়।<br>
+                        ৫. Haptic Feedback (হ্যাপটিক ফিডব্যাক): এটি একটি দারুণ ফিচার। বল পোস্টে লাগলে বা কোনো ফাউল হলে ফোনটি হালকা ভাইব্রেট বা কেঁপে ওঠে। এই ভাইব্রেশন অনুভব করতে চাইলে এটি 'On' রাখা যায়। আর ভাইব্রেশন পছন্দ না হলে অফ করে দেওয়া যায়। তবে ফোনের মেইন সেটিংস থেকে Vibration অপশনটি অফ করা থাকলে, গেমের ভেতরে এটি অন থাকলেও কোনো প্রকার ভাইব্রেশন বা এর ফিল পাওয়া যায় না。</p>
+
+                        <span class="highlight-title">কন্ট্রোল সেটিংস (CONTROLS):</span>
+                        <p>১. Auto Switch (স্বয়ংক্রিয় প্লেয়ার পরিবর্তন): বিপক্ষ দলের কাছে বল থাকলে গেম নিজে থেকেই ডিফেন্ডার পরিবর্তন করবে কিনা, তা এটি নিয়ন্ত্রণ করে। এটি 'High' রাখলে গেম খুব দ্রুত বলের কাছের প্লেয়ারটিতে কন্ট্রোল সেট করে দেয়। এটি নতুন প্লেয়ারদের জন্য অনেক সুবিধাজনক। নিজে বুঝে কন্ট্রোল নিতে চাইলে এটি 'Low' বা 'Medium' এ রাখা যায়।<br>
+                        ২. Button Size (বাটনের আকার): গেমে ডানপাশে তিনটি প্রধান বাটন থাকে— লো পাস বা প্রেস করার জন্য 'B' বাটন, হার্ড পাস, শুট বা স্লাইডিং ট্যাকল-এর জন্য 'A' বাটন, এবং লং পাস বা গোলকিপার চার্জ করার জন্য 'C' বাটন। এই বাটনগুলোর আকার স্ক্রিনে কত বড় হবে, তা এখান থেকে ঠিক করা যায়। এটি 'Medium' বা 'Large' রাখা ভালো, বিশেষ করে বড় স্ক্রিনের ফোনের ক্ষেত্রে। বাটনগুলো একটু বড় রাখলে উত্তেজনার মুহূর্তে ভুল বাটনে টাচ পড়ার সম্ভাবনা কমে যায় এবং অ্যাকশনগুলো আরও দ্রুত হয়।<br>
+                        ৩. Kick Assists (কিক অ্যাসিস্ট): বল কিক করার সময় (যেমন: পাস বা শুট) গেম কতটা সাহায্য করবে তা এটি ঠিক করে। এটি 'High' রাখলে পাসের গতি এবং দিক ঠিক থাকে এবং বলটি সহজেই নির্দিষ্ট প্লেয়ারের কাছে পৌঁছায়। আর এটি 'Low' রাখলে নিজেদেরকেই সঠিক দিক এবং শক্তি দিয়ে কিক করতে হয়।<br>
+                        ৪. Cross Assist (ক্রস অ্যাসিস্ট): মাঠের সাইড বা উইং থেকে বল ক্রস করার সময় (যেমন: হেড করার জন্য) গেম সাহায্য করবে কিনা তা এটি ঠিক করে। এটি 'On' রাখলে ক্রসগুলো স্ট্রাইকারের কাছে পৌঁছানোর সম্ভাবনা বাড়ে। তবে পাসের দিক একদম ম্যানুয়ালি ঠিক করতে চাইলে এটি অফ করে দেওয়া যায়।<br>
+                        ৫. In-Game Tactics (ইন-গেম কৌশল): এটি একটি খুবই গুরুত্বপূর্ণ অপশন। খেলার সময় স্ক্রিনের নিচে রাডারের (Radar) ঠিক নিচেই ছোট একটি বক্স থাকে। কন্ট্রোল সেটিংস থেকে এই অপশনটি 'On' রাখলে, খেলার মাঝখানে ঐ বক্সে ক্লিক করে খুব সহজেই টিমের খেলার ধরণ পরিবর্তন করা যায়। সেখানে ক্লিক করলে তিনটি অপশন পাওয়া যায়— Defensive (ডিফেন্সিভ), Balanced (ব্যালেন্সড) এবং Attacking (অ্যাটাকিং)। অর্থাৎ, ম্যাচের পরিস্থিতি অনুযায়ী সরাসরি ওখান থেকেই এই তিনটি মোড পরিবর্তন করার সুবিধা পাওয়া যায়।<br>
+                        ৬. Touch Controls (টাচ কন্ট্রোল): Touch Controls-এ ক্লিক করলে ভেতরে মোট তিনটি অপশন দেখা যায়।<br>
+                        - Attacking & Defending অপশন: এই দুটি অপশনে ক্লিক করলে কিছু ছবি দেখা যায়। এই ছবিগুলো মূলত শেখানোর জন্য দেওয়া হয়েছে। এখানে দেখানো হয়েছে যে আক্রমণ করার সময় বা ডিফেন্স করার সময় কোন বাটন দিয়ে কীভাবে কাজ করতে হয়। যেমন: কোন বাটন চেপে ধরলে প্রেসার দেয়, কোনটি দিয়ে গোলকিপার চার্জ করতে হয়, বা ডাবল ট্যাপ করলে কীভাবে স্কিল শট করতে হয়—তা এই ছবিগুলোর মাধ্যমে সুন্দর করে বুঝিয়ে দেওয়া হয়েছে। এটি মূলত একটি গাইডবুক।<br>
+                        - Options অপশন: এখানে ৪টি জিনিস নিজেদের মতো সেট করা যায়:<br>
+                        &nbsp;&nbsp;১. Fixed Virtual Stick: এটি অন রাখলে বাম পাশের জয়স্টিকটি স্ক্রিনের এক জায়গায় স্থির থাকে। আর অফ রাখলে স্ক্রিনের যেখানেই আঙুল রাখা হয়, জয়স্টিকটি সেখানেই ভেসে ওঠে।<br>
+                        &nbsp;&nbsp;২. Virtual Stick Visible: এটি অন রাখলে জয়স্টিকটি স্ক্রিনে দেখা যায়, আর অফ রাখলে দেখা যায় না।<br>
+                        &nbsp;&nbsp;৩. Virtual Stick Size: জয়স্টিকটি কত বড় বা ছোট হবে তা আঙুলের মাপ অনুযায়ী এখান থেকে ঠিক করে নেওয়া যায়।<br>
+                        &nbsp;&nbsp;৪. Descriptive Button Text: এটি অন রাখলে A, B, C বাটনের ওপরে তাদের কাজ (যেমন: Press, Shoot, Tackle ইত্যাদি) লেখা দেখায়。<br>
+                        ৭. Gamepad Controls (গেমপ্যাড কন্ট্রোল): গেমপ্যাড কন্ট্রোলার ব্যবহারকারীদের জন্য এখানে ক্লিক করলে আরও তিনটি আলাদা অপশন দেখা যায়।<br>
+                        - Attacking & Defending অপশন: টাচ কন্ট্রোলের মতোই এখানেও গেমপ্যাডের ছবি দেখা যায়, যা শেখানোর জন্য দেওয়া হয়েছে। কন্ট্রোলারের ছবির মাধ্যমে নিখুঁতভাবে দেখিয়ে দেওয়া হয়েছে যে কোন বাটন দিয়ে স্কিল মুভ বা কিক করতে হয়। নতুন গেমপ্যাড ব্যবহারকারীদের জন্য এটি দারুণ একটি গাইড。<br>
+                        - Options অপশন: এটি মূলত গেমপ্যাড ব্যবহারকারীদের জন্য। এখানে ২টি জিনিস সেট করা যায়:<br>
+                        &nbsp;&nbsp;১. Show Gamepad Controls: এটি অন রাখলে খেলার সময় স্ক্রিনে কন্ট্রোলারের বাটনগুলোর নাম বা আইকন দেখায়।<br>
+                        &nbsp;&nbsp;২. Controls Layout: এটি গেমপ্যাডের খুবই জরুরি সেটিংস। এখানে খেলার অভ্যাস অনুযায়ী দুটি লেআউট— Alternative এবং Classic থেকে যেকোনো একটি সিলেক্ট করা যায়।<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;* Classic (ক্লাসিক): এটি হলো ডিফল্ট লেআউট। সাধারণত ড্রিম লিগ সকারের নিজস্ব স্টাইলে খেলে অভ্যস্ত হলে এটি ব্যবহার করা হয়। এখানে বাটনগুলো গেমের সাধারণ টাচ কন্ট্রোলের মতোই সাজানো থাকে।<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;* Alternative (অল্টারনেটিভ): এটি তাদের জন্য, যারা আগে কনসোল বা পিসিতে FIFA বা PES খেলেছেন। অনেক সময় দেখা যায়, ক্লাসিক মুডে যে বাটন দিয়ে 'শুট' করা হয়, অল্টারনেটিভ মুডে সেই বাটন দিয়ে হয়তো 'পাস' বা 'লব' করতে হয়। অর্থাৎ, অন্য কোনো ফুটবল গেমের বাটনের সাথে হাত সেট করা থাকলে এই মুডটি ট্রাই করা যেতে পারে। সহজ কথায়, ক্লাসিক মুডে খেলতে অসুবিধা হলে বা বাটনগুলো উল্টাপাল্টা মনে হলে Alternative সিলেক্ট করা যায়। এতে সুবিধা অনুযায়ী বাটনগুলো অদলবদল হয়ে যায়。</p>
+
+                        <span class="highlight-title">অ্যাডভান্স অপশন (ADVANCED):</span>
+                        <p>এখানে আরও বেশ কয়েকটি গুরুত্বপূর্ণ অপশন দেখা যায়-<br>
+                        ১. Sign in with Google (গুগল সাইন-ইন): এটি এই সেটিংসের সবচেয়ে জরুরি অংশ। গেমের প্রোগ্রেস বা আইডি সেভ করে রাখতে গুগল অ্যাকাউন্টে 'Connected' করে রাখা উচিত। এতে ফোন হারিয়ে গেলে বা গেম ডিলিট হয়ে গেলেও পুরনো আইডি ফিরে পাওয়া যায়। এটি ডিসকানেক্টেড থাকলে আইডি হারানোর ঝুঁকি থাকে।<br>
+                        ২. Personalised Ads & Notifications: এখানে অ্যাডস এবং নোটিফিকেশনের দুটি অপশন আছে। গেমের ভেতরে পছন্দ অনুযায়ী বিজ্ঞাপন বা গেমের ইভেন্ট সংক্রান্ত নোটিফিকেশন পেতে চাইলে এগুলো 'On' রাখা যায়। আর বিরক্তিকর মনে হলে অফ করে দেওয়ার সুযোগও আছে।<br>
+                        ৩. Share Dream League Live Statistics: এটি অন থাকলে অনলাইন বা লাইভ ম্যাচে কেমন খেলা হচ্ছে, তার পরিসংখ্যান বা স্ট্যাটিস্টিকস অন্যদের সাথে শেয়ার হয়। এটি সাধারণত ডিফল্টভাবে অন থাকে।<br>
+                        ৪. Manage Devices (ডিভাইস ম্যানেজ করা): এখান থেকে দেখা যায় গেম আইডিটি বর্তমানে আর কোন কোন ফোনে লগইন করা আছে। বর্তমান ফোনটির পাশে একটি নীল টিক চিহ্ন থাকে। আইডি যদি অজান্তেই অন্য কোনো ফোনে চলে, তবে ঐ ডিভাইসের পাশের লাল 'X' চিহ্নে ক্লিক করে তাকে সাথে সাথে লগআউট করে দেওয়া যায়। আর আইডি অন্য ফোনে নিতে চাইলে এখান থেকে Generate Code অপশনটি ব্যবহার করতে হয়।<br>
+                        ৫. Reset or Delete Profile (প্রোফাইল রিসেট বা ডিলিট): এই অপশনটি ব্যবহারের সময় অনেক সাবধান থাকতে হয়। এখানে দুটি অপশন থাকে:<br>
+                        &nbsp;&nbsp;১. Reset Profile: এটি দিলে বর্তমান গেমের সব প্রোগ্রেস, কয়েন এবং প্লেয়ার মুছে যায় এবং একদম প্রথম থেকে গেম শুরু করা যায়।<br>
+                        &nbsp;&nbsp;২. Delete Profile: এটি সব ডাটা চিরতরে মুছে দেয়। তাই আইডি ডিলিট করার ইচ্ছা না থাকলে এখানে কোনো কিছু কনফার্ম করা উচিত নয়।<br>
+                        ৬. Graphics Options (গ্রাফিক্স সেটিংস): গেমপ্লে স্মুথ করার জন্য এই গ্রাফিক্স সেটিংসটি ফোনের ক্ষমতা অনুযায়ী সেট করতে হয়। গেমটি হাই গ্রাফিক্সে খেলতে হলে ভালো মানের ফোনের প্রয়োজন।<br>
+                        র‍্যাম অনুযায়ী সঠিক সেটিংস:<br>
+                        - ২ জিবি র‍্যামের ফোনে এই গেমটি এখন আর আগের মতো ভালো চলে না। তবুও খেলতে চাইলে, একদম Low Quality এবং 30 FPS ব্যবহার করা উচিত। এর বেশি দিলে গেম প্রচণ্ড ল্যাগ করবে।<br>
+                        - ৪ - ৬ জিবি (4GB - 6GB) র‍্যামের ফোনগুলোতে গেমটি মোটামুটি চলনসই বা মাঝারি মানের চলে। ভালো অভিজ্ঞতার জন্য Medium Quality এবং 30 বা 60 FPS সেট করে দেখা যেতে পারে।<br>
+                        - ৮ থেকে ১২ জিবি র‍্যামের ফোনে একদম নিশ্চিন্তে V. High Quality এবং 60 FPS ব্যবহার করে মাখনের মতো স্মুথ এবং আসল হাই-কোয়ালিটি গেমপ্লে উপভোগ করা যায়।<br>
+                        Troubleshooting (ট্রাবলশুটিং): এর ভেতরে তিনটি টেকনিক্যাল অপশন আছে যা গ্রাফিক্সের বিশেষ সমস্যা সমাধানে ব্যবহার করা হয়:<br>
+                        &nbsp;&nbsp;১. No Override: সাধারণ অবস্থায় এটিই ব্যবহার করা হয়, এটি ডিফল্ট মোড।<br>
+                        &nbsp;&nbsp;২. Force OpenGL ES 3: গেমের কালার নষ্ট হয়ে গেলে বা স্ক্রিন ফেটে গেলে এটি সিলেক্ট করে দেখা যায়। এটি মিড-রেঞ্জ ফোনে গ্রাফিক্সের ত্রুটি দূর করতে সাহায্য করে।<br>
+                        &nbsp;&nbsp;৩. Force Vulkan: এটি লেটেস্ট এবং হাই-এন্ড ফোনের জন্য। শক্তিশালী ফোন হওয়া সত্ত্বেও কালার বা শ্যাডো জনিত সমস্যা হলে এটি সিলেক্ট করা যায়। এতে গ্রাফিক্স আরও শার্প এবং নিখুঁত হয়।<br>
+                        ৭. Link Profile (আইডি ট্রান্সফার): এটি মূলত এক ফোন থেকে অন্য ফোনে আইডি নেওয়ার আসল জায়গা। Manage Devices থেকে যে কোডটি তৈরি করা হয়, সেই কোডটি এই Link Profile বক্সে বসিয়ে কনফার্ম করলেই অন্য ডিভাইসের আইডি ট্রান্সফার হয়ে আসে।<br>
+                        ৮. Legal Notice (লিগ্যাল নোটিশ): এটি মূলত আইনি এবং মালিকানা সংক্রান্ত বিষয়গুলো নিশ্চিত করে। গেমটি তৈরি করতে অন্য কোনো কোম্পানির সফটওয়্যার, মিউজিক বা টেকনোলজি ব্যবহার করা হলে এখানে তাদের কৃতিত্ব বা Copyright Information দেওয়া থাকে। এটি গেম ডেভেলপারদের আইনি সুরক্ষা প্রদান করে।<br>
+                        ৯. Terms Of Service (টার্মস অফ সার্ভিস): এটি হলো গেম কোম্পানি এবং ইউজারের মধ্যে একটি আইনি চুক্তি বা ব্যবহারের শর্তাবলী। গেমটি খেলার সময় কোম্পানির নির্ধারিত কিছু নিয়ম মেনে চলতে হয়। যেমন—গেমের ভেতর কোনো ধরনের Illegal Activity বা হ্যাকিং করা যাবে না। এক কথায় এটি গেমের Usage Rules।<br>
+                        ১০. Privacy Policy (প্রাইভেসি পলিসি): ব্যক্তিগত তথ্যের নিরাপত্তা এবং গোপনীয়তা বিষয়ক অংশ এটি। গেমটি ফোনের কী কী তথ্য সংগ্রহ করছে (যেমন: ইমেইল, ডিভাইস আইডি বা লোকেশন) এবং সেগুলো কীভাবে ব্যবহার করা হচ্ছে, তা এখানে বিস্তারিত থাকে। এটি ইউজারের Data Protection বা তথ্য সুরক্ষার নিশ্চয়তা দেয়।<br>
+                        ১১. System Info (সিস্টেম ইনফো): এটি ডিভাইস এবং গেমের বর্তমান কারিগরি অবস্থা বা টেকনিক্যাল ডেটা প্রদর্শন করে। ফোনের মডেল, স্টোরেজ অবস্থা এবং গেমের ভার্সন সম্পর্কিত তথ্য এখানে থাকে।<br>
+                        ১২. FAQs (ফ্রিকোয়েন্টলি আস্কড কোয়েশ্চেনস): এটি মূলত একটি সাহায্যকারী কেন্দ্র বা Self-Help Center. গেম খেলতে গিয়ে ইউজাররা যেসব সাধারণ সমস্যার সম্মুখীন হন, সেগুলোর সমাধান এখানে প্রশ্ন-উত্তর আকারে দেওয়া থাকে। এতে সরাসরি কাস্টমার সাপোর্টে কথা না বলেও অনেক সমস্যার সমাধান পাওয়া যায়।<br>
+                        ১৩. FTG. (First Touch Games): এটি গেমটির নির্মাতা প্রতিষ্ঠানের নাম এবং ব্র্যান্ডিং লোগো। এটি গেমের ডেভেলপার কোম্পানি First Touch Games-এর অফিশিয়াল পরিচিতি। এই বাটনে ক্লিক করলে সাধারণত তাদের অফিশিয়াল ওয়েবসাইট বা সোশ্যাল মিডিয়া পেজে নিয়ে যাওয়া হয়。</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>To perform well in the game, it is essential to know the settings in detail and customize them according to your convenience. Clicking on the 'Settings' option reveals 5 main categories at the bottom: GAME, DISPLAY, AUDIO, CONTROLS, and ADVANCED. Below is an A-to-Z detailed discussion of each setting:</p>
+                        
+                        <span class="highlight-title">GAME Settings:</span>
+                        <p>This section contains several gameplay-related options-<br>
+                        1. Select Language: You can change the game's language here. It is set to 'English' by default, which is the best option.<br>
+                        2. Difficulty: Here you can set the game's level or difficulty. Keep in mind that this only works for Career Matches—matches played against the computer. New players can set it to 'Medium', and if you want a challenge, you can choose 'Hard' mode. However, this setting has no effect on Live Matches or Friendly Matches; results there depend on your own performance.<br>
+                        3. Power Save: This option is great for saving phone battery. Keeping it 'Automatic' lets the game adjust performance based on your phone's charge. If battery is not a concern, keep it 'Off' to get maximum performance.<br>
+                        4. Camera Type: Options include 'Sideline', 'Goal-to-Goal', 'TV', and 'Ball' mode. If you want to focus on the ball, try the 'Ball' option. However, 99% of pro players use the 'Sideline' camera because it perfectly displays the entire field and players' positions.<br>
+                        5. Camera Distance: Controls how close or far the camera is from the players. For regular smartphone users, keeping it between 20% to 40% is best for dribbling and passing. But if you play on an iPad or PC with a large screen, you can easily keep it above 50% to 70%. This allows you to see a huge portion of the field at once.<br>
+                        6. Auto Replay: If enabled, the game automatically shows a replay when there is a goal, goal kick, foul, or offside. If turned off, it only shows goal replays and nothing else. This only applies to Career Matches.<br>
+                        7. Quick Subs: When players get tired during a match, the game suggests player substitutions. If you want to sub a specific player without taking the game's suggestion, you can pause the game and change players as you like.<br>
+                        8. Team Boosts: This is a crucial option. If Team Boost is on, you get an option right after half-time to boost your team for 30 coins. Using this instantly increases the stamina of all players, which is a huge advantage for winning. If kept off, you might save 30 coins, but the risk of losing the match or player injuries increases due to low stamina. It's better to keep it 'On' for good gameplay.<br>
+                        9. Multiplayer Chat (Emoji Settings): There is no actual chat option in this game; you can only use emojis. If you feel disturbed by the opponent's emojis during live or friendly matches, you can turn this 'Off'. However, if it's off, you cannot send emojis either, and you won't see if the opponent sends any. Keep it off if you want to play peacefully.</p>
+
+                        <span class="highlight-title">DISPLAY Settings:</span>
+                        <p>This contains visual-related options-<br>
+                        1. Player Names: Controls where player names are displayed during a match. Keeping it 'Above Head' shows names right above every player's head, making it very easy to identify them. You can also select 'Under Radar' to show names below the radar, or turn it completely 'Off'.<br>
+                        2. Radar: During gameplay, a small circular map is visible at the bottom of the screen showing players as small dots—this is the radar. It should always be 'On'. By looking at the radar, you can quickly see which of your players is standing completely free in the field. This helps in building attacks by passing to the right place easily.<br>
+                        3. Opponent Player Names: Keep this 'On' to see the names of opposing team players. This makes it easy to understand which opponent has the ball.<br>
+                        4. Direction Marker: Shows the direction a player is passing or running with a small arrow-like marker. Keeping this 'On' makes passing and shooting much more accurate.<br>
+                        5. Ball Colour: You can change the ball's color here. It's best to keep it 'Automatic', as the game automatically sets the ball color matching the pitch conditions and weather.<br>
+                        6. Bounce Marker: When the ball falls from above, it shows exactly where it will drop with a circular marker. Keeping it 'On' helps you know beforehand where the ball will land, making heading or receiving much easier.<br>
+                        7. Score Display: Used to view match time and goal count in the corner of the screen. This should definitely be 'On' so you can always see the time and score updates right in front of you.<br>
+                        8. Hide Multiplayer Opponent Data: A very important option. If turned 'On', the real name or team name of the opponent in online or multiplayer matches is hidden, showing only 'Dream FC'. If kept 'Off', you can clearly see the opponent's real name and their team name.<br>
+                        9. Colour Blind Mode: This is mainly a special option. Many people have difficulty distinguishing certain colors—like distinguishing red and green. Football pitches are green and often players' jerseys are red, which can be confusing for color-blind gamers. Turning this 'On' changes the contrast of the game interface and pitch colors so gamers with color vision deficiency can clearly see players and the ball. If you don't have trouble seeing the pitch or jerseys normally, keep it 'Off' to enjoy the original and natural colors of the game.</p>
+
+                        <span class="highlight-title">AUDIO Settings:</span>
+                        <p>1. Commentary Language: Sets the language for the match commentary. Besides English, there are four other popular languages—Spanish, Portuguese, Turkish, and Arabic. You can enjoy commentary in any preferred language. However, to get the authentic vibe of global football, English commentary is the best.<br>
+                        2. Commentary Volume: Controls how loud the commentator's voice will be. Keeping it between 50% and 70% usually maintains a beautiful balance with other sounds on the field.<br>
+                        3. Music Volume: This is the volume of the songs that play while in the game menu or lobby. If you don't want to hear music outside of matches, you can turn it completely 'Off'. This prevents extra music from disturbing you while navigating the game interface.<br>
+                        4. SFX Volume (Sound Effects): The sound of kicking the ball, referee whistles, or crowd noise—these are sound effects. To get the real feel of the game, this can be kept at 50% or more. It makes the gameplay feel more realistic and lively.<br>
+                        5. Haptic Feedback: A great feature. The phone vibrates slightly when the ball hits the post or a foul occurs. Keep this 'On' to feel this vibration. If you dislike vibration, you can turn it off. Note that if Vibration is turned off from your phone's main settings, you won't get any haptic feedback even if it's on inside the game.</p>
+
+                        <span class="highlight-title">CONTROLS Settings:</span>
+                        <p>1. Auto Switch: Controls whether the game will automatically switch your defender when the opponent has the ball. Keeping it 'High' makes the game quickly set control to the player nearest to the ball. This is very convenient for new players. Keep it on 'Low' or 'Medium' if you want to take control manually.<br>
+                        2. Button Size: There are three main buttons on the right side of the game—the 'B' button for low pass or press, the 'A' button for hard pass, shoot or sliding tackle, and the 'C' button for long pass or goalkeeper charge. You can adjust how large these buttons appear on the screen here. 'Medium' or 'Large' is good, especially for big-screen phones. Larger buttons reduce the chance of touching the wrong button during intense moments and make actions faster.<br>
+                        3. Kick Assists: Determines how much the game helps when you kick the ball (e.g., pass or shoot). Keeping it 'High' ensures pass speed and direction are accurate, reaching the intended player easily. Keeping it 'Low' requires you to manually set the exact direction and power.<br>
+                        4. Cross Assist: Determines if the game helps when crossing the ball from the wings (e.g., for a header). Keeping it 'On' increases the chances of crosses reaching the striker. You can turn it off if you want to set the passing direction completely manually.<br>
+                        5. In-Game Tactics: This is a very crucial option. During the match, there is a small box right below the radar. If you keep this option 'On' from control settings, you can easily change your team's playing style mid-match by clicking that box. Clicking it reveals three options—Defensive, Balanced, and Attacking. This allows you to directly change these three modes according to the match situation.<br>
+                        6. Touch Controls: Clicking Touch Controls reveals three options inside.<br>
+                        - Attacking & Defending option: Clicking these shows some images. These images are basically tutorials. They beautifully illustrate which button does what during attacking or defending. For example: which button to hold for pressure, which for charging the goalkeeper, or how to do a skill shot with a double tap. It's essentially a guidebook.<br>
+                        - Options option: Here 4 things can be set to your preference:<br>
+                        &nbsp;&nbsp;1. Fixed Virtual Stick: If on, the left joystick remains fixed in one place. If off, the joystick appears wherever you place your finger on the screen.<br>
+                        &nbsp;&nbsp;2. Virtual Stick Visible: If on, the joystick is visible; if off, it is hidden.<br>
+                        &nbsp;&nbsp;3. Virtual Stick Size: You can adjust how large or small the joystick will be according to your finger size.<br>
+                        &nbsp;&nbsp;4. Descriptive Button Text: If on, it shows the actions (like Press, Shoot, Tackle, etc.) written over the A, B, C buttons.<br>
+                        7. Gamepad Controls: Clicking here reveals three separate options for gamepad users.<br>
+                        - Attacking & Defending option: Similar to touch controls, this shows gamepad images for teaching purposes. Controller images perfectly demonstrate which buttons to use for skill moves or kicks. A great guide for new gamepad users.<br>
+                        - Options option: Specifically for gamepad users. 2 things can be set here:<br>
+                        &nbsp;&nbsp;1. Show Gamepad Controls: If on, shows controller button names or icons on the screen during gameplay.<br>
+                        &nbsp;&nbsp;2. Controls Layout: A very important setting for gamepads. You can select between two layouts based on your playing habit—Alternative and Classic.<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;* Classic: The default layout. Used if you are accustomed to playing in Dream League Soccer's own style. Buttons are arranged similarly to the game's standard touch controls.<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;* Alternative: This is for those who have previously played FIFA or PES on consoles or PCs. Sometimes the button used to 'Shoot' in Classic mode might be for 'Pass' or 'Lob' in Alternative mode. If your hands are set to buttons from another football game, try this mode. Simply put, if playing in Classic mode feels uncomfortable, select Alternative. It swaps the buttons for your convenience.</p>
+
+                        <span class="highlight-title">ADVANCED Settings:</span>
+                        <p>Several other important options are found here-<br>
+                        1. Sign in with Google: The most crucial part of these settings. You should keep your Google account 'Connected' to save your game progress or account. This helps recover your old account if the phone is lost or the game is deleted. Leaving it disconnected risks losing your account.<br>
+                        2. Personalised Ads & Notifications: Two options for ads and notifications. Keep these 'On' if you want personalized ads or game event notifications. You have the option to turn them off if you find them annoying.<br>
+                        3. Share Dream League Live Statistics: If on, your gameplay statistics from online or live matches are shared with others. This is usually on by default.<br>
+                        4. Manage Devices: Shows which other phones your game account is currently logged into. The current phone has a blue tick mark. If your account is logged into another phone without your knowledge, you can log it out immediately by clicking the red 'X' next to that device. To transfer your account to another phone, you must use the Generate Code option from here.<br>
+                        5. Reset or Delete Profile: You must be very careful when using this option. There are two choices:<br>
+                        &nbsp;&nbsp;1. Reset Profile: This erases all game progress, coins, and players from the current game, starting it from the very beginning.<br>
+                        &nbsp;&nbsp;2. Delete Profile: Erases all data permanently. Do not confirm anything here unless you intend to delete your account.<br>
+                        6. Graphics Options: Set this graphics setting according to your phone's capability to make gameplay smooth. A good quality phone is required to play the game on high graphics.<br>
+                        Correct settings according to RAM:<br>
+                        - This game doesn't run well on 2GB RAM phones anymore. If you still want to play, use Low Quality and 30 FPS. Anything higher will cause severe lag.<br>
+                        - The game runs moderately well on 4GB - 6GB RAM phones. Try Medium Quality and 30 or 60 FPS for a better experience.<br>
+                        - On 8 to 12 GB RAM phones, you can safely use V. High Quality and 60 FPS to enjoy buttery smooth and authentic high-quality gameplay.<br>
+                        Troubleshooting: Contains three technical options used to solve specific graphics issues:<br>
+                        &nbsp;&nbsp;1. No Override: Used in normal situations, this is the default mode.<br>
+                        &nbsp;&nbsp;2. Force OpenGL ES 3: Select this if game colors are distorted or the screen tears. Helps fix graphics glitches on mid-range phones.<br>
+                        &nbsp;&nbsp;3. Force Vulkan: For latest and high-end phones. Select this if you face color or shadow issues despite having a powerful phone. It makes graphics sharper and flawless.<br>
+                        7. Link Profile (Account Transfer): The actual place for transferring an account from one phone to another. Enter the code generated from 'Manage Devices' into this Link Profile box and confirm to transfer the account to another device.<br>
+                        8. Legal Notice: Ensures legal and ownership matters. If any other company's software, music, or technology is used to build the game, their credits or Copyright Information are provided here. Provides legal protection to game developers.<br>
+                        9. Terms Of Service: A legal agreement or usage terms between the game company and the user. You must follow certain rules defined by the company while playing the game. For example—no Illegal Activity or hacking is allowed inside the game. In short, these are the game's Usage Rules.<br>
+                        10. Privacy Policy: This section is about the security and privacy of personal information. Details what information the game collects from your phone (e.g., email, device ID, or location) and how it is used. Ensures the user's Data Protection.<br>
+                        11. System Info: Displays the current technical status or technical data of the device and the game. Contains info about phone model, storage status, and game version.<br>
+                        12. FAQs (Frequently Asked Questions): Basically a Self-Help Center. Solutions to common problems faced by users while playing the game are provided here in a Q&A format. Many issues can be resolved here without directly talking to customer support.<br>
+                        13. FTG. (First Touch Games): The name and branding logo of the creator institution. Official introduction of the developer company First Touch Games. Clicking this button usually takes you to their official website or social media page.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-landmark-dome"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">স্টেডিয়াম ও ফ্যাসিলিটিজ আপগ্রেড করার সঠিক নিয়ম কী?</span>
+                        <span class="lang-en">What is the Proper Way to Upgrade Stadium & Facilities?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>ড্রিম লিগ সকার (DLS) গেমে ক্লাবের আয় বৃদ্ধি এবং দ্রুত উন্নতির জন্য স্টেডিয়াম ও বিভিন্ন ফ্যাসিলিটিস আপগ্রেড করা অত্যন্ত গুরুত্বপূর্ণ। নিচে প্রতিটি সেকশনের কাজ, আপগ্রেড খরচ এবং লেভেল অনুযায়ী সুবিধার বিস্তারিত আলোচনা করা হলো:</p>
+                        
+                        <span class="highlight-title">স্টেডিয়াম (Stadium):</span>
+                        <p>DLS গেমে স্টেডিয়াম হলো ক্লাবের আয়ের এবং উন্নতির প্রধান কেন্দ্র। অন্যান্য ফ্যাসিলিটি আপগ্রেড করতে যেখানে ডায়মন্ড লাগে, সেখানে স্টেডিয়াম আপগ্রেড করতে কয়েন (Coins) খরচ করতে হয়। স্টেডিয়াম আপগ্রেড করার পেছনে প্রধান দুটি কারণ রয়েছে:</p>
+                        <p>- ডিভিশন প্রমোশন: গেমের ওপরের দিকের লিগ বা ডিভিশনগুলোতে খেলতে হলে স্টেডিয়ামের একটি নির্দিষ্ট ধারণক্ষমতা (Capacity) থাকা বাধ্যতামূলক। তা না হলে লিগে চ্যাম্পিয়ন হলেও পরবর্তী ডিভিশনে প্রমোশন পাওয়া যায় না。<br>
+                        - বোনাস কয়েন: স্টেডিয়ামের ধারণক্ষমতা যত বেশি হবে, নিজের মাঠে (Home Match) খেলার সময় প্রতি ম্যাচে তত বেশি বোনাস কয়েন পাওয়া যায়。</p>
+                        
+                        <span class="highlight-title">ডিভিশন অনুযায়ী প্রয়োজনীয় ধারণক্ষমতা (Capacity):</span>
+                        <p>- Academy Division: ৫,০০০ (শুরুর ধাপ)<br>
+                        - Amateur Division: ১৫,০০০<br>
+                        - Division 4: ২৫,০০০<br>
+                        - Division 3: ৩৫,০০০<br>
+                        - Division 2: ৪৫,০০০<br>
+                        - Division 1: ৫৫,০০০<br>
+                        - Elite Division: ৭০,০০০<br>
+                        - Legendary Division: ৮৫,০০০ (সর্বোচ্চ লিগ)</p>
+                        
+                        <p>সব দিকের গ্যালারি (East, West, North, South) "Capital" ডিজাইনে এবং ছাদসহ (Roof) তৈরি করলে স্টেডিয়ামের মোট ধারণক্ষমতা হয় ৯২,৪৮৮। এই পুরো প্রজেক্টটি একসাথে করতে মোট ১৮,০৩৪ কয়েন খরচ হয়। এটি সম্পন্ন হলে গেমের সর্বোচ্চ লিগ (Legendary Division) খেলার যোগ্যতা অর্জনের পাশাপাশি প্রতি হোম ম্যাচে ৫২ কয়েন বোনাস পাওয়া যায়। তবে শুরুতে একবারে এত কয়েন জমানো কঠিন হলে, অল্প খরচে পরের ডিভিশনে যাওয়ার জন্য Autobuild অপশনটি ব্যবহার করা যায় অথবা গ্যালারিগুলোতে 'Roof' বা ছাদ না দিয়ে শুধু সিট (Seats) আপগ্রেড করা যেতে পারে। এতে ধারণক্ষমতা বাড়লেও কয়েন খরচ অনেক কমে যায়。</p>
+
+                        <span class="highlight-title">ট্রেনিং সেন্টার (Training Centre):</span>
+                        <p>ট্রেনিং সেন্টার আপগ্রেড করতে মোট ১১২৫ ডায়মন্ড লাগে। মূলত পাঁচ ধাপে এটি আপগ্রেড করতে হয়:<br>
+                        - প্রথম ধাপ: ৭৫ ডায়মন্ড<br>
+                        - দ্বিতীয় ধাপ: ১৫০ ডায়মন্ড<br>
+                        - তৃতীয় ধাপ: ২২৫ ডায়মন্ড<br>
+                        - চতুর্থ ধাপ: ৩০০ ডায়মন্ড<br>
+                        - পঞ্চম ধাপ: ৩৭৫ ডায়মন্ড</p>
+                        
+                        <p>ট্রেনিং সেন্টার আপগ্রেডের মাধ্যমে মূলত নিচের সুবিধাগুলো পাওয়া যায়:<br>
+                        - কোচ ডিসকাউন্ট (Coach Discount): দলে থাকা প্লেয়ারদের বিভিন্ন স্ট্যাটস বা রেটিং বাড়ানোর জন্য গেমটিতে Coach (Technical, Fitness বা Goalkeeping) ব্যবহার করতে হয়, যা কিনতে Gems (ডায়মন্ড) খরচ হয়। ট্রেনিং সেন্টার আপগ্রেড করলে এই কোচ কেনার খরচের ওপর সর্বোচ্চ ৩০% ডিসকাউন্ট পাওয়া যায়。<br>
+                        - ফর্ম বুস্ট ম্যাচ (Form Boost Matches): ফর্ম বুস্ট হলো গেমের এমন একটি ফিচার যা ব্যবহার করলে প্লেয়ারদের রেটিং এবং স্ট্যাটস সাময়িক সময়ের জন্য বাড়িয়ে দেয়। ট্রেনিং সেন্টার আপগ্রেড করার ওপর নির্ভর করে এই বুস্ট ঠিক কতগুলো ম্যাচ পর্যন্ত স্থায়ী হবে তা নির্ধারিত হয়। এটি ম্যাক্স হলে বুস্ট সর্বোচ্চ ৪ ম্যাচ অবধি থাকে。<br>
+                        - ফর্মেশন আনলক: ট্রেনিং সেন্টার আপগ্রেড করার একটি অন্যতম প্রধান কাজ হলো নতুন ফর্মেশন (Formations) আনলক করা। লেভেল বাড়ানোর সাথে সাথে দলের জন্য আরও বেশি নতুন ফর্মেশন (যেমন- 4-1-2-3, 4-2-3-1 ইত্যাদি) ব্যবহার করা যায়。</p>
+                        
+                        <span class="highlight-title">লেভেল অনুযায়ী সুবিধার তালিকা:</span>
+                        <p>- লেভেল ১ (<span class="star-color">⭐</span>): ফর্ম বুস্ট ২ ম্যাচ | কোচ ডিসকাউন্ট ৫%<br>
+                        - লেভেল ২ (<span class="star-color">⭐⭐</span>): ফর্ম বুস্ট ২ ম্যাচ | কোচ ডিসকাউন্ট ১০%<br>
+                        - লেভেল ৩ (<span class="star-color">⭐⭐⭐</span>): ফর্ম বুস্ট ৩ ম্যাচ | কোচ ডিসকাউন্ট ১৫%<br>
+                        - লেভেল ৪ (<span class="star-color">⭐⭐⭐⭐</span>): ফর্ম বুস্ট ৩ ম্যাচ | কোচ ডিসকাউন্ট ২০%<br>
+                        - লেভেল ৫ (<span class="star-color">⭐⭐⭐⭐⭐</span>): ফর্ম বুস্ট ৪ ম্যাচ | কোচ ডিসকাউন্ট ৩০%</p>
+
+                        <span class="highlight-title">কমার্শিয়াল সেন্টার (Commercial Centre):</span>
+                        <p>কমার্শিয়াল সেন্টার আপগ্রেড করতে মোট ১১২৫ ডায়মন্ড লাগে। মূলত পাঁচ ধাপে এটি আপগ্রেড করতে হয়:<br>
+                        - প্রথম ধাপ: ৭৫ ডায়মন্ড<br>
+                        - দ্বিতীয় ধাপ: ১৫০ ডায়মন্ড<br>
+                        - তৃতীয় ধাপ: ২২৫ ডায়মন্ড<br>
+                        - চতুর্থ ধাপ: ৩০০ ডায়মন্ড<br>
+                        - পঞ্চম ধাপ: ৩৭৫ ডায়মন্ড</p>
+                        
+                        <p>কমার্শিয়াল সেন্টার আপগ্রেড করার মাধ্যমে ম্যাচ উইনিং বোনাস বৃদ্ধি পায় এবং কিটস ও লোগো ইমপোর্ট করার খরচ কম হয়। এটি ৫ স্টার বা ম্যাক্স থাকলে ম্যাচ উইনিংয়ের পর সর্বোচ্চ ১০% বোনাস কয়েন পাওয়া যায় এবং কাস্টম কিট ও লোগো ব্যবহারের ক্ষেত্রে সর্বোচ্চ ২৫% ডিসকাউন্ট পাওয়া যায়। নতুন অ্যাকাউন্টের ক্ষেত্রে শুরুতে দ্রুত কয়েন জমিয়ে ভালো প্লেয়ার কেনার জন্য এবং স্টেডিয়াম আপগ্রেড করার জন্য কর্মাশিয়াল সেন্টার আপগ্রেড করা বেশ জরুরি。</p>
+
+                        <span class="highlight-title">লেভেল অনুযায়ী সুবিধার তালিকা:</span>
+                        <p>- লেভেল ১ (<span class="star-color">⭐</span>): ২% বোনাস কয়েন | ৫% ডিসকাউন্ট<br>
+                        - লেভেল ২ (<span class="star-color">⭐⭐</span>): ৪% বোনাস কয়েন | ১০% ডিসকাউন্ট<br>
+                        - লেভেল ৩ (<span class="star-color">⭐⭐⭐</span>): ৬% বোনাস কয়েন | ১৫% ডিসকাউন্ট<br>
+                        - লেভেল ৪ (<span class="star-color">⭐⭐⭐⭐</span>): ৮% বোনাস কয়েন | ২০% ডিসকাউন্ট<br>
+                        - লেভেল ৫ (<span class="star-color">⭐⭐⭐⭐⭐</span>): ১০% বোনাস কয়েন | ২৫% ডিসকাউন্ট</p>
+
+                        <span class="highlight-title">মেডিকেল সেন্টার (Medical Centre):</span>
+                        <p>মেডিকেল সেন্টার আপগ্রেড করতে মোট ১১২৫ ডায়মন্ড লাগে। মূলত পাঁচ ধাপে এটি আপগ্রেড করতে হয়:<br>
+                        - প্রথম ধাপ: ৭৫ ডায়মন্ড<br>
+                        - দ্বিতীয় ধাপ: ১৫০ ডায়মন্ড<br>
+                        - তৃতীয় ধাপ: ২২৫ ডায়মন্ড<br>
+                        - চতুর্থ ধাপ: ৩০০ ডায়মন্ড<br>
+                        - পঞ্চম ধাপ: ৩৭৫ ডায়মন্ড</p>
+
+                        <p>মেডিকেল সেন্টার আপগ্রেড করার মাধ্যমে মূলত দুটি প্রধান সুবিধা পাওয়া যায়:<br>
+                        - ফিজিও ডিসকাউন্ট (Physio Discount): ম্যাচ খেলার পর খেলোয়াড়দের স্ট্যামিনা বা এনার্জি (Energy) কমে গেলে অথবা তারা ইনজুরিতে পড়লে, তাদের দ্রুত সুস্থ ও ফিট করতে Physio (ফিজিও) ব্যবহার করতে হয়, যার জন্য নির্দিষ্ট হারে কয়েন খরচ করতে হয়। মেডিকেল সেন্টার আপগ্রেড থাকলে এই ফিজিও খরচে সর্বোচ্চ ৪০% ডিসকাউন্ট পাওয়া যায়。<br>
+                        - খেলোয়াড়দের ইনজুরির সম্ভাবনা হ্রাস (Player Injury Probability): ম্যাচ চলাকালীন বিপক্ষ দলের ফাউল বা কড়া ট্যাকলের শিকার হয়ে খেলোয়াড়দের ইনজুরিতে পড়ার ঝুঁকি থাকে। মেডিকেল সেন্টার আপগ্রেড করলে এই ইনজুরিতে পড়ার ঝুঁকি সর্বোচ্চ ৩০% পর্যন্ত কমে যায়。</p>
+
+                        <span class="highlight-title">লেভেল অনুযায়ী সুবিধার তালিকা:</span>
+                        <p>- লেভেল ১ (<span class="star-color">⭐</span>): ফিজিও ডিসকাউন্ট ১০% | ইনজুরির সম্ভাবনা -৫%<br>
+                        - লেভেল ২ (<span class="star-color">⭐⭐</span>): ফিজিও ডিসকাউন্ট ১৬% | ইনজুরির সম্ভাবনা -১০%<br>
+                        - লেভেল ৩ (<span class="star-color">⭐⭐⭐</span>): ফিজিও ডিসকাউন্ট ২২% | ইনজুরির সম্ভাবনা -১৫%<br>
+                        - লেভেল ৪ (<span class="star-color">⭐⭐⭐⭐</span>): ফিজিও ডিসকাউন্ট ২৮% | ইনজুরির সম্ভাবনা -২০%<br>
+                        - লেভেল ৫ (<span class="star-color">⭐⭐⭐⭐⭐</span>): ফিজিও ডিসকাউন্ট ৪০% | ইনজুরির সম্ভাবনা -৩০%</p>
+
+                        <span class="highlight-title">রিক্রুটমেন্ট সেন্টার (Recruitment Centre):</span>
+                        <p>রিক্রুটমেন্ট সেন্টার আপগ্রেড করতে মোট ১১২৫ ডায়মন্ড লাগে। মূলত পাঁচ ধাপে এটি আপগ্রেড করতে হয়:<br>
+                        - প্রথম ধাপ: ৭৫ ডায়মন্ড<br>
+                        - দ্বিতীয় ধাপ: ১৫০ ডায়মন্ড<br>
+                        - তৃতীয় ধাপ: ২২৫ ডায়মন্ড<br>
+                        - চতুর্থ ধাপ: ৩০০ ডায়মন্ড<br>
+                        - পঞ্চম ধাপ: ৩৭৫ ডায়মন্ড</p>
+
+                        <p>রিক্রুটমেন্ট সেন্টার আপগ্রেড করার মাধ্যমে Scout Discount (স্কাউট ডিসকাউন্ট) এবং Agent Discount (এজেন্ট ডিসকাউন্ট) পাওয়া যায়। এটি সর্বোচ্চ আপগ্রেড করলে স্কাউটে ১৫% এবং এজেন্টে ৫% ডিসকাউন্ট পাওয়া যায়।<br>
+                        - Scout (স্কাউট): অনেক সময় ট্রান্সফার মার্কেটে পছন্দের প্লেয়ার আসে না। তখন কমন, রেয়ার বা লিজেন্ডারি প্লেয়ার খুঁজে বের করার জন্য 'Scout' ব্যবহার করতে হয়, যার জন্য সাধারণত কয়েন খরচ হয়। রিক্রুটমেন্ট সেন্টার আপগ্রেড করলে এই স্কাউট ব্যবহারের খরচে সর্বোচ্চ ১৫% পর্যন্ত ডিসকাউন্ট পাওয়া যায়。<br>
+                        - Agent (এজেন্ট): ট্রান্সফার মার্কেটের জন্য অপেক্ষা না করে সরাসরি নির্দিষ্ট মানের (যেমন: গ্যারান্টিড লিজেন্ডারি) প্লেয়ার দলে নিতে চাইলে 'Agent' ব্যবহার করতে হয়। এজেন্ট কিনতে ডায়মন্ড বা জেমস খরচ করতে হয়। এখানে কমন, রেয়ার ও লিজেন্ডারি তিনটি অপশনই থাকে। রিক্রুটমেন্ট সেন্টার আপগ্রেড করলে এই এজেন্ট ক্রয়ের ডায়মন্ড খরচের ওপর সর্বোচ্চ ৫% পর্যন্ত ডিসকাউন্ট পাওয়া যায়。</p>
+
+                        <span class="highlight-title">লেভেল অনুযায়ী সুবিধার তালিকা:</span>
+                        <p>- লেভেল ১ (<span class="star-color">⭐</span>): স্কাউট ডিসকাউন্ট ৩% | এজেন্ট ডিসকাউন্ট ১%<br>
+                        - লেভেল ২ (<span class="star-color">⭐⭐</span>): স্কাউট ডিসকাউন্ট ৬% | এজেন্ট ডিসকাউন্ট ২%<br>
+                        - লেভেল ৩ (<span class="star-color">⭐⭐⭐</span>): স্কাউট ডিসকাউন্ট ৯% | এজেন্ট ডিসকাউন্ট ৩%<br>
+                        - লেভেল ৪ (<span class="star-color">⭐⭐⭐⭐</span>): স্কাউট ডিসকাউন্ট ১২% | এজেন্ট ডিসকাউন্ট ৪%<br>
+                        - লেভেল ৫ (<span class="star-color">⭐⭐⭐⭐⭐</span>): স্কাউট ডিসকাউন্ট ১৫% | এজেন্ট ডিসকাউন্ট ৫%</p>
+                    </div>
+                    <div class="text-body lang-en">
+                        <p>Upgrading the stadium and various facilities is extremely important in Dream League Soccer (DLS) to increase club revenue and progress quickly. Below is a detailed discussion of the function, upgrade cost, and level-wise benefits of each section:</p>
+                        
+                        <span class="highlight-title">Stadium:</span>
+                        <p>In DLS, the stadium is the main hub for the club's income and improvement. While other facilities require diamonds to upgrade, the stadium requires coins. There are two main reasons behind upgrading the stadium:</p>
+                        <p>- Division Promotion: To play in the higher leagues or divisions of the game, the stadium must have a specific Capacity. Otherwise, even if you become the league champion, you will not get promoted to the next division.<br>
+                        - Bonus Coins: The higher the stadium capacity, the more bonus coins you get per match when playing on your own ground (Home Match).</p>
+                        
+                        <span class="highlight-title">Required Capacity according to Division:</span>
+                        <p>- Academy Division: 5,000 (Starting stage)<br>
+                        - Amateur Division: 15,000<br>
+                        - Division 4: 25,000<br>
+                        - Division 3: 35,000<br>
+                        - Division 2: 45,000<br>
+                        - Division 1: 55,000<br>
+                        - Elite Division: 70,000<br>
+                        - Legendary Division: 85,000 (Highest league)</p>
+                        
+                        <p>If you build all sides of the gallery (East, West, North, South) in "Capital" design along with a Roof, the total capacity of the stadium becomes 92,488. Completing this entire project at once costs a total of 18,034 coins. Once completed, besides qualifying for the game's highest league (Legendary Division), you receive a 52-coin bonus per home match. However, if it's hard to save so many coins at the beginning, you can use the Autobuild option to move to the next division at a low cost, or you can upgrade only the Seats in the galleries without providing a 'Roof'. This increases capacity while reducing the coin cost significantly.</p>
+
+                        <span class="highlight-title">Training Centre:</span>
+                        <p>It takes a total of 1125 diamonds to upgrade the Training Centre. It is basically upgraded in five steps:<br>
+                        - 1st step: 75 Diamonds<br>
+                        - 2nd step: 150 Diamonds<br>
+                        - 3rd step: 225 Diamonds<br>
+                        - 4th step: 300 Diamonds<br>
+                        - 5th step: 375 Diamonds</p>
+                        
+                        <p>Upgrading the Training Centre mainly provides the following benefits:<br>
+                        - Coach Discount: To increase various stats or ratings of the players in the team, you have to use a Coach (Technical, Fitness, or Goalkeeping), which costs Gems (diamonds) to buy. Upgrading the Training Centre gives up to a 30% discount on the cost of buying these coaches.<br>
+                        - Form Boost Matches: Form boost is a feature in the game that temporarily increases players' ratings and stats when used. Depending on the Training Centre upgrade, it determines exactly how many matches this boost will last. If maxed out, the boost lasts up to 4 matches.<br>
+                        - Formation Unlock: One of the main tasks of upgrading the Training Centre is unlocking new Formations. As the level increases, more new formations (like 4-1-2-3, 4-2-3-1, etc.) can be used for the team.</p>
+                        
+                        <span class="highlight-title">List of benefits by Level:</span>
+                        <p>- Level 1 (<span class="star-color">⭐</span>): Form Boost 2 matches | Coach Discount 5%<br>
+                        - Level 2 (<span class="star-color">⭐⭐</span>): Form Boost 2 matches | Coach Discount 10%<br>
+                        - Level 3 (<span class="star-color">⭐⭐⭐</span>): Form Boost 3 matches | Coach Discount 15%<br>
+                        - Level 4 (<span class="star-color">⭐⭐⭐⭐</span>): Form Boost 3 matches | Coach Discount 20%<br>
+                        - Level 5 (<span class="star-color">⭐⭐⭐⭐⭐</span>): Form Boost 4 matches | Coach Discount 30%</p>
+
+                        <span class="highlight-title">Commercial Centre:</span>
+                        <p>It takes a total of 1125 diamonds to upgrade the Commercial Centre. It is upgraded in five steps:<br>
+                        - 1st step: 75 Diamonds<br>
+                        - 2nd step: 150 Diamonds<br>
+                        - 3rd step: 225 Diamonds<br>
+                        - 4th step: 300 Diamonds<br>
+                        - 5th step: 375 Diamonds</p>
+                        
+                        <p>Upgrading the Commercial Centre increases the match winning bonus and reduces the cost of importing kits and logos. If it is 5 stars or max, you get up to a 10% bonus coin after winning a match and up to a 25% discount when using custom kits and logos. For new accounts, upgrading the commercial center is quite essential to quickly save coins to buy good players and upgrade the stadium.</p>
+
+                        <span class="highlight-title">List of benefits by Level:</span>
+                        <p>- Level 1 (<span class="star-color">⭐</span>): 2% Bonus Coins | 5% Discount<br>
+                        - Level 2 (<span class="star-color">⭐⭐</span>): 4% Bonus Coins | 10% Discount<br>
+                        - Level 3 (<span class="star-color">⭐⭐⭐</span>): 6% Bonus Coins | 15% Discount<br>
+                        - Level 4 (<span class="star-color">⭐⭐⭐⭐</span>): 8% Bonus Coins | 20% Discount<br>
+                        - Level 5 (<span class="star-color">⭐⭐⭐⭐⭐</span>): 10% Bonus Coins | 25% Discount</p>
+
+                        <span class="highlight-title">Medical Centre:</span>
+                        <p>It takes a total of 1125 diamonds to upgrade the Medical Centre. It is upgraded in five steps:<br>
+                        - 1st step: 75 Diamonds<br>
+                        - 2nd step: 150 Diamonds<br>
+                        - 3rd step: 225 Diamonds<br>
+                        - 4th step: 300 Diamonds<br>
+                        - 5th step: 375 Diamonds</p>
+
+                        <p>Upgrading the Medical Centre mainly provides two main benefits:<br>
+                        - Physio Discount: After playing a match, if players' stamina or energy decreases or they get injured, Physio is used to make them healthy and fit quickly, which costs coins at a certain rate. If the Medical Centre is upgraded, you get up to a 40% discount on this physio cost.<br>
+                        - Player Injury Probability: During the match, players run the risk of getting injured by being subjected to fouls or hard tackles by the opposing team. Upgrading the Medical Centre reduces this risk of injury by up to 30%.</p>
+
+                        <span class="highlight-title">List of benefits by Level:</span>
+                        <p>- Level 1 (<span class="star-color">⭐</span>): Physio Discount 10% | Injury Probability -5%<br>
+                        - Level 2 (<span class="star-color">⭐⭐</span>): Physio Discount 16% | Injury Probability -10%<br>
+                        - Level 3 (<span class="star-color">⭐⭐⭐</span>): Physio Discount 22% | Injury Probability -15%<br>
+                        - Level 4 (<span class="star-color">⭐⭐⭐⭐</span>): Physio Discount 28% | Injury Probability -20%<br>
+                        - Level 5 (<span class="star-color">⭐⭐⭐⭐⭐</span>): Physio Discount 40% | Injury Probability -30%</p>
+
+                        <span class="highlight-title">Recruitment Centre:</span>
+                        <p>It takes a total of 1125 diamonds to upgrade the Recruitment Centre. It is upgraded in five steps:<br>
+                        - 1st step: 75 Diamonds<br>
+                        - 2nd step: 150 Diamonds<br>
+                        - 3rd step: 225 Diamonds<br>
+                        - 4th step: 300 Diamonds<br>
+                        - 5th step: 375 Diamonds</p>
+
+                        <p>Upgrading the Recruitment Centre provides a Scout Discount and Agent Discount. Maxing it out gives a 15% discount on scouts and a 5% discount on agents.<br>
+                        - Scout: Often the preferred player does not appear in the transfer market. Then 'Scout' has to be used to find common, rare, or legendary players, which usually costs coins. Upgrading the Recruitment Centre gives up to a 15% discount on this scout usage cost.<br>
+                        - Agent: If you want to take a player of a certain quality (e.g., guaranteed legendary) directly into the team without waiting for the transfer market, you have to use an 'Agent'. Buying agents costs diamonds or gems. There are three options here: common, rare, and legendary. Upgrading the Recruitment Centre gives up to a 5% discount on the diamond cost of buying this agent.</p>
+
+                        <span class="highlight-title">List of benefits by Level:</span>
+                        <p>- Level 1 (<span class="star-color">⭐</span>): Scout Discount 3% | Agent Discount 1%<br>
+                        - Level 2 (<span class="star-color">⭐⭐</span>): Scout Discount 6% | Agent Discount 2%<br>
+                        - Level 3 (<span class="star-color">⭐⭐⭐</span>): Scout Discount 9% | Agent Discount 3%<br>
+                        - Level 4 (<span class="star-color">⭐⭐⭐⭐</span>): Scout Discount 12% | Agent Discount 4%<br>
+                        - Level 5 (<span class="star-color">⭐⭐⭐⭐⭐</span>): Scout Discount 15% | Agent Discount 5%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">নতুন অ্যাকাউন্টে দ্রুত প্লেয়ার ম্যাক্স (Max) করবেন কীভাবে?</span>
+                        <span class="lang-en">How to Max Players Fast on a New Account?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <span class="highlight-title">প্রাথমিক স্কোয়াড গঠন ও টিম রেটিং বৃদ্ধি:</span>
+                        <p>নতুন অ্যাকাউন্টে ক্যাপ্টেন হিসেবে নেওয়া লিজেন্ডারি প্লেয়ার ছাড়া বাকি সব প্লেয়ার সাধারণত কমন বা ৭০ রেটিংয়ের নিচে থাকে। গেমের নিয়ম অনুযায়ী স্কোয়াডে সর্বনিম্ন ১৬ জন প্লেয়ার রাখা বাধ্যতামূলক—যার মধ্যে ১১ জন মূল একাদশে এবং ৫ জন সাবস্টিটিউট হিসেবে থাকে। শুরুতেই বেশি বেশি ম্যাচ খেলে কয়েন ও ডায়মন্ড জমানো উচিত এবং প্রতি ম্যাচ শেষে ট্রান্সফার মার্কেট চেক করা দরকার। শুরুতে টিম রেটিং কম থাকায় মার্কেটে বেশি রেটিংয়ের প্লেয়ার আসে না। তাই তুলনামূলক ভালো রেটিংয়ের প্লেয়ার কিনে আগে টিম রেটিং বাড়াতে হয়। টিম রেটিং ৭৫+ হলে লিজেন্ডারি প্লেয়ার আসা শুরু হয় এবং ৮০+ হলে সবসময়ই লিজেন্ডারি প্লেয়ার পাওয়া যায়। তবে আবেগের বশে শুরুতেই কমন বা রেয়ার প্লেয়ারদের কোচিং করানো মোটেও উচিত নয়। ১৬ জন গুরুত্বপূর্ণ লিজেন্ডারি প্লেয়ার নিয়ে স্কোয়াড গোছানোর পরেই মূলত কোচিং শুরু করা সবচেয়ে বুদ্ধিমানের কাজ。</p>
+
+                        <span class="highlight-title">গোলকিপার কোচিং সিস্টেম (Goalkeeper Coaches):</span>
+                        <p>গেমে গোলকিপার এবং অন্যান্য পজিশনের প্লেয়ারদের কোচিং সিস্টেম সম্পূর্ণ আলাদা। গোলকিপারের জন্য শুধুমাত্র 'গোলকিপার কোচ' ব্যবহার করতে হয়。<br>
+                        - কমন (Common) কোচ দিলে GKR বা GKH থেকে যেকোনো একটি স্ট্যাটস +১ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ১)।<br>
+                        - রেয়ার (Rare) কোচ দিলে যেকোনো একটি স্ট্যাটস +২ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ২)।<br>
+                        - লিজেন্ডারি (Legendary) কোচ দিলে দুটি স্ট্যাটসই একসাথে +৩ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ৬)।<br>
+                        এখানে মনে রাখা জরুরি যে, গোলকিপারের GKR রেটিং যদি GKH-এর সমান বা বেশি থাকে, তবে সে সবচেয়ে ভালো পারফরম্যান্স দেয়。</p>
+
+                        <span class="highlight-title">আউটফিল্ড প্লেয়ারদের কোচিং সিস্টেম:</span>
+                        <p>গোলকিপার বাদে বাকি আউটফিল্ড প্লেয়ারদের (ডিফেন্ডার, মিডফিল্ডার, ফরোয়ার্ড) জন্য 'ফিটনেস' (Fitness) এবং 'টেকনিক্যাল' (Technical) কোচ ব্যবহার করতে হয়। ফিটনেস কোচে মূলত Spe (গতি), Acc (ত্বরণ), Sta (স্ট্যামিনা) এবং Str (শারীরিক শক্তি) বাড়ে। আর টেকনিক্যাল কোচে বাড়ে Con (বল নিয়ন্ত্রণ), Pas (পাসিং), Sho (শ্যুটিং) এবং Tac (ট্যাকলিং)।<br>
+                        - কমন কোচ দিলে যেকোনো একটি স্ট্যাটস +১ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ১)।<br>
+                        - রেয়ার কোচ দিলে যেকোনো দুটি স্ট্যাটস +২ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ৪)।<br>
+                        - লিজেন্ডারি কোচ দিলে যেকোনো তিনটি স্ট্যাটস +৩ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ৯)।<br>
+                        স্কোয়াডে সব পজিশনের প্লেয়ার থাকায় একসাথে সবাইকে 'র‍্যান্ডম কোচিং' করানোর সময় ৭৫% ফিটনেস এবং ২৫% টেকনিক্যাল কোচ ব্যবহার করা সবচেয়ে কার্যকর কৌশল。</p>
+
+                        <span class="highlight-title">স্পেশাল প্লেয়ারদের কোচিং (Special Players):</span>
+                        <p>স্পেশাল প্লেয়ারদের ক্ষেত্রে ফিটনেস বা টেকনিক্যাল বলে আলাদা কোনো সিস্টেম নেই, এখানে সরাসরি আটটা স্ট্যাটস থেকেই অপশন আসে। স্পেশাল প্লেয়ারদের কোচিংয়েও কমন, রেয়ার এবং লিজেন্ডারি ক্যাটাগরি থাকে。<br>
+                        - কমন সিলেক্ট করলে দুই ধাপে অপশন দেওয়া হয়—প্রথম দুটির মধ্যে থেকে একটি এবং এরপর আরও দুটির মধ্যে থেকে একটি বেছে নিতে হয়। এখানে স্ট্যাটস +১ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ২)।<br>
+                        - রেয়ারের ক্ষেত্রে তিন ধাপে অপশন দেওয়া হয়—প্রতি ধাপে দুটির মধ্যে থেকে একটি করে মোট তিনটি অপশন বেছে নিতে হয় এবং এখানে স্ট্যাটস +২ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ৬)।<br>
+                        - লিজেন্ডারি সিলেক্ট করলে চার ধাপে দুটির মধ্যে থেকে একটি করে মোট চারটি অপশন বেছে নেওয়ার সুযোগ থাকে, যেখানে স্ট্যাটসগুলো +৩ করে বাড়ে (অর্থাৎ মোট স্ট্যাটস বাড়ে ১২)।<br>
+                        স্পেশাল গোলকিপারদের ক্ষেত্রেও নিয়মটা একদম একই, তবে তাদের অপশনগুলো কেবল GKR এবং GKH এর মধ্যেই সীমাবদ্ধ থাকে。</p>
+
+                        <span class="highlight-title">ব্রেকথ্রু (Breakthrough) বোনাস:</span>
+                        <p>উপরে দেওয়া স্ট্যাটস বৃদ্ধির হিসেবগুলো সাধারণ অবস্থার জন্য, অর্থাৎ 'ব্রেকথ্রু' বা Breakthrough না পাওয়ার ক্ষেত্রে প্রযোজ্য। নরমাল বা স্পেশাল যেকোনো প্লেয়ারের কোচিংয়ে ব্রেকথ্রু পেলে স্ট্যাটস স্বাভাবিকের চেয়ে আরও বেশি বৃদ্ধি পায়。</p>
+
+                        <span class="highlight-title">সিঙ্গেল কোচিং (Single Coaching) করানোর ট্রিকস:</span>
+                        <p>নির্দিষ্ট কোনো প্লেয়ারকে নিজের মনমতো 'সিঙ্গেল কোচিং' করানোর দুটি উপায় রয়েছে:<br>
+                        - প্রথম উপায়: স্কোয়াডের ১৬ জন প্লেয়ারকে একসাথে র‍্যান্ডম কোচিং করিয়ে ফুল ম্যাক্স করে ফেলা। সবার কোচিং শেষ হয়ে গেলে, নতুন কোনো প্লেয়ার কিনলে তাকে সহজেই একা সিঙ্গেল কোচিং করানো যায়。<br>
+                        - দ্বিতীয় উপায় (দ্রুত ট্রিকস): স্কোয়াডে ১৫ জন গোলকিপার এবং মাত্র ১ জন আউটফিল্ড লিজেন্ডারি প্লেয়ার রাখা। যেহেতু গোলকিপার এবং অন্যান্য প্লেয়ারের কোচ আলাদা, তাই ফিটনেস ও টেকনিক্যাল কোচ ব্যবহার করলে সেগুলোর প্রভাব গোলকিপারদের ওপর পড়ে না। ফলে সবগুলো কোচিংয়ের প্রভাব সরাসরি ওই একজন লিজেন্ডারি প্লেয়ারের ওপরই পড়ে。</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <span class="highlight-title">Initial Squad Building & Increasing Team Rating:</span>
+                        <p>In a new account, apart from the legendary player taken as the captain, all other players are usually common or below 70 rating. According to the game's rules, it is mandatory to have a minimum of 16 players in your squad—11 in the starting lineup and 5 as substitutes. Initially, you should play more matches to accumulate coins and diamonds, and check the transfer market after every match. At the beginning, high-rated players won't appear in the market due to low team rating. So, you must buy relatively better-rated players to increase your team rating first. When the team rating reaches 75+, legendary players start appearing, and at 80+, you will always get legendary players. However, you should never emotionally coach common or rare players early on. It is wisest to start coaching only after organizing your squad with 16 important legendary players.</p>
+
+                        <span class="highlight-title">Goalkeeper Coaching System:</span>
+                        <p>The coaching system for goalkeepers and players in other positions is completely different. For goalkeepers, you must use only the 'Goalkeeper Coach'.<br>
+                        - A Common coach increases either GKR or GKH by +1 (total stats increase by 1).<br>
+                        - A Rare coach increases either stat by +2 (total stats increase by 2).<br>
+                        - A Legendary coach increases both stats simultaneously by +3 (total stats increase by 6).<br>
+                        It is important to remember that a goalkeeper performs best if his GKR rating is equal to or higher than his GKH.</p>
+
+                        <span class="highlight-title">Outfield Players Coaching System:</span>
+                        <p>For outfield players (defenders, midfielders, forwards) excluding the goalkeeper, you must use 'Fitness' and 'Technical' coaches. Fitness coaches mainly increase Spe (Speed), Acc (Acceleration), Sta (Stamina), and Str (Strength). Technical coaches increase Con (Control), Pas (Passing), Sho (Shooting), and Tac (Tackling).<br>
+                        - A Common coach increases any one stat by +1 (total stats increase by 1).<br>
+                        - A Rare coach increases any two stats by +2 (total stats increase by 4).<br>
+                        - A Legendary coach increases any three stats by +3 (total stats increase by 9).<br>
+                        Since your squad has players in all positions, using 75% fitness and 25% technical coaches is the most effective strategy when doing 'random coaching' for everyone together.</p>
+
+                        <span class="highlight-title">Coaching Special Players:</span>
+                        <p>For special players, there is no separate fitness or technical system; options appear directly from all eight stats. Coaching special players also has Common, Rare, and Legendary categories.<br>
+                        - If you select Common, you are given options in two steps—choosing one from two options, and then one from another two. Here, stats increase by +1 (total stats increase by 2).<br>
+                        - For Rare, options are given in three steps—you have to choose one out of two options at each step for a total of three choices, increasing stats by +2 (total stats increase by 6).<br>
+                        - Selecting Legendary gives you the opportunity to choose one out of two options in four steps, where stats increase by +3 (total stats increase by 12).<br>
+                        The rule is exactly the same for special goalkeepers, but their options are limited only to GKR and GKH.</p>
+
+                        <span class="highlight-title">Breakthrough Bonus:</span>
+                        <p>The stat increase calculations given above apply to normal conditions, i.e., without receiving a 'Breakthrough'. If you get a breakthrough during the coaching of any normal or special player, the stats increase much more than usual.</p>
+
+                        <span class="highlight-title">Tricks for Single Coaching:</span>
+                        <p>There are two ways to do 'single coaching' for a specific player as per your preference:<br>
+                        - First way: Randomly coach your 16-player squad together until they are fully maxed. Once everyone's coaching is complete, any new player you buy can easily be single-coached alone.<br>
+                        - Second way (Fast Trick): Keep 15 goalkeepers and only 1 outfield legendary player in the squad. Since the coaches for goalkeepers and other players are different, using fitness and technical coaches will not affect the goalkeepers. As a result, the impact of all coaching falls directly on that one legendary player.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box" style="font-size: 15px; gap: 4px;">
+                        <i class="fa-solid fa-coins"></i>
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+                    <div class="tip-title">
+                        <span class="lang-bn">বেশি বেশি কয়েন ও ডায়মন্ড দ্রুত পাবেন কীভাবে?</span>
+                        <span class="lang-en">How to Get More Coins & Diamonds Fast?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>অনেকেই জানতে চান গেমে কীভাবে দ্রুত কয়েন ও ডায়মন্ড জমানো যায়। কম সময়ে বেশি কয়েন ও ডায়মন্ড পেতে হলে ক্যারিয়ার মোডের 'লিজেন্ডারি ডিভিশন' (Legendary Division) কাজে লাগাতে হবে। এর সবচেয়ে সহজ ও কার্যকরী ট্রিকসটি হলো— আপনাকে শুধুমাত্র নিজের 'হোম স্টেডিয়ামের' (Home Stadium) ম্যাচগুলো খেলতে হবে এবং 'অ্যাওয়ে' (Away) বা প্রতিপক্ষের মাঠের ম্যাচগুলো কোয়াইট (Quit) করে দিতে হবে। সাধারণত লিজেন্ডারি ডিভিশনের ১৫টি ম্যাচের মধ্যে ৭টি হোম স্টেডিয়ামের ম্যাচ হয়ে থাকে।</p>
+
+                        <span class="highlight-title">হোম স্টেডিয়ামের ম্যাচ চিনবেন কীভাবে?</span>
+                        <p>ম্যাচ শুরু হওয়ার আগে স্ক্রিনের ওপরের দিকে স্কোরবোর্ডের দিকে লক্ষ্য করুন। সেখানে যদি আপনার টিমের নাম এবং স্কোর বাম দিকে থাকে, তবে সেটি আপনার 'হোম স্টেডিয়ামের' ম্যাচ। আর টিমের নাম ও স্কোর ডান দিকে থাকলে সেটি 'অ্যাওয়ে' ম্যাচ। এছাড়াও মাঠে নামলে আপনার নিজের সাজানো স্টেডিয়ামের ডিজাইন দেখেও খুব সহজেই হোম ম্যাচ চিনে নিতে পারবেন। খেয়াল রাখবেন, ডিভিশন শেষে ডায়মন্ডের রিওয়ার্ড পেতে হলে আপনাকে অন্তত ৬টি হোম ম্যাচ খেলতেই হবে। ৬টির কম ম্যাচ খেললে ডিভিশন বোনাস হিসেবে ডায়মন্ড পাবেন না। তাই ডিভিশন পার করার সময় অন্তত ৬-৭টি হোম ম্যাচ খেলে বাকি ম্যাচগুলো কোয়াইট করে দিতে পারেন।</p>
+
+                        <span class="highlight-title">হোম ম্যাচ খেলার সুবিধা ও কয়েনের গড় হিসাব:</span>
+                        <p>লিজেন্ডারি ডিভিশনের একটি হোম ম্যাচ খেললে আপনি সব মিলিয়ে অনায়াসেই ৩০০+ (৩০০ এর বেশি) কয়েন পেতে পারেন! কীভাবে এই ৩০০+ কয়েন এক ম্যাচ থেকেই আসে, চলুন তার একটি গড় হিসাব এবং যোগফল দেখে নিই:<br>
+                        - ম্যাচ উইন: লিজেন্ডারি ডিভিশনে ম্যাচ জেতার জন্য ৩৬ বেসিক কয়েন পাওয়া যায়。<br>
+                        - গোল বোনাস: প্রতি ১টি গোলের জন্য ৬ কয়েন করে। ধরুন ম্যাচে আপনি গড়ে ৩টি গোল করলেন, তাহলে পাবেন ১৮ কয়েন。<br>
+                        - হোম স্টেডিয়াম বোনাস: নিজের মাঠে খেলার কারণে গড়ে ৫০ কয়েনের মতো বোনাস যুক্ত হবে (স্টেডিয়াম আপগ্রেডেশনের ওপর ভিত্তি করে এটি কমবেশি হতে পারে)।<br>
+                        - ক্লিন শিট ও কমার্শিয়াল: প্রতিপক্ষকে কোনো গোল দিতে না দিলে (ক্লিন শিট) ৮ কয়েন এবং কমার্শিয়াল আপগ্রেড থেকে গড়ে ৪ কয়েন বোনাস পাওয়া যায়।</p>
+                        
+                        <p>অ্যাড বোনাস ছাড়া আপনার টোটাল বেসিক কয়েন হচ্ছে: ৩৬ (ম্যাচ উইন) + ১৮ (গোল) + ৫০ (স্টেডিয়াম) + ৮ (ক্লিন শিট) + ৪ (কমার্শিয়াল) = ১১৬ বেসিক কয়েন।<br>
+                        এবার আসি সবচেয়ে বড় বোনাসটিতে। লিজেন্ডারি ডিভিশনে হোম ম্যাচের পর ভিডিও অ্যাড (Ad) দেখলে সবসময়ই ফিক্সড ২০০ কয়েন বোনাস পাওয়া যায়!<br>
+                        তাহলে আপনার হোম ম্যাচের চূড়ান্ত টোটাল হিসাব দাঁড়ালো: ১১৬ (বেসিক কয়েন) + ২০০ (অ্যাড বোনাস) = ৩১৬ কয়েন! অর্থাৎ, প্রতি হোম ম্যাচ থেকে আপনার ৩০০+ কয়েন একদম নিশ্চিত。</p>
+
+                        <span class="highlight-title">অ্যাওয়ে ম্যাচ কেন স্কিপ (Quit) করবেন?</span>
+                        <p>অ্যাওয়ে ম্যাচ খেললে আপনি শুধু যে বিশাল 'হোম স্টেডিয়াম বোনাস' থেকে বঞ্চিত হবেন তা নয়, এখানকার অ্যাড বোনাসও অনেক কম থাকে। চলুন একটি অ্যাওয়ে ম্যাচের গড় হিসাব দেখি:<br>
+                        - ম্যাচ উইন: ৩৬<br>
+                        - গোল বোনাস: ধরুন ৩-৪ গোল করলেন (১৮-২৪ কয়েন)<br>
+                        - ক্লিন শিট ও কমার্শিয়াল: ৮ + ২ = ১০ কয়েন<br>
+                        অর্থাৎ, স্টেডিয়াম বোনাস না থাকায় আপনার টোটাল বেসিক কয়েন হবে গড়ে মাত্র ৭০ এর মতো। </p>
+
+                        <p>সবচেয়ে বড় হতাশার বিষয় হলো অ্যাড বোনাস! অ্যাওয়ে ম্যাচের পর ভিডিও অ্যাড দেখলে সাধারণত মাত্র ৭০ কয়েনের মতো বোনাস পাওয়া যায়。<br>
+                        তাহলে অ্যাওয়ে ম্যাচের টোটাল হিসাব দাঁড়ালো: ৭০ (বেসিক) + ৭০ (অ্যাড) = ১৪০ কয়েন! </p>
+
+                        <p>হিসাব করলে দেখা যায়, হোম ম্যাচের তুলনায় অ্যাওয়ে ম্যাচে কয়েনের পরিমাণ অর্ধেকেরও কম। তাই অ্যাওয়ে ম্যাচগুলোতে সময় নষ্ট না করে, সেগুলো সাথে সাথে কোয়াইট (Quit) করে দেওয়া সবচেয়ে বুদ্ধিমানের কাজ। এতে করে ওই বেঁচে যাওয়া সময়ে আপনি দ্রুত পরের হোম ম্যাচটি খেলে আরও অনেক বেশি কয়েন জমাতে পারবেন。</p>
+
+                        <span class="highlight-title">২০টি ম্যাচ খেললে টোটাল কয়েন ও ডায়মন্ডের হিসাব:</span>
+                        <p>এই ট্রিকসটি ব্যবহার করে আপনি যদি রেগুলার ২০টি হোম ম্যাচ খেলেন, তবে খুব অল্প সময়েই বড় একটি অ্যামাউন্ট জমা করতে পারবেন। <br>
+                        - টোটাল কয়েন: প্রতি হোম ম্যাচে গড়ে ৩০০ কয়েন করে পেলে, ২০টি ম্যাচে আপনি পাবেন (২০ × ৩০০) = ৬,০০০ কয়েন!<br>
+                        - টোটাল ডায়মন্ড: লিজেন্ডারি ডিভিশনে ডায়মন্ড পাওয়ার হিসাবটা একটু আলাদা। ডিভিশনের ১৫টি ম্যাচের সবগুলোতে জিতে চ্যাম্পিয়ন হলে মোট ৩০ ডায়মন্ড রিওয়ার্ড পাওয়া যায়। তবে প্রতি ১টি ম্যাচ হারলে বা কোয়াইট করলে রিওয়ার্ড থেকে ১ ডায়মন্ড করে কাটা যায় (যেমন- ১৪টি জিতলে ২৯ ডায়মন্ড, ১৩টি জিতলে ২৮ ডায়মন্ড)।</p> 
+                        
+                        <p>আপনি যদি এই ট্রিকস কাজে লাগিয়ে ডিভিশনের ৭টি হোম ম্যাচ জিতেন এবং বাকি ৮টি অ্যাওয়ে ম্যাচ স্কিপ বা কোয়াইট করে দেন, তবে ওই ৮টি স্কিপ করা ম্যাচের জন্য ৮ ডায়মন্ড কাটা যাবে। ফলে প্রতি ডিভিশন শেষে আপনি অনায়াসেই (৩০ - ৮) = ২২ ডায়মন্ড করে পেয়ে যাবেন। সেই হিসেবে ২০টি হোম ম্যাচ খেলা মানে আপনি প্রায় ৩টি ডিভিশন শেষ করবেন (৩ × ৭ = ২১ ম্যাচ)। অর্থাৎ, এই উপায়ে খেললে ৩টি ডিভিশন থেকে আপনি (২২ × ৩) = ৬৬ ডায়মন্ড একদম নিশ্চিত পেয়ে যাবেন!</p>
+
+                        <p>অনেকেই কয়েন বা ডায়মন্ডের জন্য লাইভ ম্যাচ খেলেন। লাইভ ম্যাচেও টায়ারের ওপর ভিত্তি করে ডায়মন্ড পাওয়া যায়, তবে শর্ত হলো আপনাকে অন্তত ৮০% ম্যাচ জিততে হবে, যা অনেক সময় বেশ কঠিন হয়ে যায়। কিন্তু ক্যারিয়ার ম্যাচগুলো ১০০% নিশ্চিত জেতা যায় এবং কোনো চাপ থাকে না। তাই দ্রুত এবং নিশ্চিতভাবে কয়েন ও ডায়মন্ড জমানোর জন্য লাইভ ম্যাচের চেয়ে ক্যারিয়ার ম্যাচই সবচেয়ে সেরা অপশন।</p> 
+
+                        <p>এর পাশাপাশি অনেকেই গেমের 'ডেইলি চ্যালেঞ্জ' (Daily Challenge) এবং 'উইকলি চ্যালেঞ্জ' (Weekly Challenge) গুলোকে অবহেলা করেন, যা একেবারেই ঠিক নয়। নিয়মিত ডেইলি ও উইকলি চ্যালেঞ্জ পূরণের মাধ্যমেও খুব ভালো পরিমাণের রিওয়ার্ড পাওয়া যায়। তাই দ্রুত স্কোয়াড বড় করতে চাইলে ক্যারিয়ার ম্যাচের ট্রিকসটির পাশাপাশি এই চ্যালেঞ্জগুলোও নিয়মিত কমপ্লিট করার চেষ্টা করবেন。</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>Many want to know how to accumulate coins and diamonds quickly in the game. To get more coins and diamonds in less time, you must utilize the 'Legendary Division' in career mode. The easiest and most effective trick is—you must only play your 'Home Stadium' matches and Quit the 'Away' or opponent's stadium matches. Usually, out of 15 matches in the Legendary Division, 7 are home matches.</p>
+
+                        <span class="highlight-title">How to identify a Home Match?</span>
+                        <p>Before the match starts, look at the scoreboard at the top of the screen. If your team's name and score are on the left, it's your 'Home Stadium' match. If they are on the right, it's an 'Away' match. Also, once on the field, you can easily recognize a home match by seeing your customized stadium design. Note that to get the diamond reward at the end of the division, you must play at least 6 home matches. If you play less than 6, you won't get diamonds as a division bonus. So, play at least 6-7 home matches and quit the rest.</p>
+
+                        <span class="highlight-title">Benefits of playing Home Matches & average coin calculation:</span>
+                        <p>Playing one home match in the Legendary Division easily gets you 300+ coins! Let's see how these 300+ coins come from a single match:<br>
+                        - Match Win: 36 basic coins for winning.<br>
+                        - Goal Bonus: 6 coins per goal. For an average of 3 goals, you get 18 coins.<br>
+                        - Home Stadium Bonus: Around 50 bonus coins for playing in your own stadium (varies based on stadium upgrades).<br>
+                        - Clean Sheet & Commercial: 8 coins for not conceding a goal, and around 4 coins from commercial upgrades.</p>
+                        
+                        <p>Total basic coins without ad bonus: 36 (Win) + 18 (Goal) + 50 (Stadium) + 8 (Clean Sheet) + 4 (Commercial) = 116 basic coins.<br>
+                        Now for the biggest bonus! After a home match in the Legendary Division, watching a video Ad always gives a fixed 200 coin bonus!<br>
+                        Final home match calculation: 116 (basic) + 200 (ad bonus) = 316 coins! Meaning, 300+ coins are guaranteed per home match.</p>
+
+                        <span class="highlight-title">Why skip (Quit) Away Matches?</span>
+                        <p>Playing away matches deprives you of the huge 'home stadium bonus' and the ad bonus is also much lower. Let's look at an average away match:<br>
+                        - Match Win: 36<br>
+                        - Goal Bonus: Say you score 3-4 goals (18-24 coins)<br>
+                        - Clean Sheet & Commercial: 8 + 2 = 10 coins<br>
+   Without the stadium bonus, your total basic coins will average around 70.</p>
+
+                        <p>The most frustrating part is the ad bonus! Watching a video ad after an away match usually gives only about 70 bonus coins.<br>
+                        Total away match calculation: 70 (basic) + 70 (ad) = 140 coins!</p>
+
+                        <p>As seen, the coin amount in away matches is less than half of home matches. So, instead of wasting time on them, it is wise to Quit away matches immediately. This saves time to play the next home match quickly and accumulate more coins.</p>
+
+                        <span class="highlight-title">Total Coins & Diamonds for 20 Matches:</span>
+                        <p>Using this trick, playing 20 home matches will yield a large amount quickly.<br>
+                        - Total Coins: Getting an average of 300 coins per match, for 20 matches you will get (20 × 300) = 6,000 coins!<br>
+                        - Total Diamonds: The diamond calculation in the Legendary Division is a bit different. Winning all 15 division matches gives 30 diamonds as a reward. But losing or quitting deducts 1 diamond per match (e.g., 14 wins = 29 diamonds, 13 wins = 28 diamonds).</p>
+
+                        <p>If you use this trick to win 7 home matches and quit 8 away matches, 8 diamonds will be deducted. So, you securely get (30 - 8) = 22 diamonds per division. Playing 20 home matches means completing roughly 3 divisions (3 × 7 = 21 matches). Thus, you will get (22 × 3) = 66 diamonds guaranteed from 3 divisions!</p>
+
+                        <p>Many play live matches for coins or diamonds. Live matches also give diamonds based on tiers, but you need an 80% win rate, which is often hard. Career matches guarantee 100% wins with no pressure. Thus, career matches are the best option for fast coins and diamonds.</p>
+
+                        <p>Also, many players neglect the 'Daily Challenge' and 'Weekly Challenge', which is not right. Completing them regularly provides excellent rewards. To upgrade your squad quickly, try to complete these challenges alongside the career match trick.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-star"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">ক্ল্যাসিক প্লেয়ার দ্রুত পাবেন কীভাবে?</span>
+                        <span class="lang-en">How to Get Classic Players Fast?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>গেমে প্রতি ৯০ দিন পর পর চারটা করে নতুন 'স্পেশাল ক্ল্যাসিক প্লেয়ার' আসে। এই ৪ জন প্লেয়ারকে নিজের স্কোয়াডে নিতে হলে আপনাকে 'ড্রিম পয়েন্ট' বা ডিপি (DP - Dream Point) জমাতে হবে। গেমের নিয়ম অনুযায়ী, এই নির্দিষ্ট ৯০ দিনের মধ্যে ২ লাখ ৫০ হাজার ডিপি জমাতে পারলে তবেই এই ৪ জন প্লেয়ারকে আনলক করা যায়।</p>
+
+                        <span class="highlight-title">ডিপি কীভাবে জমানো যায় এবং প্রতিদিনের ম্যাচের হিসাব:</span>
+                        <p>ডিপি মূলত ম্যাচ জেতার মাধ্যমে জমানো যায়। আপনি ক্যারিয়ার ম্যাচ বা লাইভ ম্যাচ—যেটিই খেলুন না কেন, ম্যাচ জিতলে ডিপি দেওয়া হয়। একটি ম্যাচ জিতলে গড়ে ১২০ ডিপি পাওয়া যায় (তবে ম্যাচে গোলের সংখ্যা বেশি থাকলে ডিপির পরিমাণও আরও বেড়ে যায়)।</p>
+                        <p>এখন হিসাব করে দেখুন, গড়ে ১২০ ডিপি করে ধরলে আড়াই লাখ (২,৫০,০০০) ডিপি জমাতে হলে আপনাকে প্রায় ২০৮৪টি ম্যাচ জিততে হবে! এই ২০৮৪টি ম্যাচকে যদি আমরা ৯০ দিনের সিজন দিয়ে ভাগ করি, তবে দেখা যায়— আপনাকে প্রতিদিন গড়ে ২৩ থেকে ২৪টি করে ম্যাচ খেলতে এবং জিততে হবে। যারা নিয়মিত গেম খেলেন তাদের জন্য প্রতিদিন ২৩-২৪টি ম্যাচ খেলা একেবারেই অসম্ভব কিছু নয়। তবে আপনার হাতে সময় কম থাকলে প্রতিদিন অন্তত ১২-১৫টি ম্যাচ খেলার টার্গেট রাখতে পারেন。</p>
+                        <p>ডিপি জমানোর সাথে সাথে ধাপে ধাপে এই প্লেয়ারগুলো আনলক হয়। এর হিসাবটা হলো:<br>
+                        - প্রথম প্লেয়ার: ৬২.৫ হাজার (62.5k) ডিপি জমাতে পারলে ৪ জনের মধ্যে থেকে র‍্যান্ডমলি যেকোনো ১ জন প্লেয়ার পাবেন।<br>
+                        - দ্বিতীয় প্লেয়ার: ১ লাখ ১৫ হাজার (115k) ডিপি জমাতে পারলে বাকি ৩ জনের মধ্যে থেকে র‍্যান্ডমলি যেকোনো ১ জন প্লেয়ার পাবেন।<br>
+                        - তৃতীয় প্লেয়ার: ১ লাখ ৭৫ হাজার (175k) ডিপি জমাতে পারলে বাকি ২ জনের মধ্যে থেকে র‍্যান্ডমলি যেকোনো ১ জন প্লেয়ার পাবেন।<br>
+                        - চতুর্থ প্লেয়ার: ২ লাখ ৫০ হাজার (250k) ডিপি জমাতে পারলে সর্বশেষ বাকি থাকা প্লেয়ারটিও আনলক হয়ে যাবে。</p>
+
+                        <span class="highlight-title">ফ্রিতে ডিপি বুস্ট পাওয়ার উপায় (Free DP Boost):</span>
+                        <p>সবসময় যে ডায়মন্ড খরচ করেই বুস্ট কিনতে হবে এমন নয়, আপনি গেম খেলে ফ্রিতেও বেশ কিছু ডিপি বুস্ট কালেক্ট করতে পারবেন।<br>
+                        - সিজন পাস (Season Pass): সিজন পাসের নিচের সারিটি হলো 'ফ্রি পাস'। আপনি নিয়মিত গেম খেলে এর টায়ার ২, ৫, ৮, ১১, ১৪, ১৭ এবং ২০ কমপ্লিট করলে মোট ৭টি 'রেয়ার ডিপি বুস্ট' একদম ফ্রিতে পেয়ে যাবেন। আর আপনি যদি প্রিমিয়াম সিজন পাস কিনে থাকেন, তবে ওপরের সারি থেকেও আরও ২টি লিজেন্ডারি এবং ১টি রেয়ার বুস্ট কালেক্ট করতে পারবেন।<br>
+                        - প্রাইজ ল্যাডার (Prize Ladder): স্পেশাল প্লেয়ারের ইভেন্টে থাকা 'প্রাইজ ল্যাডার' থেকেও ধাপে ধাপে ফ্রিতে বুস্ট পাওয়া যায়। ল্যাডারটি কমপ্লিট করার পথে আপনি ১টি কমন, ২টি রেয়ার এবং ১টি লিজেন্ডারি ডিপি বুস্ট পাবেন।<br>
+                        (মনে রাখবেন, স্টোর থেকে কেনা বুস্টগুলো একাধিক ম্যাচের জন্য হলেও, সিজন পাস বা ল্যাডার থেকে পাওয়া এই ফ্রি বুস্টগুলোর প্রতিটি দিয়ে মূলত ১টি ম্যাচের জন্যই এক্সট্রা ডিপি পাওয়া যায়)।</p>
+
+                        <span class="highlight-title">ডিপি বুস্টের ব্যবহার ও ডায়মন্ডের হিসাব:</span>
+                        <p>সাধ্যমতো ম্যাচ খেলা এবং ফ্রি বুস্টের পাশাপাশি দ্রুত ডিপি জমানোর আরেকটি দারুণ ট্রিকস হলো স্টোর থেকে 'ডিপি বুস্ট' কেনা। এটি পাওয়ার জন্য আপনাকে ক্ল্যাসিক প্লেয়ারের 'প্রাইজ ল্যাডার' অপশনে গিয়ে 'Boost Your DP' বাটনে ক্লিক করতে হবে। এখানে ডায়মন্ডের বিনিময়ে ৩ ধরনের ডিপি বুস্ট পাওয়া যায়。</p>
+                        <p>এখন প্রশ্ন হলো, বুস্ট কেনার জন্য এত ডায়মন্ড পাবেন কোথায়? আপনি যে নিয়মিত ক্যারিয়ার ম্যাচ খেলবেন এবং লিজেন্ডারি ডিভিশন শেষ করবেন, সেখান থেকেই প্রচুর ডায়মন্ড রিওয়ার্ড পাবেন। আর সেই জমানো ডায়মন্ড দিয়েই খুব সহজে এই বুস্টগুলো ব্যবহার করতে পারবেন:<br>
+                        - কমন (Common) বুস্ট: ২৫ ডায়মন্ডের বিনিময়ে এটি কিনলে পরবর্তী ৩টি ম্যাচের জন্য আপনি স্বাভাবিকের চেয়ে ৫০% ডিপি বেশি পাবেন।<br>
+                        - রেয়ার (Rare) বুস্ট: ৩৫ ডায়মন্ডের বিনিময়ে এটি কিনলে পরবর্তী ৫টি ম্যাচের জন্য ৭৫% ডিপি বেশি পাবেন।<br>
+                        - লিজেন্ডারি (Legendary) বুস্ট: ১২৫ ডায়মন্ডের বিনিময়ে এটি কিনলে পরবর্তী ৮টি ম্যাচের জন্য আপনি পাক্কা ১৫০% ডিপি বেশি পাবেন (এটি সবচেয়ে বেশি লাভজনক)।</p>
+
+                        <span class="highlight-title">ডিপি বুস্ট ব্যবহারের সতর্কতা:</span>
+                        <p>যেহেতু ডায়মন্ড খরচ করে বুস্ট কিনতে হয়, তাই বুস্ট চলাকালীন সময়ে লাইভ ম্যাচ না খেলে ক্যারিয়ার ম্যাচ খেলাটাই সবচেয়ে বুদ্ধিমানের কাজ। লাইভ ম্যাচ জেতা বেশ কষ্টকর, তাছাড়া নেটওয়ার্ক বা পিং (Ping) সমস্যা তো আছেই। একটি ম্যাচ হারলে বা ডিসকানেক্ট হয়ে গেলে আপনার ডায়মন্ড দিয়ে কেনা বুস্টের একটি ম্যাচ পুরোপুরি নষ্ট হয়ে যাবে। কিন্তু ক্যারিয়ার ম্যাচে আপনার জয়ের নিশ্চয়তা ১০০% থাকে, ফলে আপনি নিশ্চিন্তে বুস্টের সর্বোচ্চ সুবিধাটুকু নিতে পারবেন。</p>
+
+                        <span class="highlight-title">ডিপি জমানোর অন্যান্য উপায়:</span>
+                        <p>ডিপি জমানোর আরও কিছু সহজ উপায় রয়েছে। আপনি যদি নিয়মিত গেমের ডেইলি চ্যালেঞ্জ (Daily Challenge), উইকলি চ্যালেঞ্জ (Weekly Challenge) এবং ড্রিম লিগ লাইভ চ্যালেঞ্জগুলো পূরণ করেন, তবে সেখান থেকেও খুব সহজে ভালো পরিমাণের এক্সট্রা ডিপি কালেক্ট করতে পারবেন।</p>
+                        <p>তাই প্রতিদিন ঘড়ি ধরে প্রেশার না নিয়ে নিজের সাধ্যমতো ম্যাচ খেলুন এবং পাশাপাশি ফ্রি বুস্ট, জমানো ডায়মন্ড দিয়ে কেনা ডিপি বুস্ট ও চ্যালেঞ্জগুলো নিয়মিত কমপ্লিট করুন। তাহলেই খুব দ্রুত আড়াই লাখ ডিপি জমিয়ে স্পেশাল ক্ল্যাসিক প্লেয়ারদের নিজের স্কোয়াডে যুক্ত করতে পারবেন。</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>In the game, four new 'Special Classic Players' arrive every 90 days. To add these 4 players to your squad, you need to collect 'Dream Points' or DP. According to the game's rules, you can unlock these 4 players only if you manage to collect 250,000 DP within these specific 90 days.</p>
+
+                        <span class="highlight-title">How to Accumulate DP & Daily Match Calculation:</span>
+                        <p>DP is mainly earned by winning matches. Whether you play a Career Match or a Live Match, winning grants you DP. You get an average of 120 DP for winning a match (however, scoring more goals increases the DP amount).</p>
+                        <p>If we calculate, assuming an average of 120 DP per match, you need to win about 2,084 matches to collect 250,000 DP! If we divide these 2,084 matches by the 90-day season, you need to play and win around 23 to 24 matches every day. For regular gamers, playing 23-24 matches daily is not impossible. However, if you are short on time, you can aim to play at least 12-15 matches daily.</p>
+                        <p>These players unlock step-by-step as you collect DP. The breakdown is:<br>
+                        - 1st Player: Collecting 62.5k DP grants you 1 random player out of the 4.<br>
+                        - 2nd Player: At 115k DP, you get 1 random player from the remaining 3.<br>
+                        - 3rd Player: At 175k DP, you get 1 random player from the remaining 2.<br>
+                        - 4th Player: Reaching 250k DP unlocks the final remaining player.</p>
+
+                        <span class="highlight-title">How to Get Free DP Boosts:</span>
+                        <p>You don't always have to spend diamonds to buy boosts; you can collect several DP boosts for free just by playing the game.<br>
+                        - Season Pass: The bottom row of the Season Pass is the 'Free Pass'. By playing regularly and completing tiers 2, 5, 8, 11, 14, 17, and 20, you will get a total of 7 'Rare DP Boosts' completely free. If you bought the Premium Season Pass, you can collect 2 more Legendary and 1 Rare boost from the top row.<br>
+                        - Prize Ladder: You can also get free boosts step-by-step from the 'Prize Ladder' located in the Special Player event. By completing the ladder, you will receive 1 Common, 2 Rare, and 1 Legendary DP Boost.<br>
+                        (Note: While store-bought boosts last for multiple matches, these free boosts from the Season Pass or Ladder provide extra DP for only 1 match each).</p>
+
+                        <span class="highlight-title">Using DP Boosts & Diamond Calculation:</span>
+                        <p>Besides playing matches and using free boosts, another great trick to accumulate DP fast is buying 'DP Boosts' from the store. To get this, go to the classic player's 'Prize Ladder' option and click the 'Boost Your DP' button. Here, 3 types of DP boosts are available in exchange for diamonds.</p>
+                        <p>Now, where will you get so many diamonds to buy boosts? You will get plenty of diamond rewards from playing regular career matches and completing the Legendary Division. You can easily use those saved diamonds to buy these boosts:<br>
+                        - Common Boost: For 25 diamonds, you get 50% more DP than usual for the next 3 matches.<br>
+                        - Rare Boost: For 35 diamonds, you get 75% more DP for the next 5 matches.<br>
+                        - Legendary Boost: For 125 diamonds, you get a solid 150% more DP for the next 8 matches (this is the most profitable).</p>
+
+                        <span class="highlight-title">DP Boost Usage Warning:</span>
+                        <p>Since you spend diamonds to buy boosts, the smartest thing to do is play Career Matches instead of Live Matches while the boost is active. Winning Live Matches is tough, and there are network or Ping issues. If you lose a match or get disconnected, one match of your diamond-purchased boost will be completely wasted. But in Career Matches, your winning chance is 100%, allowing you to safely extract the maximum benefit from the boost.</p>
+
+                        <span class="highlight-title">Other Ways to Collect DP:</span>
+                        <p>There are some other easy ways to collect DP. If you regularly complete the game's Daily Challenges, Weekly Challenges, and Dream League Live challenges, you can easily collect a good amount of extra DP from there.</p>
+                        <p>So, without taking the pressure of playing constantly, play as many matches as you can and regularly complete challenges while using free boosts and diamond-purchased DP boosts. This way, you can quickly accumulate 250,000 DP and add the Special Classic Players to your squad.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-gamepad"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">কীভাবে ভালো গেমপ্লে করবেন?</span>
+                        <span class="lang-en">How to Improve Your Gameplay?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>ডিএলএস (DLS) গেমে কিভাবে ভালো খেলা যায় বা কোন ফর্মেশনটি সবচাইতে সেরা, তা নিয়ে অনেকেরই আগ্রহ থাকে। গেমে ভালো করার জন্য প্রয়োজনীয় কিছু গুরুত্বপূর্ণ বিষয় নিয়ে নিচে বিস্তারিত আলোচনা করা হলো। মূলত কয়েকটি বিশেষ দিক ফলো করলে গেমপ্লে আগের চেয়ে অনেক বেশি উন্নত করা সম্ভব:</p>
+
+                        <span class="highlight-title">১. প্লে-স্টাইল (Playstyle) ও নিজস্ব বুদ্ধিমত্তা:</span>
+                        <p>অন্যান্য ফুটবল গেমে সাধারণত কিছু প্লে-স্টাইল (যেমন- Quick Counter, Long Ball Counter, Possession Game ইত্যাদি) আগে থেকেই সেট করে দেওয়া থাকে এবং সেই নির্দিষ্ট অপশন বেছে নিয়ে খেলতে হয়। কিন্তু ডিএলএস (DLS) গেমে নির্দিষ্ট কোনো স্টাইল চাপিয়ে দেওয়া হয়নি। মাঠে কিভাবে খেলা হবে তা সম্পূর্ণ নির্ভর করে নিজস্ব মাইন্ডসেট এবং উপস্থিত বুদ্ধির ওপর। এই স্বাধীনতাই ম্যাচের পরিস্থিতি বুঝে তাৎক্ষণিক সিদ্ধান্ত নেওয়ার সুযোগ তৈরি করে দেয়。</p>
+
+                        <span class="highlight-title">২. পজিশন গেম (Possession Game):</span>
+                        <p>ম্যাচ জেতার জন্য সবচাইতে কার্যকর পদ্ধতি হলো পজিশন গেম খেলা। বল পাওয়ার সাথে সাথে লং পাস খেলা শুরু করলে বল হারানোর ভয় বেশি থাকে এবং খেলার সৌন্দর্য নষ্ট হয়। এর চেয়ে ছোট ছোট পাসে বল নিজের দখলে রেখে খেলা অনেক বেশি নিরাপদ। পজিশন গেম খেলার সময় বল কন্ট্রোলিংয়ের দিকে বিশেষ নজর দিতে হবে এবং গোল করার জন্য তাড়াহুড়ো না করে নিশ্চিত সুযোগ তৈরি করে শুট নিতে হবে। তবে অতিরিক্ত পাসিং করা থেকে বিরত থাকতে হবে, কারণ অতিরিক্ত পাসিং আক্রমণের গতি কমিয়ে দেয়。</p>
+
+                        <span class="highlight-title">৩. ডিফেন্সিভ মোড (Defensive Mode):</span>
+                        <p>পজিশন গেম খেলার সময় সবচাইতে সেরা অপশন হচ্ছে ডিফেন্সিভ মোডে খেলা। এর কারণ হলো, যখন ধীরে ধীরে বল নিয়ে উপরে ওঠা হয়, তখন টিমের অ্যাটাকাররা সুযোগ বুঝে সামনে আগায়। আবার যদি হুট করে বল হারিয়ে যায়, তখন অ্যাটাকাররা স্বয়ংক্রিয়ভাবে নিচে নেমে এসে ডিফেন্সে সাহায্য করে। এতে ডিফেন্স অনেক বেশি শক্তিশালী থাকে এবং গোল খাওয়ার সম্ভাবনা প্রায় থাকে না বললেই চলে। বিশেষ করে এক গোলে এগিয়ে থাকলে এই কৌশল ম্যাচ জেতাতে দারুণ সাহায্য করে。</p>
+
+                        <span class="highlight-title">৪. ফর্মেশন নির্বাচন (Formation Selection):</span>
+                        <p>ফর্মেশন নির্বাচনের ক্ষেত্রে চারজন ডিফেন্ডারের চেয়ে তিনজন ডিফেন্ডার নিয়ে খেলা ডিএলএস অনলাইন ম্যাচে বেশি কার্যকর দেখা যায়। বর্তমানে বেশিরভাগ অনলাইন প্লেয়ার মাঝমাঠ দিয়ে আক্রমণ করার চেষ্টা করে। সেক্ষেত্রে চার ডিফেন্ডার দিয়ে খেললে সাইডের দুইজন প্লেয়ারের তেমন কোনো কাজ থাকে না। কিন্তু তিনজন শক্তিশালী সেন্টার ব্যাক (CB) থাকলে মাঝখানের ডিফেন্স অনেক বেশি জমাট থাকে। মাঝমাঠে দুইজন ডিফেন্সিভ মিডফিল্ডার (DM) এবং একজন অ্যাটাকিং মিডফিল্ডার (AM) রাখা যেতে পারে। সামনে গোল দেওয়ার জন্য দুইজন ফরোয়ার্ড রাখা ভালো, কারণ এতে ফিনিশিং দেওয়া সহজ হয়。</p>
+
+                        <span class="highlight-title">৫. সেরা কিছু ফর্মেশন (Best Formations):</span>
+                        <p>খেলার ধরনের ওপর ভিত্তি করে কিছু ফর্মেশন ট্রাই করা যেতে পারে। এর মধ্যে ৩-৪-২-১ (3-4-2-1) ফর্মেশনটি খুবই চমৎকার, কারণ এখানে উইং ব্যাকরা আক্রমণ ও রক্ষণ উভয় ক্ষেত্রেই সাপোর্ট দেয়। এছাড়া ৩-২-৩-২ (3-2-3-2) ফর্মেশনটিও বেশ কার্যকর। যারা চার ডিফেন্ডারে খেলতে অভ্যস্ত, তারা ৪-১-২-১-২ (4-1-2-1-2) বা ৪-২-২-২ (4-2-2-2) ট্রাই করে দেখতে পারেন। (সামনে প্রতিটি ফর্মেশন নিয়ে আলাদা আলাদা বিস্তারিত আলোচনা করা হবে)।</p>
+
+                        <span class="highlight-title">৬. মনোযোগ ও খেলোয়াড় পরিবর্তন (Focus & Substitution):</span>
+                        <p>মাঠে নামার পর পুরো মনোযোগ গেমের ভেতর থাকতে হবে। অপোনেন্টকে ইমোজি দিয়ে বিরক্ত করার চিন্তা করলে নিজের মনোযোগ নষ্ট হয়ে যায় এবং ভুল করে গোল খেয়ে বসার সম্ভাবনা থাকে। অপোনেন্টের ইমোজি থেকে নিজেকে কন্ট্রোল রাখতে দরকার হলে ইমোজি অপশন বন্ধ করে রাখা উচিত। ম্যাচে কোন প্লেয়ার খারাপ খেলছে আর কে ক্লান্ত হয়ে যাচ্ছে, সেদিকে খেয়াল রাখা জরুরি। সময়মতো সঠিক খেলোয়াড় পরিবর্তন বা সাবস্টিটিউট করা জয়ের জন্য খুবই দরকারি এবং সাব করার জন্য ৬০-৭০ মিনিট পারফেক্ট সময়। সবসময় একটি ঠান্ডা মাথার প্ল্যান নিয়ে খেলতে যাওয়া উচিত。</p>
+
+                        <p>আশা করা যায়, এই বিষয়গুলো মেনে চললে গেম-প্লে আগের চেয়ে অনেক বেশি উন্নত হবে。</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>Many are interested in knowing how to play better in DLS or which formation is the best. Below is a detailed discussion on some crucial aspects necessary for performing well. By following these specific points, gameplay can be improved significantly:</p>
+
+                        <span class="highlight-title">1. Playstyle & Intelligence:</span>
+                        <p>In other football games, certain playstyles (like Quick Counter, Long Ball Counter, Possession Game, etc.) are usually pre-set, and you have to choose a specific option to play. But in DLS, no specific style is imposed. How the game is played on the field depends entirely on your own mindset and presence of mind. This freedom creates the opportunity to make instant decisions based on the match situation.</p>
+
+                        <span class="highlight-title">2. Possession Game:</span>
+                        <p>The most effective method for winning matches is playing a possession game. Starting to play long passes immediately after getting the ball increases the risk of losing it and ruins the beauty of the game. Instead, keeping possession with short passes is much safer. While playing a possession game, pay special attention to ball control and take a shot by creating a clear opportunity without rushing to score. However, refrain from over-passing, as it slows down the speed of the attack.</p>
+
+                        <span class="highlight-title">3. Defensive Mode:</span>
+                        <p>While playing a possession game, the best option is to play in defensive mode. The reason is, as you slowly advance with the ball, the team's attackers move forward opportunistically. On the other hand, if you suddenly lose the ball, the attackers automatically drop back to assist the defense. This makes the defense much stronger, and the chance of conceding a goal becomes almost non-existent. Especially when leading by one goal, this tactic greatly helps in winning the match.</p>
+
+                        <span class="highlight-title">4. Formation Selection:</span>
+                        <p>When selecting a formation, playing with three defenders is often more effective in DLS online matches than with four. Currently, most online players try to attack through the midfield. In that case, if you play with four defenders, the two side players have little to do. But having three strong center backs (CB) keeps the central defense very solid. Two defensive midfielders (DM) and one attacking midfielder (AM) can be kept in the midfield. It's good to keep two forwards upfront for scoring, as it makes finishing easier.</p>
+
+                        <span class="highlight-title">5. Some Best Formations:</span>
+                        <p>Depending on your playing style, you can try some formations. Among them, the 3-4-2-1 formation is excellent because the wing-backs provide support in both attack and defense here. Besides, the 3-2-3-2 formation is also quite effective. Those used to playing with four defenders can try 4-1-2-1-2 or 4-2-2-2. (Each formation will be discussed in detail separately later).</p>
+
+                        <span class="highlight-title">6. Focus & Substitution:</span>
+                        <p>Once on the field, your entire focus must be inside the game. Thinking about annoying the opponent with emojis ruins your own concentration and increases the chance of conceding a goal by mistake. To control yourself from the opponent's emojis, you should turn off the emoji option if necessary. It is crucial to keep an eye on which player is playing poorly and who is getting tired during the match. Making timely and correct player substitutions is very necessary for winning, and 60-70 minutes is the perfect time to sub. You should always go to play with a cool-headed plan.</p>
+
+                        <p>Hopefully, following these points will improve your gameplay much more than before.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">সাবস্টিটিউট বা বেঞ্চে কোন ধরনের প্লেয়ার রাখা উচিত?</span>
+                        <span class="lang-en">What Kind of Players Should You Keep on the Bench?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>একটি শক্তিশালী এবং ভারসাম্যপূর্ণ সাবস্টিটিউট বা বেঞ্চ (Bench) তৈরি করা ম্যাচ জেতার জন্য অত্যন্ত গুরুত্বপূর্ণ। ম্যাচের পরিস্থিতি পরিবর্তন করতে এবং মূল খেলোয়াড়দের ক্লান্তি বা ইনজুরি সামাল দিতে প্লেয়ার সাব করানো খুবই জরুরি। গেমের যেকোনো সময় প্লেয়ার সাব করানো যায়, তবে প্লেয়ার সাব করানোর সবচেয়ে উত্তম সময় হলো ৬০ থেকে ৭০ মিনিটের মধ্যে। বেঞ্চে কেমন প্লেয়ার রাখা উচিত, তা নিয়ে নিচে বিস্তারিত আলোচনা করা হলো:</p>
+
+                        <span class="highlight-title">১. ফিটনেস কোচিং করানো ফরোয়ার্ড বা উইঙ্গার:</span>
+                        <p>ম্যাচের দ্বিতীয় হাফে (বিশেষ করে ৭০ মিনিটের পর) প্রতিপক্ষের ডিফেন্ডাররা সাধারণত ক্লান্ত হয়ে পড়ে। এই সময়ে ব্যবহারের জন্য বেঞ্চে এমন ১-২ জন ফরোয়ার্ড বা উইঙ্গার রাখা উচিত, যাদের 'ফিটনেস কোচিং' (Fitness Coaching) খুব ভালোভাবে করানো হয়েছে। বিশেষ করে যাদের স্পিড (Speed), অ্যাকসেলারেশন (ACC) এবং স্ট্যামিনা (Stamina) ভালো থাকে, তারা দীর্ঘক্ষণ একই গতিতে দৌড়াতে ও খেলতে পারে। ক্লান্ত ডিফেন্সকে পরাস্ত করে দ্রুত গোল বের করে আনতে এই প্লেয়াররা দারুণ কার্যকরী。</p>
+
+                        <span class="highlight-title">২. একাধিক পজিশনে খেলতে পারা খেলোয়াড় (Utility Players):</span>
+                        <p>সাবে মোট ৮ জন প্লেয়ার রাখা যায়, তবে ম্যাচ চলাকালীন মোট ৫ জনকে সাব করানো যায়। জায়গা সীমিত হওয়ায় বেঞ্চে এমন খেলোয়াড় রাখা বুদ্ধিমানের কাজ, যাদের একাধিক পজিশনের জন্য কোচিং করানো হয়েছে অথবা যারা স্বভাবতই একাধিক পজিশনে খেলতে পারেন।<br>
+                        - এমন একজন ডিফেন্ডার রাখা উচিত যিনি সেন্ট্রাল ডিফেন্স (CB) এর পাশাপাশি ফুল-ব্যাক (LB/RB) হিসেবেও খেলতে পারেন。<br>
+                        - একইভাবে, এমন একজন মিডফিল্ডার সাবে রাখা যায় যে CM, DM এবং AM তিনটি পজিশনেই ভালো পারফরম্যান্স করতে পারবে。<br>
+                        - এছাড়াও ফর্মেশন অনুযায়ী LW এবং RW (উইঙ্গার) রাখা উচিত। যেহেতু গেমে LM এবং RM অলমোস্ট LW এবং RW এর মতোই কাজ করে, তাই আলাদা করে তাদের কথা ভাবার প্রয়োজন নেই; উইঙ্গার রাখলেই এই অভাব পূরণ হয়ে যায়。</p>
+
+                        <span class="highlight-title">৩. মাঝমাঠ নিয়ন্ত্রণের জন্য মিডফিল্ডার:</span>
+                        <p>ম্যাচের শেষ দিকে যখন লিড ধরে রাখার প্রয়োজন হয়, তখন মাঝমাঠের নিয়ন্ত্রণ ধরে রাখতে একজন ডিফেন্সিভ বা সেন্ট্রাল মিডফিল্ডার খুব সাহায্য করে। যার Passing এবং Tackling স্কিল ভালো, এমন একজনকে বেঞ্চে রাখা অত্যন্ত কার্যকরী。</p>
+
+                        <span class="highlight-title">৪. ব্যাকআপ গোলকিপার (Backup Goalkeeper):</span>
+                        <p>DLS গেমে সাধারণত গোলকিপারদের লাল কার্ড বা ইনজুরি হওয়া খুবই বিরল একটি ঘটনা। তবুও টুর্নামেন্ট বা গুরুত্বপূর্ণ কোনো ম্যাচে কোনো ধরনের রিস্ক না নেওয়ার জন্য বেঞ্চে একজন ভালো ব্যাকআপ গোলকিপার (GK) রাখা নিরাপদ。</p>
+
+                        <span class="highlight-title">৫. সাবস্টিটিউটের উপযুক্ত সময়, ফিজিও (Physios) এবং টিম বুস্ট:</span>
+                        <p>গেমের ভাষায় প্লেয়ারদের হারানো এনার্জি বা স্ট্যামিনা রিকভার করার সিস্টেমটিকে 'ফিজিও' (Physios) বলা হয়। ম্যাচের আগে ফিজিও ব্যবহার করে প্লেয়ারদের এনার্জি ফুল করে মাঠে নামা উচিত。</p>
+                        <p>ম্যাচের হাফটাইমের পর স্ট্যামিনা বাড়ানোর জন্য স্ক্রিনে ৩০ কয়েন খরচ করে একটি 'টিম বুস্ট' (Team Boost) করার অপশন আসে। এই বুস্ট ব্যবহার করলে হারানো এনার্জি সব প্লেয়ারের মাঝে ভাগ হয়ে রিকভার হয়ে যায়। এই বুস্টটি করার কারণেই হাফটাইমের পরপরই কোনো প্লেয়ার সাব করানোর প্রয়োজন হয় না। বরং ৬০-৭০ মিনিটে গিয়ে প্লেয়ারদের এনার্জি যখন আবার কমতে শুরু করে, তখনই সাবস্টিটিউট করানোর পারফেক্ট সময়。</p>
+
+                        <span class="highlight-title">ক্যারিয়ার নাকি লাইভ ম্যাচ?</span>
+                        <p>এই ৩০ কয়েনের টিম বুস্টটি মূলত 'লাইভ ম্যাচ' বা অনলাইন ম্যাচের ক্ষেত্রে অবশ্যই ব্যবহার করা উচিত, কারণ লাইভ ম্যাচগুলো বেশ কঠিন হয় এবং প্লেয়ারদের ফুল এনার্জি থাকা অত্যন্ত জরুরি। কিন্তু 'ক্যারিয়ার ম্যাচ' তুলনামূলক সহজ হওয়ায় সেখানে অযথা কয়েন খরচ করে টিম বুস্ট করার কোনো প্রয়োজন নেই; সেখানে শুধুমাত্র সঠিক সময়ে সাবস্টিটিউট করালেই অনায়াসে ম্যাচ জেতা যায়。</p>
+                        <p>এছাড়াও ম্যাচের পরিস্থিতি অনুযায়ী ফর্মেশন পরিবর্তনের ক্ষেত্রেও সাবস্টিটিউটদের দারুণভাবে ব্যবহার করা যায়। যেমন- আক্রমণাত্মক (4-3-3) ফর্মেশন থেকে যদি রক্ষণাত্মক (5-3-2) ফর্মেশনে যাওয়ার প্রয়োজন হয়, তবে সেই অনুযায়ী বেঞ্চ থেকে সঠিক প্লেয়ার নামিয়ে কৌশল পরিবর্তন করা যায়。</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>Creating a strong and balanced substitute or Bench is extremely important for winning matches. Making player substitutions is very necessary to change the match situation and handle the fatigue or injuries of key players. Players can be subbed at any time in the game, but the best time for substitutions is between 60 to 70 minutes. Below is a detailed discussion on what kind of players should be kept on the bench:</p>
+
+                        <span class="highlight-title">1. Forward or Winger with Fitness Coaching:</span>
+                        <p>In the second half of the match (especially after 70 minutes), opponent defenders usually get tired. For use during this time, you should keep 1-2 forwards or wingers on the bench who have undergone 'Fitness Coaching' very well. Especially those with good Speed, Acceleration (ACC), and Stamina can run and play at the same pace for a long time. These players are highly effective in overcoming a tired defense and quickly securing a goal.</p>
+
+                        <span class="highlight-title">2. Utility Players:</span>
+                        <p>A total of 8 players can be kept on the bench, but a maximum of 5 can be subbed during a match. Due to limited space, it is wise to keep players on the bench who have been coached for multiple positions or naturally play in multiple positions.<br>
+                        - You should keep a defender who can play as a full-back (LB/RB) alongside central defense (CB).<br>
+                        - Similarly, a midfielder who can perform well in all three positions—CM, DM, and AM—can be kept on the bench.<br>
+                        - Also, LW and RW (wingers) should be kept according to the formation. Since LM and RM function almost identical to LW and RW in the game, there is no need to think about them separately; keeping wingers fulfills this need.</p>
+
+                        <span class="highlight-title">3. Midfielder for Midfield Control:</span>
+                        <p>Towards the end of the match when you need to hold onto a lead, a defensive or central midfielder helps a lot in maintaining midfield control. Keeping someone with good Passing and Tackling skills on the bench is highly effective.</p>
+
+                        <span class="highlight-title">4. Backup Goalkeeper:</span>
+                        <p>In DLS, it is extremely rare for goalkeepers to get red cards or injuries. Nevertheless, it is safe to keep a good backup Goalkeeper (GK) on the bench to avoid taking any risks in tournaments or crucial matches.</p>
+
+                        <span class="highlight-title">5. Perfect Time for Subs, Physios & Team Boost:</span>
+                        <p>In game terminology, the system to recover players' lost energy or stamina is called 'Physios'. You should enter the field with full player energy using physios before the match.</p>
+                        <p>After halftime, an option appears on the screen to use a 'Team Boost' for 30 coins to increase stamina. Using this boost divides and recovers the lost energy among all players. Because of this boost, there is no need to sub any player right after halftime. Rather, when players' energy starts dropping again around 60-70 minutes, that is the perfect time for substitutions.</p>
+
+                        <span class="highlight-title">Career or Live Match?</span>
+                        <p>This 30-coin team boost must essentially be used in 'Live Matches' or online matches because live matches are quite difficult, and having full player energy is extremely crucial. But since 'Career Matches' are relatively easier, there is no need to unnecessarily spend coins on team boosts there; you can easily win the match simply by substituting at the right time.</p>
+                        <p>Furthermore, substitutes can be utilized excellently when changing formations according to the match situation. For example, if you need to switch from an attacking (4-3-3) formation to a defensive (5-3-2) formation, you can change tactics by bringing on the appropriate players from the bench accordingly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">লাইভ ইভেন্টগুলো সহজেই জিতবেন কীভাবে?</span>
+                        <span class="lang-en">How to Win Live Events Easily?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>গেমে কিছুদিন পরপর বিভিন্ন লাইভ ইভেন্ট বা টুর্নামেন্ট আসে। এগুলো জিততে পারলে বেশ ভালো পরিমাণের রিওয়ার্ড পাওয়া যায়, যা স্কোয়াড দ্রুত উন্নত করার জন্য খুবই গুরুত্বপূর্ণ। তবে টুর্নামেন্টগুলো যেহেতু সরাসরি অন্য গেমারদের সাথে (Live Match) খেলা হয়, তাই এগুলো জেতা বেশ কঠিন হয়ে দাঁড়ায়। লাইভ ইভেন্ট বা টুর্নামেন্ট সহজে জেতার জন্য নিচের কৌশলগুলো অনুসরণ করা যেতে পারে:</p>
+
+                        <span class="highlight-title">১. স্কিল ডেভেলপমেন্ট ও প্র্যাকটিস:</span>
+                        <p>লাইভ ইভেন্ট জিততে হলে সর্বপ্রথম গেমিং স্কিল ডেভেলপ করা প্রয়োজন। গেমে এমন কিছু বিশেষ লাইভ ইভেন্ট আসে, যেখানে শুধুমাত্র একবারই অংশগ্রহণ করার সুযোগ থাকে (অর্থাৎ হেরে গেলে আর সুযোগ পাওয়া যায় না)। তাই মূল ইভেন্ট শুরু করার আগে সাধারণ লাইভ ম্যাচ খেলে ভালোভাবে প্র্যাকটিস করে নেওয়া উচিত。</p>
+
+                        <span class="highlight-title">২. ইভেন্ট খেলার সঠিক সময়:</span>
+                        <p>ইভেন্ট শুরু হওয়ার পরপরই প্রচুর গেমার সেটি কমপ্লিট করার জন্য একসাথে খেলতে শুরু করেন। ফলে ওই সময়ে তুলনামূলক শক্তিশালী বা প্রো-লেভেলের প্রতিপক্ষের সাথে ম্যাচ পড়ার সম্ভাবনা অনেক বেশি থাকে। তাই সতর্কতার জন্য শুরুতেই ইভেন্ট না খেলাটা বুদ্ধিমানের কাজ। এর বদলে ফজরের পর বা একেবারে সকালের দিকে ঠান্ডা মাথায় ইভেন্ট খেললে তুলনামূলক সহজ প্রতিপক্ষ পাওয়ার সম্ভাবনা থাকে এবং সার্ভারে চাপ কম থাকায় গেমপ্লে স্মুথ হয়。</p>
+
+                        <span class="highlight-title">৩. নিচের টায়ারে (Lower Tier) অবস্থান:</span>
+                        <p>আরও সহজে ও নিরাপদে ইভেন্ট জেতার একটি দারুণ ট্রিকস হলো তুলনামূলক নিচের টায়ারে গিয়ে ইভেন্ট খেলা। সাধারণত নিচের টায়ারে দুর্বল বা নতুন গেমাররা থাকে। তাই উপরের টায়ারের কোনো প্লেয়ার যদি নিজের টায়ার কিছুটা নিচে নামিয়ে ইভেন্ট খেলে, তবে ম্যাচ মেকিংয়ে ওই দুর্বল প্লেয়ারদের সাথেই তার খেলা পড়ে। ফলে খুব সহজেই তাদের হারিয়ে ইভেন্টে জেতা সম্ভব হয়。</p>
+
+                        <span class="highlight-title">৪. নিরবচ্ছিন্ন নেটওয়ার্ক বা ইন্টারনেট কানেকশন:</span>
+                        <p>লাইভ ইভেন্ট জেতার ক্ষেত্রে সবচেয়ে বড় শর্ত হলো ভালো ইন্টারনেট কানেকশন। ইভেন্ট খেলার সময় নেটওয়ার্ক ভালো থাকে এমন জায়গায় বসা অত্যন্ত জরুরি। ওয়াই-ফাই (Wi-Fi) ব্যবহারকারীদের ক্ষেত্রে, ইভেন্ট চলাকালীন রাউটারে শুধুমাত্র গেমিং ডিভাইসটি কানেক্ট রাখলে সবচেয়ে ভালো স্পিড পাওয়া যায়। এতে করে নেটওয়ার্ক বা পিং (Ping) জনিত কোনো সমস্যায় পড়তে হয় না এবং ডিসকানেক্ট হয়ে ম্যাচ হারার কোনো ঝুঁকি থাকে না。</p>
+
+                        <p>এই কয়েকটি বিষয় মাথায় রেখে ঠান্ডা মাথায় খেললে যেকোনো লাইভ ইভেন্ট বা টুর্নামেন্ট খুব সহজেই জিতে নেওয়া সম্ভব।</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>Various live events or tournaments appear in the game every few days. Winning these provides a good amount of rewards, which is crucial for upgrading your squad quickly. However, since tournaments are played directly against other gamers (Live Matches), winning them can be quite difficult. To win live events or tournaments easily, the following strategies can be followed:</p>
+
+                        <span class="highlight-title">1. Skill Development & Practice:</span>
+                        <p>To win live events, it is necessary to develop your gaming skills first. There are some special live events in the game where you only get one chance to participate (meaning if you lose, you don't get another chance). Therefore, it is wise to practice thoroughly by playing regular live matches before starting the main event.</p>
+
+                        <span class="highlight-title">2. Right Time to Play Events:</span>
+                        <p>Right after an event starts, a massive number of gamers start playing simultaneously to complete it. As a result, the chances of being matched against relatively stronger or pro-level opponents are much higher during that time. So, as a precaution, it is wise not to play the event right at the beginning. Instead, playing the event with a cool head early in the morning increases the chance of getting relatively easier opponents, and the gameplay is smooth as the server pressure is low.</p>
+
+                        <span class="highlight-title">3. Playing in Lower Tiers:</span>
+                        <p>A great trick to win events more easily and safely is to play the event by moving down to relatively lower tiers. Usually, weak or new gamers reside in lower tiers. So, if a player from an upper tier lowers their tier slightly and plays the event, their matchmaking occurs with those weaker players. Consequently, it is possible to beat them easily and win the event.</p>
+
+                        <span class="highlight-title">4. Uninterrupted Network Connection:</span>
+                        <p>The biggest condition for winning live events is a good internet connection. It is extremely important to sit in a place with a good network while playing an event. For Wi-Fi users, keeping only the gaming device connected to the router during the event provides the best speed. This way, you won't face any network or Ping-related issues, and there is no risk of losing a match due to disconnection.</p>
+
+                        <p>Keeping these few things in mind and playing with a cool head, any live event or tournament can be won very easily.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header" onclick="toggleCard(this)">
+                <div class="tip-title-box">
+                    <div class="icon-box"><i class="fa-solid fa-wifi"></i></div>
+                    <div class="tip-title">
+                        <span class="lang-bn">গেমে পিং বা নেটওয়ার্ক ল্যাগ ফিক্স করবেন কীভাবে?</span>
+                        <span class="lang-en">How to Fix High Ping and Network Lag in Game?</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+            <div class="tip-content">
+                <div class="inner-content">
+                    <div class="text-body lang-bn">
+                        <p>ডিএলএস (DLS) গেমে সবচেয়ে বড় হতাশার জায়গা হলো নেটওয়ার্ক বা পিং (Ping) সমস্যা। অনেক সময় দেখা যায় ইন্টারনেটের স্পিড অনেক বেশি থাকার পরেও গেমে মারাত্মক ল্যাগ করছে এবং ম্যাচ হাতছাড়া হয়ে যাচ্ছে। বিশেষ করে ম্যাচে লিড থাকা অবস্থায় এমন হলে স্বাভাবিকভাবেই প্রচুর রাগ ওঠে। এর মূল কারণ হলো— অনলাইন গেমিংয়ের জন্য শুধু ইন্টারনেটের স্পিড (Mbps) বেশি হওয়াই যথেষ্ট নয়, বরং নেটওয়ার্কের স্থিতিশীলতা বা 'পিং' কম থাকাটা সবচেয়ে বেশি জরুরি।</p>
+
+                        <p>এই বিরক্তিকর সমস্যা থেকে মুক্তি পেতে এবং ল্যাগ ফিক্স করতে নিচের বিষয়গুলো খেয়াল রাখা অত্যন্ত কার্যকরী:</p>
+
+                        <span class="highlight-title">১. স্থিতিশীল নেটওয়ার্ক ও অপারেটর নির্বাচন:</span>
+                        <p>মোবাইল ডেটা দিয়ে গেম খেলার ক্ষেত্রে, শুধু স্পিড না দেখে এলাকায় কোন সিমের নেটওয়ার্ক সবচেয়ে বেশি স্থিতিশীল (Stable) বা পিং কম থাকে, তা ভালোভাবে পর্যবেক্ষণ করতে হবে। যাচাই-বাছাই করে ওই এলাকার সবচেয়ে শক্তিশালী নেটওয়ার্ক থাকা সিমটি ব্যবহার করলে পিং সমস্যা থেকে অনেকটাই রেহাই পাওয়া যায়。</p>
+
+                        <span class="highlight-title">২. ওয়াই-ফাই (Wi-Fi) এর সঠিক ব্যবহার:</span>
+                        <p>যারা ওয়াই-ফাই ব্যবহার করেন, তাদের ক্ষেত্রে ভালো ব্র্যান্ডের বা উন্নত মানের ইন্টারনেট সার্ভিস ব্যবহার করা উচিত। লাইভ গেম খেলার সময় ওয়াই-ফাই রাউটারের সাথে শুধুমাত্র গেমিং ডিভাইসটি কানেক্ট রাখলে সবচেয়ে ভালো ফলাফল পাওয়া যায়। এছাড়া রাউটার যদি ডুয়াল-ব্যান্ডের হয়, তবে 2.4GHz এর বদলে 5GHz নেটওয়ার্কে কানেক্ট করে খেললে ইন্টারনেটের ল্যাটেন্সি বা পিং অনেক কম থাকে。</p>
+
+                        <span class="highlight-title">৩. ব্যাকগ্রাউন্ড অ্যাপস এবং অটো-আপডেট বন্ধ রাখা:</span>
+                        <p>অনেক সময় গেম খেলার মাঝেই ব্যাকগ্রাউন্ডে অন্যান্য অ্যাপ (যেমন- ফেসবুক, মেসেঞ্জার, হোয়াটসঅ্যাপ) ডেটা টানতে থাকে বা প্লে-স্টোরে অটো-আপডেট চলতে থাকে। এর ফলে গেম তার প্রয়োজনীয় নেটওয়ার্ক পায় না এবং ল্যাগ শুরু হয়। তাই গেম খেলার সময় ব্যাকগ্রাউন্ড অ্যাপসগুলো ক্লিয়ার করে দেওয়া এবং অটো-আপডেট বন্ধ রাখা বুদ্ধিমানের কাজ。</p>
+
+                        <span class="highlight-title">৪. অ্যারোপ্লেন মোড (Airplane Mode) ট্রিক:</span>
+                        <p>মোবাইল ডেটা ব্যবহারকারীদের জন্য এটি একটি দারুণ ট্রিক। গেম খেলার আগে বা টানা কয়েক ম্যাচ খেলার পর যদি ল্যাগ দেখা দেয়, তবে ফোনটি একবার 'অ্যারোপ্লেন মোড' অন করে কয়েক সেকেন্ড পর আবার অফ করে দিলে নেটওয়ার্ক আইপি (IP) রিফ্রেশ হয়। এতে করে নতুন এবং ফ্রেশ নেটওয়ার্ক সিগন্যাল পাওয়া যায়, যা পিং স্বাভাবিক রাখতে সাহায্য করে। ওয়াই-ফাইয়ের ক্ষেত্রে রাউটারটি মাঝে মাঝে রিস্টার্ট দিলেও ভালো ফল পাওয়া যায়。</p>
+
+                        <span class="highlight-title">৫. ফোনের স্টোরেজ ও ক্যাশ ক্লিয়ার:</span>
+                        <p>অনেক সময় নেটওয়ার্কের দোষ না থাকলেও ফোনের র‍্যাম বা স্টোরেজ ফুল থাকার কারণে গেম ল্যাগ করে। তাই গেমের সেটিংসে বা ফোনের মেমোরিতে জমে থাকা ক্যাশ (Cache) নিয়মিত ক্লিয়ার করা এবং ফোনে পর্যাপ্ত খালি জায়গা রাখা উচিত。</p>
+
+                        <p>সঠিক নেটওয়ার্ক নির্বাচন এবং এই ছোট ছোট টেকনিকগুলো কাজে লাগালে পুরোপুরি ল্যাগ-ফ্রি এবং স্মুথ গেমপ্লে উপভোগ করা সম্ভব।</p>
+                    </div>
+
+                    <div class="text-body lang-en">
+                        <p>The biggest point of frustration in DLS is network or Ping issues. Often, despite having a high internet speed, the game experiences severe lag, and the match slips away. It's natural to get extremely angry when this happens, especially while holding a lead. The main reason is—for online gaming, just having high internet speed (Mbps) is not enough; rather, network stability or having a low 'Ping' is the most crucial.</p>
+
+                        <p>To get rid of this annoying problem and fix lag, keeping the following points in mind is highly effective:</p>
+
+                        <span class="highlight-title">1. Stable Network & Operator Selection:</span>
+                        <p>When playing games with mobile data, instead of just looking at the speed, you must carefully observe which SIM's network is the most stable or has the lowest ping in your area. Using the SIM with the strongest network in that area after proper verification provides significant relief from ping issues.</p>
+
+                        <span class="highlight-title">2. Proper Wi-Fi Usage:</span>
+                        <p>Those who use Wi-Fi should use a good brand or high-quality internet service. Keeping only the gaming device connected to the Wi-Fi router while playing live games yields the best results. Moreover, if the router is dual-band, connecting and playing on a 5GHz network instead of 2.4GHz ensures much lower internet latency or ping.</p>
+
+                        <span class="highlight-title">3. Clear Background Apps & Auto-Updates:</span>
+                        <p>Often, right in the middle of gameplay, other apps in the background (like Facebook, Messenger, WhatsApp) consume data, or auto-updates run on the Play Store. As a result, the game doesn't get its required network, and lagging begins. Therefore, clearing background apps and turning off auto-updates while playing games is a wise thing to do.</p>
+
+                        <span class="highlight-title">4. Airplane Mode Trick:</span>
+                        <p>This is a great trick for mobile data users. If lag appears before playing or after playing several consecutive matches, turning the phone's 'Airplane Mode' on once and turning it off after a few seconds refreshes the network IP. This provides a new and fresh network signal, which helps keep the ping normal. For Wi-Fi, restarting the router occasionally also yields good results.</p>
+
+                        <span class="highlight-title">5. Clear Phone Storage & Cache:</span>
+                        <p>Sometimes, even if it's not the network's fault, the game lags because the phone's RAM or storage is full. Therefore, clearing the cache accumulated in the game settings or phone memory regularly and keeping sufficient free space on the phone is necessary.</p>
+
+                        <p>By selecting the right network and utilizing these small techniques, it is possible to enjoy a completely lag-free and smooth gameplay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <script>
+        function toggleCard(header) {
+            const card = header.parentElement;
+            const content = card.querySelector('.tip-content');
+            
+            document.querySelectorAll('.tip-card').forEach(otherCard => {
+                if (otherCard !== card && otherCard.classList.contains('active')) {
+                    otherCard.classList.remove('active');
+                    otherCard.querySelector('.tip-content').style.maxHeight = null;
+                }
+            });
+
+            card.classList.toggle('active');
+            if (card.classList.contains('active')) {
+                content.style.maxHeight = content.scrollHeight + "px";
+            } else {
+                content.style.maxHeight = null;
+            }
+        }
+    </script>
+</body>
+</html>

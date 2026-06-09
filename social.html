@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NEXTGEN DLS - Social Media</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            // 🔥 জাভাস্ক্রিপ্ট দিয়ে জুম আটকানোর চরম ম্যাজিক 🔥
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); } 
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); } 
+                lastTouchEnd = now;
+            }, false);
+            
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey) event.preventDefault();
+            }, { passive: false });
+        })();
+    </script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
+        :root {
+            --bg-main: #0b1120; 
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --accent: #f97316; 
+            --text-dim: #94a3b8;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-dim: #64748b;
+        }
+
+        /* 🔥 ডানে-বামে নড়াচড়া এবং ডাবল-ট্যাপ জুম সম্পূর্ণ বন্ধ করার ম্যাজিক 🔥 */
+        html, body { 
+            background-color: var(--bg-main); 
+            color: var(--text-color); 
+            font-family: 'Poppins', sans-serif; 
+            padding-bottom: 50px;
+            transition: background-color 0.2s, color 0.2s;
+            visibility: hidden; 
+            width: 100vw;
+            max-width: 100%;
+            overflow-x: hidden; 
+            touch-action: pan-y; 
+            user-select: none; 
+            -webkit-user-select: none;
+        }
+
+        a { -webkit-user-drag: none; }
+        
+        .header { 
+            background: var(--card-bg); 
+            padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--accent);
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            z-index: 1000;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+
+        .header-title-wrapper { 
+            display: flex; align-items: center; gap: 10px; margin-bottom: 5px; 
+        }
+
+        .page-title { 
+            font-size: 20px; font-weight: 700; color: var(--accent); text-transform: uppercase; 
+        } 
+
+        .social-container { 
+            /* হেডিং ফিক্সড করার কারণে কন্টেন্ট যেন হেডিংয়ের নিচে না ঢুকে যায়, তাই ওপরে 110px গ্যাপ দেওয়া হলো */
+            padding: 110px 15px 20px 15px; 
+            display: flex; flex-direction: column; gap: 12px; width: 100%; overflow-x: hidden; 
+        }
+
+        .section-title {
+            font-size: 12px; color: var(--text-dim);
+            margin-top: 10px; margin-bottom: 4px; margin-left: 5px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* --- প্রিমিয়াম বাটন ডিজাইন --- */
+        .social-btn {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--card-bg);
+            padding: 16px 20px; border-radius: 16px;
+            text-decoration: none; color: var(--text-color);
+            font-weight: 600; font-size: 14px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            width: 100%;
+        }
+
+        .social-btn:active { transform: scale(0.97); background: var(--border-color); }
+
+        .btn-left { display: flex; align-items: center; gap: 15px; }
+        
+        .btn-left i {
+            font-size: 22px; width: 26px; text-align: center;
+        }
+
+        .chevron-icon { color: var(--text-dim); font-size: 14px; }
+
+        /* Brand Colors */
+        .fb-color { color: #1877F2; }
+        .yt-color { color: #FF0000; }
+        .group-color { color: #0ea5e9; }
+        .ig-color { background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .tk-color { color: #00f2ea; text-shadow: 1.5px 1.5px 0 #ff0050; }
+
+    </style>
+    <!-- Copy Protection Code Starts -->
+<style>
+    body {
+        -webkit-touch-callout: none; /* মোবাইল ব্রাউজারে লং-প্রেস পপ-আপ মেনু বন্ধ করবে */
+        -webkit-user-select: none;   /* Chrome, Safari, Android, iOS-এ সিলেক্ট বন্ধ করবে */
+        -moz-user-select: none;      /* Firefox-এ সিলেক্ট বন্ধ করবে */
+        -ms-user-select: none;       /* Edge-এ সিলেক্ট বন্ধ করবে */
+        user-select: none;           /* সাধারণ সিলেক্ট বন্ধ করবে */
+        -webkit-tap-highlight-color: transparent; /* বাটনে ট্যাপ করলে যে নীল ছায়া আসে সেটা বন্ধ করবে */
+    }
+    
+    /* অ্যাপে যদি কোনো সার্চ বক্স বা কিছু লেখার জায়গা (input) থাকে, শুধু সেটাতে টাইপ করার অনুমতি দেওয়ার জন্য */
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+</style>
+
+<script>
+    // লং-প্রেস (ধরে রাখা) বা রাইট ক্লিক করলে যে অপশন মেনু আসে, সেটা একদম ব্লক করার জন্য
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+<!-- Copy Protection Code Ends -->
+
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-share-nodes" style="color: var(--accent); font-size: 22px;"></i> 
+            <div class="page-title">
+                <span data-bn="সোশ্যাল মিডিয়া" data-en="SOCIAL MEDIA">সোশ্যাল মিডিয়া</span>
+            </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-dim); margin: 0; font-weight: 500;">
+            <span data-bn="আমাদের সাথে যুক্ত থাকুন" data-en="STAY CONNECTED WITH US">আমাদের সাথে যুক্ত থাকুন</span>
+        </p>
+    </div>
+
+    <div class="social-container">
+        
+        <div class="section-title">
+            <span data-bn="অফিসিয়াল ইউটিউব চ্যানেল" data-en="OFFICIAL YOUTUBE CHANNEL">অফিসিয়াল ইউটিউব চ্যানেল</span>
+        </div>
+        <a href="https://youtube.com/@nextgendls-n5634?si=LJjLvH7Q2b9EesEa" target="_blank" class="social-btn">
+            <div class="btn-left">
+                <i class="fa-brands fa-youtube yt-color"></i>
+                <span data-bn="NEXTGEN DLS" data-en="NEXTGEN DLS">NEXTGEN DLS</span>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+
+        <div class="section-title">
+            <span data-bn="অফিসিয়াল ফেসবুক পেজ" data-en="OFFICIAL FACEBOOK PAGE">অফিসিয়াল ফেসবুক পেজ</span>
+        </div>
+        <a href="https://www.facebook.com/share/18RwpkxvhM/" target="_blank" class="social-btn">
+            <div class="btn-left">
+                <i class="fa-brands fa-facebook fb-color"></i>
+                <span data-bn="NEXTGEN DLS" data-en="NEXTGEN DLS">NEXTGEN DLS</span>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+        <a href="https://www.facebook.com/share/17VZUBqK8Z/" target="_blank" class="social-btn">
+            <div class="btn-left">
+                <i class="fa-brands fa-facebook fb-color"></i>
+                <span data-bn="GUIDIFY DLS" data-en="GUIDIFY DLS">GUIDIFY DLS</span>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+
+        <div class="section-title">
+            <span data-bn="অফিসিয়াল ইনস্টাগ্রাম" data-en="OFFICIAL INSTAGRAM">অফিসিয়াল ইনস্টাগ্রাম</span>
+        </div>
+        <a href="https://www.instagram.com/nextgen_dls3456?igsh=eGI0NGx6d21waGUz" target="_blank" class="social-btn">
+            <div class="btn-left">
+                <i class="fa-brands fa-instagram ig-color"></i>
+                <span data-bn="NEXTGEN_DLS3456" data-en="NEXTGEN_DLS3456">NEXTGEN_DLS3456</span>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+
+        <div class="section-title">
+            <span data-bn="অফিসিয়াল টিকটক" data-en="OFFICIAL TIKTOK">অফিসিয়াল টিকটক</span>
+        </div>
+        <a href="https://www.tiktok.com/@nextgen_dls43?lang=en-GB" target="_blank" class="social-btn">
+            <div class="btn-left">
+                <i class="fa-brands fa-tiktok tk-color"></i>
+                <span data-bn="NEXTGEN_DLS43" data-en="NEXTGEN_DLS43">NEXTGEN_DLS43</span>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+
+        <div class="section-title">
+            <span data-bn="অফিসিয়াল ফেসবুক গ্রুপ" data-en="OFFICIAL FACEBOOK GROUP">অফিসিয়াল ফেসবুক গ্রুপ</span>
+        </div>
+        <a href="https://www.facebook.com/share/g/1FqRDcCCnm/" target="_blank" class="social-btn">
+            <div class="btn-left">
+                <i class="fa-solid fa-users group-color"></i>
+                <span data-bn="DLS COMMUNITY OF BANGLADESH™" data-en="DLS COMMUNITY OF BANGLADESH™">DLS COMMUNITY OF BANGLADESH™</span>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+        <a href="https://www.facebook.com/share/g/18WRdj4MnC/" target="_blank" class="social-btn">
+            <div class="btn-left">
+                <i class="fa-solid fa-users group-color"></i>
+                <span data-bn="DLS FAMILY OF BANGLADESH™" data-en="DLS FAMILY OF BANGLADESH™">DLS FAMILY OF BANGLADESH™</span>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+
+    </div>
+
+    <script>
+        function applyTranslations() {
+            const lang = document.documentElement.getAttribute('data-lang');
+            document.querySelectorAll('[data-bn]').forEach(el => {
+                const translatedText = el.getAttribute('data-' + lang);
+                if (translatedText) el.innerText = translatedText;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations();
+            document.body.style.visibility = 'visible';
+        });
+    </script>
+
+</body>
+</html>
