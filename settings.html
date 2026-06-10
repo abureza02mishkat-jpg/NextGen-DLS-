@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Settings</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+
+            // জুম লকিং
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); }
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+        })();
+    </script>
+
+    <style>
+        /* === ডার্ক থিম (ডিফল্ট) === */
+        :root {
+            --bg: #0b1120;
+            --card: #1e293b;
+            --accent: #f97316;
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #334155;
+            --red: #ef4444;
+            --icon-bg: rgba(249, 115, 22, 0.12); 
+            --green: #10b981;
+        }
+
+        /* === লাইট থিম === */
+        html[data-theme="light"] {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --border: #e2e8f0;
+            --icon-bg: rgba(249, 115, 22, 0.15); 
+        }
+
+        /* === স্ক্রিন ফিট এবং লেআউট স্ট্রাকচার === */
+        html, body {
+            background-color: var(--bg); color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s;
+            width: 100vw; max-width: 100%; overflow-x: hidden;
+            height: 100vh; /* ফুল স্ক্রিন হাইট */
+            display: flex;
+            flex-direction: column;
+            user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+
+        a { -webkit-user-drag: none; text-decoration: none; color: inherit; }
+
+        html[data-lang="en"] .lang-bn { display: none !important; }
+        html[data-lang="bn"] .lang-en { display: none !important; }
+
+        /* কন্টেইনারকে ফ্লেক্স করা হয়েছে যাতে ফুটার নিচে পুশ হয় */
+        .container { 
+            padding: 20px 15px; 
+            max-width: 500px; 
+            margin: 0 auto; 
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .group-title { font-size: 13px; color: var(--text-dim); font-weight: 700; margin: 25px 0 10px 15px; text-transform: uppercase; letter-spacing: 1.2px; }
+        .group-title:first-child { margin-top: 5px; }
+
+        .settings-list { background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .setting-item { display: flex; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative; }
+        .setting-item:active { background: rgba(0,0,0,0.05); }
+        .setting-item:last-child { border-bottom: none; }
+
+        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; background: var(--icon-bg); color: var(--accent); font-size: 18px; }
+
+        .item-content { flex: 1; }
+        .item-title { display: block; font-size: 14.5px; font-weight: 600; }
+        
+        .action-icon { color: var(--text-dim); font-size: 14px; opacity: 0.7; }
+
+        /* Switch Toggle */
+        .switch { position: relative; width: 44px; height: 24px; display: inline-block; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--text-dim); transition: .3s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Dropdown Select */
+        .custom-select { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; outline: none; cursor: pointer; }
+        .custom-select:focus { border-color: var(--accent); }
+
+        /* 🔥 ফুটারকে স্ক্রিনের একদম নিচে লক করার ম্যাজিক সিএসএস 🔥 */
+        .app-footer { 
+            text-align: center; 
+            margin-top: auto; /* এটিকে নিচে ঠেলে দেবে */
+            padding-top: 40px; 
+            padding-bottom: 20px; 
+        }
+        .app-footer .brand { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; color: var(--accent); letter-spacing: 1.5px; }
+        .app-footer .version { font-size: 13px; color: var(--text-dim); margin-top: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .app-footer .dev-info { font-size: 12px; color: var(--text-dim); margin-top: 10px; font-weight: 500; }
+        .app-footer .copyright { font-size: 11px; color: var(--text-dim); margin-top: 4px; opacity: 0.7; letter-spacing: 0.5px; }
+
+        /* Legal Modal */
+        #copyrightModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 10000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; overscroll-behavior: contain;
+        }
+        .modal-card { background: var(--card); border-radius: 20px; padding: 25px 20px; border: 1px solid var(--border); width: 100%; max-width: 380px; box-shadow: 0 15px 35px rgba(0,0,0,0.25); position: relative; }
+        .modal-card h2 { color: var(--text); text-align: center; margin-top: 0; font-size: 20px; font-weight: 700; margin-bottom: 20px; font-family: 'Montserrat', sans-serif;}
+        .modal-card p { font-size: 13px; line-height: 1.6; margin-bottom: 12px; color: var(--text-dim); text-align: justify; }
+        
+        .modal-card p strong { color: var(--text); font-weight: 700; }
+        .modal-card p.warning-rule { color: var(--red); }
+        .modal-card p.success-rule { color: var(--green); }
+
+        .btn-ok { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; font-size: 14px; font-family: 'Poppins', sans-serif; transition: 0.2s;}
+        .btn-ok:active { transform: scale(0.97); }
+    </style>
+    
+    <style>
+        body { -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        input, textarea, select { -webkit-user-select: auto; user-select: auto; }
+    </style>
+    <script>
+        window.oncontextmenu = function(event) { event.preventDefault(); event.stopPropagation(); return false; };
+    </script>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="group-title lang-bn">ইন্টারফেস সেটিংস</div>
+        <div class="group-title lang-en">Interface Settings</div>
+        <div class="settings-list">
+            
+            <div class="setting-item" onclick="document.getElementById('themeSwitch').click()">
+                <div class="icon-box"><i class="fa-solid fa-moon"></i></div>
+                <div class="item-content">
+                    <span class="item-title lang-bn">ডার্ক মোড</span><span class="item-title lang-en">Dark Mode</span>
+                </div>
+                <label class="switch" onclick="event.stopPropagation()">
+                    <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="icon-box"><i class="fa-solid fa-language"></i></div>
+                <div class="item-content">
+                    <span class="item-title lang-bn">অ্যাপের ভাষা</span><span class="item-title lang-en">App Language</span>
+                </div>
+                <select class="custom-select" id="langSelect" onchange="changeLanguage(this.value)">
+                    <option value="bn">বাংলা</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="group-title lang-bn">সহযোগিতা ও আইনি</div>
+        <div class="group-title lang-en">Support & Legal</div>
+        <div class="settings-list">
+            
+            <div class="setting-item" onclick="showLegal()">
+                <div class="icon-box"><i class="fa-solid fa-copyright"></i></div>
+                <div class="item-content">
+                    <span class="item-title lang-bn">কপিরাইট নীতিমালা</span><span class="item-title lang-en">Copyright Policy</span>
+                </div>
+                <i class="fa-solid fa-chevron-right action-icon"></i>
+            </div>
+            
+            <a href="mailto:nextgendls3456@gmail.com?subject=Support Request" class="setting-item" target="_top">
+                <div class="icon-box"><i class="fa-solid fa-headset"></i></div>
+                <div class="item-content">
+                    <span class="item-title lang-bn">সাপোর্ট সেন্টার</span><span class="item-title lang-en">Support Center</span>
+                </div>
+                <i class="fa-solid fa-chevron-right action-icon"></i>
+            </a>
+        </div>
+        
+        <div class="app-footer">
+            <div class="brand">NEXTGEN DLS</div>
+            <div class="version">Version 2.0.9</div>
+            <div class="dev-info">Developed by NextGen DLS</div>
+            <div class="copyright">© 2026 All Rights Reserved</div>
+        </div>
+    </div>
+
+    <div id="copyrightModal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 class="lang-bn">আইনি নোটিশ</h2>
+            <h2 class="lang-en">Legal Notice</h2>
+            <hr style="border: 0; border-top: 1px dashed var(--border); margin: 0 0 15px 0;">
+            
+            <div class="lang-bn">
+                <p class="success-rule">১. <strong>কমিউনিটি শেয়ারিং:</strong> "NextGen DLS" অ্যাপ ব্যবহার করে আপনার তৈরি করা কার্ড, স্কোয়াড বা যেকোনো ক্রিয়েশন সোশ্যাল মিডিয়ায় (FB/YT) বা বন্ধুদের সাথে শেয়ার করতে আমরা আপনাকে সবসময় উৎসাহিত করি!</p>
+                <p>২. <strong>কন্টেন্ট ক্রিয়েটরদের জন্য:</strong> আমাদের অ্যাপ নিয়ে টিউটোরিয়াল বা রিভিউ ভিডিও তৈরি করাকে আমরা স্বাগত জানাই। তবে ভিডিওতে অবশ্যই আমাদের অ্যাপের সঠিক ক্রেডিট বা লিংক যুক্ত করতে হবে।</p>
+                <p class="warning-rule">৩. <strong>কঠোর নিষেধাজ্ঞা:</strong> আমাদের সোর্স কোড, ডাটাবেস বা মূল ইন্টারফেস ডিজাইন কপি করে অন্য কোনো অ্যাপ বা ওয়েবসাইট তৈরি এবং বিক্রয় করা সম্পূর্ণ বেআইনি। এমন কোনো জاليةতি শনাক্ত হলে আমরা সরাসরি DMCA স্ট্রাইক এবং কঠোর আইনি ব্যবস্থা গ্রহণ করব।</p>
+            </div>
+
+            <div class="lang-en">
+                <p class="success-rule">1. <strong>Community Sharing:</strong> We highly encourage you to share your generated cards, squads, and creations from the "NextGen DLS" app with your friends and on social media (FB/YT)!</p>
+                <p>2. <strong>For Content Creators:</strong> We welcome tutorials and review videos about our app. However, please ensure proper credit or a link to our app is included in your content.</p>
+                <p class="warning-rule">3. <strong>Strict Prohibition:</strong> Copying, modifying, or selling our source code, database, or core interface designs to create another app or website is strictly prohibited. Any such infringement will result in immediate DMCA takedowns and severe legal action.</p>
+            </div>
+
+            <button class="btn-ok lang-bn" onclick="hideLegal()">আমি বুঝেছি</button>
+            <button class="btn-ok lang-en" onclick="hideLegal()">I Understand</button>
+        </div>
+    </div>
+
+    <script>
+        function initSettings() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.getElementById('themeSwitch').checked = (savedTheme === 'dark');
+            
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.getElementById('langSelect').value = savedLang;
+        }
+
+        function toggleTheme() {
+            let isDark = document.getElementById('themeSwitch').checked;
+            let newTheme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('savedTheme', newTheme);
+        }
+
+        function changeLanguage(lang) {
+            document.documentElement.setAttribute('data-lang', lang);
+            localStorage.setItem('savedLang', lang);
+        }
+
+        function showLegal() { document.getElementById('copyrightModal').style.display = 'flex'; }
+        function hideLegal() { document.getElementById('copyrightModal').style.display = 'none'; }
+
+        document.addEventListener('DOMContentLoaded', initSettings);
+    </script>
+</body>
+</html>
