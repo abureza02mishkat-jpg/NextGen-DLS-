@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>NextGen DLS - Player Comparison</title>
+    
+    <link rel="preload" as="image" href="hakimi.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="baena.webp" fetchpriority="high">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        (function() {
+            let initTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', initTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+            document.addEventListener('touchstart', function(event) { if (event.touches.length > 1) { event.preventDefault(); } }, { passive: false });
+        })();
+    </script>
+    <style>
+        :root { 
+            --bg-main: #0a0e17; --bg-panel: #111827; --bg-inner: #06090f;
+            --text-main: #f1f2f6; --text-muted: #808e9b; --primary: #f97316; 
+            --p1-color: #00f0ff; --p1-glow: rgba(0, 240, 255, 0.3);
+            --p2-color: #f97316; --p2-glow: rgba(249, 115, 22, 0.3);
+            --border-light: rgba(255,255,255,0.05);
+        }
+
+        :root[data-theme="light"] {
+            --bg-main: #f1f4f9; --bg-panel: #ffffff; --bg-inner: #e5e7eb;
+            --text-main: #1e293b; --text-muted: #4b5563; --border-light: rgba(0,0,0,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        
+        html, body { 
+            width: 100vw; max-width: 100%; overflow-x: hidden; touch-action: pan-y;
+            background-color: var(--bg-main); color: var(--text-main); 
+            padding-bottom: 50px; transition: background-color 0.3s ease, color 0.3s ease;
+            user-select: none; -webkit-user-select: none;
+        }
+
+        .sticky-top-section {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background-color: var(--bg-main); padding-bottom: 10px;
+        }
+
+        .header { 
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            padding: 20px 20px 15px 20px; background-color: var(--bg-panel); 
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+        }
+        .header h1 { color: var(--primary); font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 0;}
+
+        .filter-bar { max-width: 1200px; margin: 0 auto; padding: 5px 15px 5px 15px; }
+        .dual-search { display: flex; gap: 10px; flex-direction: row; position: relative;}
+        .search-box { flex: 1; position: relative; }
+        .search-box input { width: 100%; padding: 12px 10px 12px 35px; border-radius: 20px; border: 1px solid var(--border-light); background: var(--bg-inner); color: var(--text-main); outline: none; font-weight: 600; font-size: 12px; transition: 0.3s; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px;}
+        
+        .p1-search input { border: 1px solid var(--p1-color); box-shadow: 0 0 5px var(--p1-glow); }
+        .p1-search input:focus { box-shadow: 0 0 12px var(--p1-color); }
+        .p1-search i { color: var(--p1-color); }
+        
+        .p2-search input { border: 1px solid var(--p2-color); box-shadow: 0 0 5px var(--p2-glow); }
+        .p2-search input:focus { box-shadow: 0 0 12px var(--p2-color); }
+        .p2-search i { color: var(--p2-color); }
+
+        .autocomplete-list {
+            position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-panel); 
+            z-index: 2000; max-height: 250px; overflow-y: auto; border: 1px solid var(--border-light); 
+            border-radius: 12px; margin-top: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+            display: none; flex-direction: column; padding: 5px;
+        }
+        .autocomplete-item {
+            display: flex; align-items: center; padding: 8px 10px; border-radius: 8px; 
+            cursor: pointer; gap: 12px; transition: 0.2s;
+        }
+        .autocomplete-item:hover, .autocomplete-item:active { background: var(--bg-inner); }
+        .ac-img { width: 35px; height: 35px; object-fit: contain; }
+        .ac-details { display: flex; flex-direction: column; text-align: left;}
+        .ac-name { font-size: 12px; font-weight: 800; color: var(--text-main); }
+        .ac-pos { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+        .ac-empty { padding: 15px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); }
+
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 130px 15px 20px 15px; }
+
+        .selection-area { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 15px; background: var(--bg-panel); padding: 15px; border-radius: 20px; border: 1px solid var(--border-light); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+        .select-wrapper { flex: 1; position: relative; }
+        .select-wrapper select { width: 100%; padding: 12px 10px; border-radius: 12px; background: var(--bg-inner); color: var(--text-main); border: 1px solid var(--border-light); font-weight: 800; font-size: 13px; outline: none; appearance: none; cursor: pointer; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #p1-select { border-bottom: 3px solid var(--p1-color); box-shadow: 0 0 10px var(--p1-glow); }
+        #p2-select { border-bottom: 3px solid var(--p2-color); box-shadow: 0 0 10px var(--p2-glow); }
+        .bolt-badge { font-size: 20px; font-weight: 900; color: var(--text-muted); opacity: 0.7;}
+
+        #download-area { background: var(--bg-main); padding: 10px; border-radius: 20px; position: relative; }
+        .export-grid-wrapper { display: flex; flex-direction: column; gap: 20px; }
+        @media(min-width: 768px) {
+            .export-grid-wrapper { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "cards cards" "info stats" "radar stats"; gap: 20px; }
+            #panel-cards { grid-area: cards; } #panel-info { grid-area: info; } #panel-radar { grid-area: radar; } #panel-stats { grid-area: stats; }
+        }
+
+        .export-mode { width: 1000px !important; padding: 30px !important; background: var(--bg-main) !important; margin: 0 auto; }
+
+        .export-mode .export-grid-wrapper { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-areas: "cards info" "radar stats" !important; gap: 25px !important; }
+        .export-mode #panel-cards { grid-area: cards !important; margin-bottom: 0 !important; align-items: center; justify-content: center; }
+        .export-mode #panel-info { grid-area: info !important; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        .export-mode #panel-radar { grid-area: radar !important; height: 100%; }
+        .export-mode #panel-stats { grid-area: stats !important; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        .export-mode #dl-watermark { display: block !important; margin-top: 30px; font-size: 16px !important; }
+        .export-mode .card-name-plate { display: block !important; } 
+
+        .cards-display { display: flex; justify-content: center; align-items: flex-end; gap: 24px; position: relative; min-height: 250px;}
+        .player-card { width: 155px; flex: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; }
+        .card-img { height: 218px; width: 155px; display: flex; justify-content: center; align-items: center; z-index: 1; position: relative;}
+        .card-img img { max-height: 218px; max-width: 155px; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.5)); transition: 0.3s;}
+
+        .vs-center-badge { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 900; font-style: italic; color: #fff; z-index: 10; background: rgba(0,0,0,0.8); padding: 5px 12px; border-radius: 12px; border: 2px solid var(--border-light); box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: block; }
+        
+        .card-name-plate { display: block; background: var(--bg-panel); border-radius: 12px; padding: 8px; text-align: center; border: 1px solid; width: 145px; max-width: 145px; box-sizing: border-box; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 2; margin-bottom: -10px; position: relative; }
+        .card-name { font-size: 13px; font-weight: 900; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; }
+
+
+        #card-1 .card-name-plate { border-color: var(--p1-color); box-shadow: 0 0 15px var(--p1-glow) inset; }
+        #card-2 .card-name-plate { border-color: var(--p2-color); box-shadow: 0 0 15px var(--p2-glow) inset; }
+        #card-1 .card-name { color: var(--p1-color); }
+        #card-2 .card-name { color: var(--p2-color); }
+
+        .panel { background: var(--bg-panel); border-radius: 20px; padding: 25px 20px; border: 1px solid var(--border-light); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .panel-title { text-align: center; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 25px; color: var(--text-muted); text-transform: uppercase; }
+
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px dashed var(--border-light); }
+        .info-row:last-child { border-bottom: none; }
+        .info-val { flex: 1; font-size: 13px; font-weight: 800; text-transform: uppercase; }
+        .info-val.left { text-align: right; color: var(--p1-color); padding-right: 15px; }
+        .info-val.right { text-align: left; color: var(--p2-color); padding-left: 15px; }
+        .info-label { width: 90px; text-align: center; font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px;}
+
+        .radar-wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 260px; position: relative;}
+        .radar-legend { display: flex; justify-content: center; gap: 25px; margin-bottom: 15px;}
+        .legend-item { font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase;}
+        .legend-color { width: 12px; height: 12px; border-radius: 50%; }
+        .l-p1 { color: var(--p1-color); } .l-p1 .legend-color { background: var(--p1-color); box-shadow: 0 0 10px var(--p1-color);}
+        .l-p2 { color: var(--p2-color); } .l-p2 .legend-color { background: var(--p2-color); box-shadow: 0 0 10px var(--p2-color);}
+
+        .stat-comp-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; width: 100%; }
+        .stat-val-box { width: 28px; font-size: 15px; font-weight: 900; text-align: center; flex-shrink: 0;}
+        .stat-val-box.left { color: var(--p1-color); }
+        .stat-val-box.right { color: var(--p2-color); }
+        .stat-diff-box { width: 34px; display: flex; justify-content: center; flex-shrink: 0;}
+        
+        .diff { height: 18px; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: 800; border-radius: 4px; padding: 0 6px;}
+        .diff.win { color: #10b981; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; }
+        .diff.loss { color: #ef4444; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; }
+        .diff.tie { color: var(--text-muted); background: rgba(128, 142, 155, 0.15); border: 1px solid var(--text-muted); padding: 0 8px;}
+
+        .stat-bars-container { flex: 1; display: flex; align-items: center; gap: 8px; margin: 0 10px; min-width: 0; }
+        .bar-wrap { flex: 1; height: 8px; background: var(--border-light); border-radius: 4px; position: relative; overflow: hidden; }
+        .bar-fill { position: absolute; top: 0; bottom: 0; height: 100%; border-radius: 4px;}
+        .bar-left .bar-fill { right: 0; background: var(--p1-color); box-shadow: 0 0 10px var(--p1-glow); }
+        .bar-right .bar-fill { left: 0; background: var(--p2-color); box-shadow: 0 0 10px var(--p2-glow); }
+        
+        .stat-label { width: 40px; text-align: center; font-size: 10px; font-weight: 800; color: var(--text-main); text-transform: uppercase; flex-shrink: 0; padding: 0 2px;}
+        
+        #dl-watermark { display: none; text-align: center; font-size: 10px; color: var(--text-muted); margin-top: 15px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
+        .dl-btn { display: block; max-width: 320px; width: 90%; margin: 25px auto 0 auto; background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); transition: 0.3s; letter-spacing: 1px;}
+        .dl-btn:active { transform: scale(0.95); }
+    </style>
+<style>
+    body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;  
+        -moz-user-select: none;     
+        -ms-user-select: none;       
+        user-select: none;          
+        -webkit-tap-highlight-color: transparent; 
+    }
+    input, textarea {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+        .card-img { position: relative; display: flex; justify-content: center; align-items: center; }
+        
+        .empty-slot-card {
+            width: 140px; height: 195px; border-radius: 16px;
+            background: linear-gradient(135deg, #111827 0%, #06090f 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 2; pointer-events: none;
+        }
+
+        .add-hub { width: 52px; height: 52px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.02); border: 2px dashed rgba(255,255,255,0.18); }
+        .add-icon { font-size: 22px; color: var(--text-muted); }
+        .slot-title { margin-top: 14px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+
+        #card-1 .empty-slot-card { border-color: rgba(0, 240, 255, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 240, 255, 0.05); }
+        #card-1 .add-icon { color: var(--p1-color); filter: drop-shadow(0 0 8px var(--p1-color)); }
+
+        #card-2 .empty-slot-card { border-color: rgba(249, 115, 22, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(249, 115, 22, 0.05); }
+        #card-2 .add-icon { color: var(--p2-color); filter: drop-shadow(0 0 8px var(--p2-color)); }
+
+        .card-img img[src=""], .card-img img:not([src]) { opacity: 0 !important; }
+        .card-img img:not([src=""]) + .empty-slot-card { display: none !important; } 
+
+        .premium-reset-btn {
+            position: absolute;
+            top: 243px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            color: var(--text-main);
+            padding: 3.5px 11px;
+            border-radius: 20px;
+            font-size: 5px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 20;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .premium-reset-btn i {
+            color: var(--primary);
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .premium-reset-btn:hover, .premium-reset-btn:active {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+            transform: translateX(-50%) scale(1.05);
+        }
+        .premium-reset-btn:hover i {
+            transform: rotate(180deg);
+        }
+        .export-mode .premium-reset-btn { display: none !important; }
+
+        :root[data-theme="light"] .empty-slot-card {
+            background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-main) 100%);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-light);
+        }
+        :root[data-theme="light"] .add-hub {
+            background: var(--bg-main);
+            border: 2px dashed var(--border-light);
+        }
+        :root[data-theme="light"] .premium-reset-btn {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        :root[data-theme="light"] #card-1 .empty-slot-card {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1), inset 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+        :root[data-theme="light"] #card-2 .empty-slot-card {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1), inset 0 0 20px rgba(249, 115, 22, 0.15);
+        }
+
+        .radar-grid { stroke: rgba(255,255,255,0.1); }
+        .radar-label { fill: rgba(255,255,255,0.7); }
+        :root[data-theme="light"] .radar-grid { stroke: rgba(0,0,0,0.1); }
+        :root[data-theme="light"] .radar-label { fill: var(--text-muted); }
+
+
+</style>
+<script>
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+</head>
+
+<body style="opacity: 0;">
+    <div class="sticky-top-section">
+                <header class="header" style="position: relative;">
+            <i class="fa-solid fa-scale-balanced" style="color: var(--primary); font-size: 22px;"></i>
+            <h1 id="titleText" data-bn="প্লেয়ার কম্পেয়ার" data-en="PLAYER COMPARE">PLAYER COMPARE</h1>
+        </header>
+
+        <div class="filter-bar dual-search">
+            <div class="search-box p1-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-p1" placeholder="Search P1..." oninput="handleSearch('p1')">
+                <div id="sugg-p1" class="autocomplete-list"></div>
+            </div>
+            <div class="search-box p2-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-p2" placeholder="Search P2..." oninput="handleSearch('p2')">
+                <div id="sugg-p2" class="autocomplete-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="selection-area">
+            <div class="select-wrapper"><select id="p1-select" onchange="updateComparison('p1')"></select></div>
+            <div class="bolt-badge"><i class="fa-solid fa-bolt"></i></div>
+            <div class="select-wrapper"><select id="p2-select" onchange="updateComparison('p2')"></select></div>
+        </div>
+
+        <div id="download-area">
+            <div class="export-grid-wrapper" id="grid-wrap">
+                
+                <div class="cards-display export-item" id="panel-cards">
+                                       <button class="premium-reset-btn" onclick="resetComparison()">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span class="tap-text" data-bn="রিসেট করুন" data-en="RESET COMPARE">RESET COMPARE</span>
+                    </button>
+ 
+                    <div class="player-card" id="card-1">
+                        <div class="card-name-plate" id="c1-plate"><div class="card-name" id="c1-name">P1</div></div>
+                        <div class="card-img">
+                            <img id="c1-img" src="" alt="Player 1" decoding="sync" fetchpriority="high">
+                            <div class="empty-slot-card" id="c1-holo">
+                                <div class="add-hub"><i class="fa-solid fa-question add-icon"></i></div>
+                                <div class="slot-title tap-text" data-bn="প্লেয়ার সিলেক্ট করুন" data-en="SELECT PLAYER">SELECT PLAYER</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vs-center-badge">VS</div>
+
+                    <div class="player-card" id="card-2">
+                        <div class="card-name-plate" id="c2-plate"><div class="card-name" id="c2-name">P2</div></div>
+                        <div class="card-img">
+                            <img id="c2-img" src="" alt="Player 2" decoding="sync" fetchpriority="high">
+                            <div class="empty-slot-card" id="c2-holo">
+                                <div class="add-hub"><i class="fa-solid fa-question add-icon"></i></div>
+                                <div class="slot-title tap-text" data-bn="প্লেয়ার সিলেক্ট করুন" data-en="SELECT PLAYER">SELECT PLAYER</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="panel export-item" id="panel-info">
+                    <div class="panel-title" id="lblGenInfo">/// PLAYER IDENTITY ///</div>
+                    <div id="general-info-box"></div>
+                </div>
+
+                <div class="panel export-item" id="panel-radar">
+                    <div class="panel-title">/// PERFORMANCE RADAR ///</div>
+                    <div class="radar-legend">
+                        <div class="legend-item l-p1"><div class="legend-color"></div><span id="rad-name-1">P1</span></div>
+                        <div class="legend-item l-p2"><div class="legend-color"></div><span id="rad-name-2">P2</span></div>
+                    </div>
+                    <div class="radar-wrapper" id="radar-box"></div>
+                </div>
+
+                <div class="panel export-item" id="panel-stats">
+                    <div class="panel-title" id="lblStats">/// SKILL SHOWDOWN ///</div>
+                    <div id="stats-box"></div>
+                </div>
+            </div>
+            <div id="dl-watermark">CREATED VIA NEXTGEN DLS</div>
+        </div>
+        <button class="dl-btn" onclick="downloadComparison()"><i class="fa-solid fa-camera"></i> <span id="lblDownload">SAVE COMPARISON IMAGE</span></button>
+    </div>
+
+    <script>
+        const langDict = {
+            en: { 
+                title: "PLAYER COMPARISON", searchP1: "Search P1...", searchP2: "Search P2...", 
+                genInfo: "/// PLAYER IDENTITY ///", statsInfo: "/// SKILL SHOWDOWN ///", 
+                downloadText: "SAVE COMPARISON IMAGE", height: "Height", foot: "Foot", 
+                position: "Position", club: "Club", nation: "Nation", totalStats: "TOTAL STATS"
+            },
+            bn: { 
+                title: "প্লেয়ার কম্পারিজন", searchP1: "প্লেয়ার ১ খুঁজুন...", searchP2: "প্লেয়ার ২ খুঁজুন...", 
+                genInfo: "/// প্লেয়ার আইডেন্টিটি ///", statsInfo: "/// স্কিল শোডাউন ///", 
+                downloadText: "কম্পারিজন সেভ করুন", height: "উচ্চতা", foot: "পাদদেশ", 
+                position: "পজিশন", club: "ক্লাব", nation: "দেশ", totalStats: "TOTAL STATS"
+            }
+        };
+        let currentLang = localStorage.getItem('savedLang') || 'bn';
+
+        const playersData = [
+            { id: 'dimaria_1', fullName: 'Ángel Di María', name: 'Di María', position: 'AM', height: '178', foot: 'Left', club: 'Free Agent', country: 'Argentina', imgBase: 'di maria.webp', statsBase: { spe: 87, acc: 89, sta: 80, str: 63, con: 89, pas: 93, sho: 82, tac: 55 } },
+            { id: 'ronaldo_1', fullName: 'Cristiano Ronaldo', name: 'Ronaldo', position: 'LW', height: '187', foot: 'Both', club: 'Al Nassr', country: 'Portugal', imgBase: 'ronaldo.webp', statsBase: { spe: 89, acc: 89, sta: 86, str: 85, con: 92, pas: 87, sho: 97, tac: 41 } },
+            { id: 'vidal_1', fullName: 'Arturo Vidal', name: 'Vidal', position: 'CM', height: '180', foot: 'Right', club: 'Free Agent', country: 'Chile', imgBase: 'vidal.webp', statsBase: { spe: 77, acc: 77, sta: 90, str: 78, con: 82, pas: 83, sho: 80, tac: 85 } },
+            { id: 'ronaldo_2', fullName: 'Cristiano Ronaldo ', name: 'Ronaldo', position: 'RM', height: '187', foot: 'Both', club: 'Al Nassr', country: 'Portugal', imgBase: 'ronaldo 2.webp', statsBase: { spe: 90, acc: 91, sta: 79, str: 72, con: 91, pas: 78, sho: 77, tac: 32 } },
+            { id: 'dimaria_2', fullName: 'Ángel Di María', name: 'Di María', position: 'RW', height: '178', foot: 'Left', club: 'Free Agent', country: 'Argentina', imgBase: 'di maria 2.webp', statsBase: { spe: 87, acc: 89, sta: 76, str: 62, con: 88, pas: 87, sho: 82, tac: 48 } },
+            { id: 'kante_1', fullName: "N'Golo Kanté", name: 'Kanté', position: 'DM', height: '168', foot: 'Right', club: 'Fenerbahçe', country: 'France', imgBase: 'kante.webp', statsBase: { spe: 80, acc: 82, sta: 95, str: 76, con: 81, pas: 82, sho: 68, tac: 93 } },
+            { id: 'modric_1', fullName: 'Luka Modrić', name: 'Modrić', position: 'CM', height: '172', foot: 'Both', club: 'AC Milan', country: 'Croatia', imgBase: 'modric.webp', statsBase: { spe: 75, acc: 83, sta: 85, str: 66, con: 92, pas: 95, sho: 77, tac: 76 } },
+            { id: 'messi_2', fullName: 'Lionel Messi', name: 'Messi', position: 'RW', height: '170', foot: 'Left', club: 'Inter Miami', country: 'Argentina', imgBase: 'messi 2.webp', statsBase: { spe: 91, acc: 94, sta: 77, str: 60, con: 94, pas: 87, sho: 89, tac: 35 } },
+            { id: 'messi_1', fullName: 'Lionel Messi', name: 'Messi', position: 'CF', height: '170', foot: 'Left', club: 'Inter Miami', country: 'Argentina', imgBase: 'messi.webp', statsBase: { spe: 90, acc: 93, sta: 81, str: 64, con: 97, pas: 90, sho: 97, tac: 41 } },
+            { id: 'balotelli_1', fullName: 'Mario Balotelli', name: 'Balotelli', position: 'CF', height: '189', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'balotelli.webp', statsBase: { spe: 84, acc: 79, sta: 70, str: 89, con: 85, pas: 77, sho: 88, tac: 23 } },
+            { id: 'sanchez_1', fullName: 'Alexis Sánchez', name: 'Sánchez', position: 'CF', height: '169', foot: 'Right', club: 'Free Agent', country: 'Chile', imgBase: 'sanchez.webp', statsBase: { spe: 86, acc: 88, sta: 83, str: 70, con: 90, pas: 83, sho: 87, tac: 44 } },
+            { id: 'vardy_1', fullName: 'Jamie Vardy', name: 'Vardy', position: 'CF', height: '179', foot: 'Right', club: 'Cremonese', country: 'England', imgBase: 'vardy.webp', statsBase: { spe: 90, acc: 90, sta: 89, str: 70, con: 81, pas: 75, sho: 91, tac: 50 } },
+            { id: 'dembele_1', fullName: 'Ousmane Dembélé', name: 'O. Dembélé', position: 'RW', height: '178', foot: 'Both', club: 'PSG', country: 'France', imgBase: 'demble.webp', statsBase: { spe: 91, acc: 94, sta: 82, str: 64, con: 93, pas: 92, sho: 92, tac: 46 } },
+            { id: 'mendes_1', fullName: 'Nuno Mendes', name: 'N. Mendes', position: 'LB', height: '180', foot: 'Left', club: 'PSG', country: 'Portugal', imgBase: 'nuno.webp', statsBase: { spe: 94, acc: 92, sta: 85, str: 70, con: 82, pas: 81, sho: 63, tac: 84 } },
+            { id: 'hakimi_1', fullName: 'Achraf Hakimi', name: 'Hakimi', position: 'RB', height: '181', foot: 'Right', club: 'PSG', country: 'Morocco', imgBase: 'hakimi.webp', statsBase: { spe: 93, acc: 88, sta: 90, str: 70, con: 82, pas: 87, sho: 75, tac: 81 } },
+            { id: 'salah_1', fullName: 'Mohamed Salah', name: 'M. Salah', position: 'RW', height: '175', foot: 'Left', club: 'Liverpool', country: 'Egypt', imgBase: 'salah.webp', statsBase: { spe: 87, acc: 90, sta: 86, str: 73, con: 93, pas: 91, sho: 93, tac: 39 } },
+            { id: 'gabriel_1', fullName: 'Gabriel Magalhães', name: 'Gabriel', position: 'CB', height: '190', foot: 'Left', club: 'Arsenal', country: 'Brazil', imgBase: 'gabriel.webp', statsBase: { spe: 82, acc: 72, sta: 83, str: 95, con: 78, pas: 81, sho: 62, tac: 94 } },
+            { id: 'pedri_1', fullName: 'Pedri', name: 'Pedri', position: 'CM', height: '174', foot: 'Right', club: 'Barcelona', country: 'Spain', imgBase: 'pedri.webp', statsBase: { spe: 75, acc: 86, sta: 87, str: 71, con: 93, pas: 93, sho: 77, tac: 79 } },
+            { id: 'kane_1', fullName: 'Harry Kane', name: 'Kane', position: 'CF', height: '188', foot: 'Right', club: 'Bayern Munich', country: 'England', imgBase: 'kane.webp', statsBase: { spe: 78, acc: 75, sta: 87, str: 92, con: 90, pas: 90, sho: 96, tac: 53 } },
+            { id: 'vitinha_1', fullName: 'Vitinha', name: 'Vitinha', position: 'CM', height: '172', foot: 'Right', club: 'PSG', country: 'Portugal', imgBase: 'vitinha.webp', statsBase: { spe: 79, acc: 87, sta: 87, str: 59, con: 92, pas: 92, sho: 79, tac: 81 } },
+            { id: 'yamal_1', fullName: 'Lamine Yamal', name: 'Yamal', position: 'RW', height: '179', foot: 'Left', club: 'Barcelona', country: 'Spain', imgBase: 'yamal.webp', statsBase: { spe: 87, acc: 93, sta: 84, str: 66, con: 96, pas: 91, sho: 86, tac: 40 } },
+            { id: 'donnarumma_1', fullName: 'Gianluigi Donnarumma', name: 'Donnarumma', position: 'GK', height: '196', foot: 'Right', club: 'Manchester City', country: 'Italy', imgBase: 'donnarumma.webp', statsBase: { spe: 61, acc: 57, sta: 85, str: 70, con: 63, pas: 67, sho: 83, tac: 42 } },
+            { id: 'mbappe_1', fullName: 'Kylian Mbappé', name: 'Mbappé', position: 'CF', height: '178', foot: 'Right', club: 'Real Madrid', country: 'France', imgBase: 'mbappe.webp', statsBase: { spe: 95, acc: 95, sta: 85, str: 75, con: 91, pas: 81, sho: 95, tac: 32 } },
+
+            { id: 'yildiz_1', fullName: 'Kenan Yildiz', name: 'Yildiz', position: 'SS', height: '187', foot: 'Both', club: 'Juventus', country: 'Turkey', imgBase: 'yildiz.webp', statsBase: { spe: 87, acc: 90, sta: 83, str: 72, con: 92, pas: 87, sho: 87, tac: 34 } },
+            { id: 'thiago_1', fullName: 'Igor Thiago', name: 'Thiago', position: 'CF', height: '191', foot: 'Right', club: 'Brentford', country: 'Brazil', imgBase: 'thiago.webp', statsBase: { spe: 82, acc: 77, sta: 83, str: 93, con: 84, pas: 75, sho: 93, tac: 37 } },
+            { id: 'suarez_1', fullName: 'Luis Suárez', name: 'Suárez', position: 'CF', height: '181', foot: 'Right', club: 'Sporting CP', country: 'Colombia', imgBase: 'suarez.webp', statsBase: { spe: 88, acc: 87, sta: 83, str: 83, con: 84, pas: 76, sho: 92, tac: 33 } },
+            { id: 'svilar_1', fullName: 'Mile Svilar', name: 'Svilar', position: 'GK', height: '189', foot: 'Right', club: 'AS Roma', country: 'Serbia', imgBase: 'svilar.webp', statsBase: { spe: 67, acc: 65, sta: 83, str: 64, con: 64, pas: 65, sho: 79, tac: 45 } },
+            { id: 'el_karouani_1', fullName: 'Souffian El Karouani', name: 'El Karouani', position: 'LB', height: '178', foot: 'Left', club: 'FC Utrecht', country: 'Morocco', imgBase: 'el karouani.webp', statsBase: { spe: 82, acc: 84, sta: 89, str: 67, con: 82, pas: 90, sho: 62, tac: 78 } },
+            { id: 'berg_1', fullName: 'Patrick Berg', name: 'Berg', position: 'DM', height: '178', foot: 'Right', club: 'Bodø/Glimt', country: 'Norway', imgBase: 'berg.webp', statsBase: { spe: 70, acc: 71, sta: 93, str: 75, con: 85, pas: 90, sho: 78, tac: 85 } },
+            { id: 'anderson_1', fullName: 'Elliot Anderson', name: 'Anderson', position: 'DM', height: '179', foot: 'Right', club: 'Nottingham Forest', country: 'England', imgBase: 'anderson.webp', statsBase: { spe: 76, acc: 77, sta: 90, str: 77, con: 87, pas: 90, sho: 70, tac: 82 } },
+            { id: 'ryerson_1', fullName: 'Julian Ryerson', name: 'Ryerson', position: 'RB', height: '183', foot: 'Right', club: 'Borussia Dortmund', country: 'Norway', imgBase: 'ryerson.webp', statsBase: { spe: 83, acc: 83, sta: 88, str: 74, con: 80, pas: 91, sho: 64, tac: 81 } },
+            { id: 'vuskovic_1', fullName: 'Luka Vušković', name: 'Vušković', position: 'CB', height: '193', foot: 'Right', club: 'Hamburger SV', country: 'Croatia', imgBase: 'vuskovic.webp', statsBase: { spe: 76, acc: 71, sta: 77, str: 94, con: 75, pas: 77, sho: 72, tac: 89 } },
+            { id: 'arrascaeta_1', fullName: 'Giorgian de Arrascaeta', name: 'De Arrascaeta', position: 'AM', height: '174', foot: 'Right', club: 'Flamengo', country: 'Uruguay', imgBase: 'arrascaeta.webp', statsBase: { spe: 79, acc: 87, sta: 84, str: 66, con: 90, pas: 90, sho: 90, tac: 56 } },
+            { id: 'tzolis_1', fullName: 'Christos Tzolis', name: 'Tzolis', position: 'LM', height: '179', foot: 'Right', club: 'Club Brugge', country: 'Greece', imgBase: 'tzolis.webp', statsBase: { spe: 84, acc: 84, sta: 87, str: 72, con: 88, pas: 89, sho: 89, tac: 39 } },
+            { id: 'sarr_1', fullName: 'Malang Sarr', name: 'Sarr', position: 'CB', height: '183', foot: 'Left', club: 'RC Lens', country: 'France', imgBase: 'sarr.webp', statsBase: { spe: 80, acc: 79, sta: 80, str: 87, con: 76, pas: 79, sho: 52, tac: 91 } },
+            { id: 'paz_1', fullName: 'Nico Paz', name: 'Paz', position: 'AM', height: '186', foot: 'Left', club: 'Como', country: 'Argentina', imgBase: 'paz.webp', statsBase: { spe: 82, acc: 80, sta: 79, str: 72, con: 88, pas: 84, sho: 83, tac: 57 } },
+            { id: 'mctominay_1', fullName: 'Scott McTominay', name: 'McTominay', position: 'CM', height: '191', foot: 'Right', club: 'Napoli', country: 'Scotland', imgBase: 'mctominay.webp', statsBase: { spe: 79, acc: 68, sta: 91, str: 87, con: 81, pas: 80, sho: 84, tac: 80 } },
+            { id: 'huijsen_1', fullName: 'Dean Huijsen', name: 'Huijsen', position: 'CB', height: '195', foot: 'Both', club: 'Real Madrid', country: 'Spain', imgBase: 'huijsen.webp', statsBase: { spe: 82, acc: 77, sta: 79, str: 86, con: 77, pas: 79, sho: 53, tac: 90 } },
+            { id: 'cherki_1', fullName: 'Rayan Cherki', name: 'Cherki', position: 'RW', height: '177', foot: 'Both', club: 'Manchester City', country: 'France', imgBase: 'cherki.webp', statsBase: { spe: 80, acc: 86, sta: 77, str: 70, con: 92, pas: 87, sho: 81, tac: 38 } },
+            { id: 'santos_1', fullName: 'Andrey Santos', name: 'Santos', position: 'CM', height: '180', foot: 'Right', club: 'Chelsea', country: 'Brazil', imgBase: 'santos.webp', statsBase: { spe: 75, acc: 75, sta: 87, str: 80, con: 81, pas: 81, sho: 79, tac: 83 } },
+            { id: 'robinson_1', fullName: 'Antonee Robinson', name: 'Robinson', position: 'LB', height: '183', foot: 'Left', club: 'Fulham', country: 'USA', imgBase: 'robinson.webp', statsBase: { spe: 88, acc: 85, sta: 93, str: 80, con: 80, pas: 84, sho: 46, tac: 82 } },
+            { id: 'steijn_1', fullName: 'Sem Steijn', name: 'Steijn', position: 'AM', height: '173', foot: 'Right', club: 'Feyenoord', country: 'Netherlands', imgBase: 'steijn.webp', statsBase: { spe: 79, acc: 82, sta: 93, str: 75, con: 83, pas: 82, sho: 87, tac: 50 } },
+            { id: 'wood_1', fullName: 'Chris Wood', name: 'Wood', position: 'CF', height: '191', foot: 'Right', club: 'Nottingham Forest', country: 'New Zealand', imgBase: 'wood.webp', statsBase: { spe: 77, acc: 70, sta: 86, str: 94, con: 85, pas: 76, sho: 92, tac: 51 } },
+            { id: 'trafford_1', fullName: 'James Trafford', name: 'Trafford', position: 'GK', height: '197', foot: 'Right', club: 'Manchester City', country: 'England', imgBase: 'trafford.webp', statsBase: { spe: 62, acc: 59, sta: 81, str: 58, con: 60, pas: 62, sho: 79, tac: 48 } },
+            { id: 'baena_1', fullName: 'Álex Baena', name: 'Baena', position: 'LM', height: '175', foot: 'Right', club: 'Atlético Madrid', country: 'Spain', imgBase: 'baena.webp', statsBase: { spe: 82, acc: 83, sta: 85, str: 69, con: 86, pas: 92, sho: 81, tac: 64 } },
+            { id: 'vivian_1', fullName: 'Dani Vivian', name: 'Vivian', position: 'CB', height: '183', foot: 'Right', club: 'Athletic Club', country: 'Spain', imgBase: 'vivian.webp', statsBase: { spe: 82, acc: 75, sta: 81, str: 86, con: 77, pas: 81, sho: 54, tac: 90 } },
+            { id: 'alvarez_1', fullName: 'Julián Álvarez', name: 'Alvarez', position: 'CF', height: '170', foot: 'Right', club: 'Atlético Madrid', country: 'Argentina', imgBase: 'alvarez.webp', statsBase: { spe: 83, acc: 85, sta: 83, str: 71, con: 86, pas: 82, sho: 88, tac: 52 } },
+            { id: 'raphinha_1', fullName: 'Raphinha', name: 'Raphinha', position: 'LW', height: '176', foot: 'Left', club: 'Barcelona', country: 'Brazil', imgBase: 'raphinha.webp', statsBase: { spe: 86, acc: 87, sta: 86, str: 71, con: 89, pas: 89, sho: 90, tac: 50 } },
+           
+            { id: 'andy_cole_1', fullName: 'Andy Cole', name: 'Cole', position: 'CF', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'andy cole 1.webp', statsBase: { spe: 88, acc: 88, sta: 85, str: 80, con: 83, pas: 79, sho: 92, tac: 30 } },
+            { id: 'rivaldo_2', fullName: 'Rivaldo', name: 'Rivaldo', position: 'LW', height: '186', foot: 'Left', club: 'Free Agent', country: 'Brazil', imgBase: 'rivaldo 2.webp', statsBase: { spe: 86, acc: 84, sta: 84, str: 82, con: 92, pas: 88, sho: 90, tac: 42 } },
+            { id: 'david_trezeguet', fullName: 'David Trezeguet', name: 'Trezeguet', position: 'CF', height: '190', foot: 'Both', club: 'Free Agent', country: 'France', imgBase: 'david trezeguet.webp', statsBase: { spe: 86, acc: 82, sta: 83, str: 90, con: 85, pas: 74, sho: 93, tac: 33 } },
+
+            { id: 'hernan_crespo_1', fullName: 'Hernán Crespo', name: 'Crespo', position: 'CF', height: '184', foot: 'Right', club: 'Free Agent', country: 'Argentina', imgBase: 'hernan crespo 1.webp', statsBase: { spe: 85, acc: 84, sta: 84, str: 86, con: 84, pas: 75, sho: 93, tac: 37 } },
+            { id: 'gianfranco_zola', fullName: 'Gianfranco Zola', name: 'Zola', position: 'CF', height: '168', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'gianfranco zola.webp', statsBase: { spe: 85, acc: 90, sta: 84, str: 66, con: 91, pas: 84, sho: 84, tac: 50 } },
+            { id: 'andy_cole_2', fullName: 'Andy Cole', name: 'Cole', position: 'CF', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'andy cole 2.webp', statsBase: { spe: 85, acc: 85, sta: 83, str: 80, con: 83, pas: 76, sho: 89, tac: 40 } },
+            { id: 'hernan_crespo_2', fullName: 'Hernán Crespo', name: 'Crespo', position: 'CF', height: '184', foot: 'Right', club: 'Free Agent', country: 'Argentina', imgBase: 'hernan crespo 2.webp', statsBase: { spe: 85, acc: 83, sta: 82, str: 86, con: 84, pas: 73, sho: 87, tac: 44 } },
+            { id: 'gabriel_batistuta_2', fullName: 'Gabriel Batistuta', name: 'Batistuta', position: 'CF', height: '185', foot: 'Both', club: 'Free Agent', country: 'Argentina', imgBase: 'gabriel batistuta 2.webp', statsBase: { spe: 84, acc: 82, sta: 85, str: 90, con: 85, pas: 79, sho: 92, tac: 43 } },
+            { id: 'robert_pires', fullName: 'Robert Pires', name: 'Pires', position: 'LM', height: '187', foot: 'Right', club: 'Free Agent', country: 'France', imgBase: 'robert pires.webp', statsBase: { spe: 84, acc: 86, sta: 83, str: 77, con: 89, pas: 87, sho: 80, tac: 50 } },
+            { id: 'paul_gascoigne_1', fullName: 'Paul Gascoigne', name: 'Gascoigne', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'paul gascoigne 1.webp', statsBase: { spe: 84, acc: 84, sta: 83, str: 74, con: 92, pas: 85, sho: 85, tac: 53 } },
+            { id: 'gabriel_batistuta_1', fullName: 'Gabriel Batistuta', name: 'Batistuta', position: 'CF', height: '185', foot: 'Both', club: 'Free Agent', country: 'Argentina', imgBase: 'gabriel batistuta 1.webp', statsBase: { spe: 83, acc: 82, sta: 83, str: 90, con: 87, pas: 78, sho: 93, tac: 41 } },
+            { id: 'rivaldo_1', fullName: 'Rivaldo', name: 'Rivaldo', position: 'AM', height: '186', foot: 'Left', club: 'Free Agent', country: 'Brazil', imgBase: 'rivaldo 1.webp', statsBase: { spe: 83, acc: 82, sta: 79, str: 83, con: 91, pas: 87, sho: 87, tac: 49 } },
+            { id: 'chiellini_1', fullName: 'Giorgio Chiellini', name: 'Chiellini', position: 'CB', height: '187', foot: 'Left', club: 'Free Agent', country: 'Italy', imgBase: 'giorgio chiellini.webp', statsBase: { spe: 82, acc: 75, sta: 83, str: 93, con: 80, pas: 80, sho: 57, tac: 92 } },
+            { id: 'davor_suker', fullName: 'Davor Šuker', name: 'Šuker', position: 'CF', height: '183', foot: 'Left', club: 'Free Agent', country: 'Croatia', imgBase: 'davor suker.webp', statsBase: { spe: 82, acc: 82, sta: 83, str: 78, con: 85, pas: 76, sho: 89, tac: 44 } },
+            { id: 'lothar_matthaus_1', fullName: 'Lothar Matthäus', name: 'Matthäus', position: 'DM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Germany', imgBase: 'lothar matthäus 1.webp', statsBase: { spe: 82, acc: 83, sta: 91, str: 82, con: 81, pas: 83, sho: 82, tac: 85 } },
+            { id: 'fabio_cannavaro', fullName: 'Fabio Cannavaro', name: 'Cannavaro', position: 'CB', height: '176', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'fabio cannavaro.webp', statsBase: { spe: 81, acc: 82, sta: 88, str: 89, con: 80, pas: 80, sho: 53, tac: 95 } },
+            { id: 'dennis_bergkamp_1', fullName: 'Dennis Bergkamp', name: 'Bergkamp', position: 'CF', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 1.webp', statsBase: { spe: 81, acc: 81, sta: 83, str: 83, con: 92, pas: 83, sho: 90, tac: 46 } },
+            { id: 'marcel_desailly_1', fullName: 'Marcel Desailly', name: 'Desailly', position: 'CB', height: '188', foot: 'Right', club: 'Free Agent', country: 'France', imgBase: 'marcel desailly 1.webp', statsBase: { spe: 81, acc: 75, sta: 86, str: 94, con: 80, pas: 80, sho: 53, tac: 92 } },
+            { id: 'lothar_matthaus_2', fullName: 'Lothar Matthäus', name: 'Matthäus', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Germany', imgBase: 'lothar matthäus 2.webp', statsBase: { spe: 81, acc: 81, sta: 91, str: 81, con: 82, pas: 84, sho: 85, tac: 84 } },
+            { id: 'dennis_bergkamp_2', fullName: 'Dennis Bergkamp', name: 'Bergkamp', position: 'SS', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 2.webp', statsBase: { spe: 80, acc: 80, sta: 83, str: 83, con: 92, pas: 84, sho: 85, tac: 51 } },
+            { id: 'gaizka_mendieta', fullName: 'Gaizka Mendieta', name: 'Mendieta', position: 'RM', height: '173', foot: 'Right', club: 'Free Agent', country: 'Spain', imgBase: 'gaizka mendieta.webp', statsBase: { spe: 80, acc: 83, sta: 90, str: 67, con: 82, pas: 82, sho: 80, tac: 70 } },
+            { id: 'marcel_desailly_2', fullName: 'Marcel Desailly', name: 'Desailly', position: 'DM', height: '188', foot: 'Right', club: 'Free Agent', country: 'France', imgBase: 'marcel desailly 2.webp', statsBase: { spe: 80, acc: 75, sta: 89, str: 92, con: 80, pas: 80, sho: 52, tac: 90 } },
+            { id: 'emmanuel_petit_2', fullName: 'Emmanuel Petit', name: 'Petit', position: 'DM', height: '185', foot: 'Left', club: 'Free Agent', country: 'France', imgBase: 'emmanuel petit 2.webp', statsBase: { spe: 80, acc: 77, sta: 90, str: 84, con: 81, pas: 83, sho: 70, tac: 84 } },
+            { id: 'emmanuel_petit_1', fullName: 'Emmanuel Petit', name: 'Petit', position: 'DM', height: '185', foot: 'Left', club: 'Free Agent', country: 'France', imgBase: 'emmanuel petit 1.webp', statsBase: { spe: 79, acc: 77, sta: 90, str: 84, con: 81, pas: 82, sho: 72, tac: 85 } },
+            { id: 'tony_adams', fullName: 'Tony Adams', name: 'Adams', position: 'CB', height: '191', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'tony adams.webp', statsBase: { spe: 77, acc: 72, sta: 85, str: 93, con: 74, pas: 77, sho: 58, tac: 92 } },
+            { id: 'michael_essien', fullName: 'Michael Essien', name: 'Essien', position: 'DM', height: '178', foot: 'Right', club: 'Free Agent', country: 'Ghana', imgBase: 'michael essien.webp', statsBase: { spe: 77, acc: 78, sta: 91, str: 82, con: 81, pas: 83, sho: 75, tac: 86 } },
+            { id: 'graeme_souness', fullName: 'Graeme Souness', name: 'Souness', position: 'CM', height: '180', foot: 'Right', club: 'Free Agent', country: 'Scotland', imgBase: 'graeme souness.webp', statsBase: { spe: 76, acc: 75, sta: 91, str: 84, con: 80, pas: 83, sho: 75, tac: 90 } },
+            { id: 'dennis_bergkamp_3', fullName: 'Dennis Bergkamp', name: 'Bergkamp', position: 'SS', height: '183', foot: 'Right', club: 'Free Agent', country: 'Netherlands', imgBase: 'dennis bergkamp 3.webp', statsBase: { spe: 75, acc: 74, sta: 80, str: 81, con: 90, pas: 82, sho: 81, tac: 49 } },
+            { id: 'paul_gascoigne_2', fullName: 'Paul Gascoigne', name: 'Gascoigne', position: 'AM', height: '178', foot: 'Right', club: 'Free Agent', country: 'England', imgBase: 'paul gascoigne 2.webp', statsBase: { spe: 75, acc: 80, sta: 69, str: 80, con: 89, pas: 82, sho: 82, tac: 50 } },
+            { id: 'walter_zenga', fullName: 'Walter Zenga', name: 'Zenga', position: 'GK', height: '188', foot: 'Right', club: 'Free Agent', country: 'Italy', imgBase: 'walter zenga.webp', statsBase: { spe: 70, acc: 67, sta: 82, str: 66, con: 60, pas: 61, sho: 79, tac: 56 } },
+            { id: 'carlos_valderrama', fullName: 'Carlos Valderrama', name: 'Valderrama', position: 'AM', height: '177', foot: 'Right', club: 'Free Agent', country: 'Colombia', imgBase: 'carlos valderrama.webp', statsBase: { spe: 70, acc: 83, sta: 82, str: 76, con: 86, pas: 85, sho: 76, tac: 67 } },
+            
+            // Dynamic Star Category (40 players)
+            { id: 'malen_dyn', fullName: 'Donyell Malen', name: 'Malen', position: 'CF', height: '176', foot: 'Right', club: 'AS Roma', country: 'Netherlands', imgBase: 'Malen_DLS26.webp', statsBase: { spe: 85, acc: 89, sta: 76, str: 72, con: 84, pas: 78, sho: 83, tac: 35 } },
+            { id: 'eze_dyn', fullName: 'Eberechi Eze', name: 'Eze', position: 'AM', height: '178', foot: 'Right', club: 'Arsenal', country: 'England', imgBase: 'Eze_DLS26.webp', statsBase: { spe: 81, acc: 86, sta: 76, str: 68, con: 87, pas: 84, sho: 83, tac: 53 } },
+            { id: 'onana_dyn', fullName: 'Amadou Onana', name: 'Onana', position: 'DM', height: '195', foot: 'Right', club: 'Aston Villa', country: 'Belgium', imgBase: 'Onana_DLS26.webp', statsBase: { spe: 84, acc: 69, sta: 78, str: 85, con: 77, pas: 78, sho: 59, tac: 81 } },
+            { id: 'williams_jr_dyn', fullName: 'Nico Williams', name: 'Williams Jr', position: 'LW', height: '181', foot: 'Right', club: 'Athletic Bilbao', country: 'Spain', imgBase: 'Williams_Jr_DLS26.webp', statsBase: { spe: 90, acc: 93, sta: 79, str: 61, con: 89, pas: 79, sho: 77, tac: 36 } },
+            { id: 'akanji_dyn', fullName: 'Manuel Akanji', name: 'Akanji', position: 'CB', height: '188', foot: 'Right', club: 'Manchester City', country: 'Switzerland', imgBase: 'Akanji_DLS26.webp', statsBase: { spe: 82, acc: 73, sta: 77, str: 84, con: 78, pas: 81, sho: 49, tac: 87 } },
+            { id: 'barcola_dyn', fullName: 'Bradley Barcola', name: 'B. Barcola', position: 'LW', height: '182', foot: 'Right', club: 'PSG', country: 'France', imgBase: 'B._Barcola_DLS26.webp', statsBase: { spe: 90, acc: 91, sta: 77, str: 67, con: 86, pas: 82, sho: 83, tac: 34 } },
+            { id: 'mckennie_dyn', fullName: 'Weston McKennie', name: 'McKennie', position: 'CM', height: '185', foot: 'Right', club: 'Juventus', country: 'USA', imgBase: 'McKennie_DLS26.webp', statsBase: { spe: 80, acc: 73, sta: 81, str: 80, con: 79, pas: 79, sho: 70, tac: 81 } },
+            { id: 'cunha_dyn', fullName: 'Matheus Cunha', name: 'Cunha', position: 'SS', height: '183', foot: 'Right', club: 'Manchester United', country: 'Brazil', imgBase: 'Cunha_DLS26.webp', statsBase: { spe: 85, acc: 84, sta: 82, str: 73, con: 87, pas: 80, sho: 84, tac: 42 } },
+            { id: 'david_dyn', fullName: 'Jonathan David', name: 'J. David', position: 'CF', height: '178', foot: 'Both', club: 'Juventus', country: 'Canada', imgBase: 'J._David_DLS26.webp', statsBase: { spe: 88, acc: 86, sta: 81, str: 77, con: 81, pas: 77, sho: 84, tac: 30 } },
+            { id: 'depaul_dyn', fullName: 'Rodrigo De Paul', name: 'R. De Paul', position: 'CM', height: '180', foot: 'Right', club: 'Inter Miami', country: 'Argentina', imgBase: 'R._de_Paul_DLS26.webp', statsBase: { spe: 76, acc: 73, sta: 87, str: 74, con: 83, pas: 83, sho: 72, tac: 78 } },
+            { id: 'fidalgo_dyn', fullName: 'Álvaro Fidalgo', name: 'Fidalgo', position: 'CM', height: '174', foot: 'Right', club: 'Real Betis', country: 'Mexico', imgBase: 'Fidalgo_DLS26.webp', statsBase: { spe: 80, acc: 84, sta: 83, str: 68, con: 84, pas: 83, sho: 73, tac: 72 } },
+            { id: 'felix_dyn', fullName: 'João Félix', name: 'João Félix', position: 'SS', height: '181', foot: 'Right', club: 'Al Nassr', country: 'Portugal', imgBase: 'João_Félix_DLS26.webp', statsBase: { spe: 80, acc: 86, sta: 77, str: 64, con: 88, pas: 82, sho: 83, tac: 46 } },
+            { id: 'robertson_dyn', fullName: 'Andrew Robertson', name: 'Robertson', position: 'LB', height: '178', foot: 'Left', club: 'Liverpool', country: 'Scotland', imgBase: 'Robertson_DLS26.webp', statsBase: { spe: 76, acc: 80, sta: 82, str: 71, con: 80, pas: 86, sho: 62, tac: 81 } },
+            { id: 'schick_dyn', fullName: 'Patrik Schick', name: 'Schick', position: 'CF', height: '187', foot: 'Left', club: 'Bayer Leverkusen', country: 'Czech Republic', imgBase: 'Schick_DLS26.webp', statsBase: { spe: 81, acc: 73, sta: 77, str: 89, con: 83, pas: 78, sho: 91, tac: 40 } },
+            { id: 'sorloth_dyn', fullName: 'Alexander Sørloth', name: 'Sørloth', position: 'CF', height: '195', foot: 'Left', club: 'Atletico Madrid', country: 'Norway', imgBase: 'Sørloth_DLS26.webp', statsBase: { spe: 81, acc: 72, sta: 79, str: 92, con: 83, pas: 75, sho: 88, tac: 31 } },
+            { id: 'bono_dyn', fullName: 'Yassine Bounou', name: 'Bono', position: 'GK', height: '195', foot: 'Left', club: 'Al Hilal', country: 'Morocco', imgBase: 'Bono_DLS26.webp', statsBase: { spe: 67, acc: 64, sta: 79, str: 64, con: 64, pas: 64, sho: 78, tac: 49 } },
+            { id: 'stanisic_dyn', fullName: 'Josip Stanišić', name: 'Stanišić', position: 'RB', height: '186', foot: 'Both', club: 'Bayern Munich', country: 'Croatia', imgBase: 'Stanišić_DLS26.webp', statsBase: { spe: 83, acc: 77, sta: 78, str: 80, con: 78, pas: 77, sho: 54, tac: 83 } },
+            { id: 'rwilliams_dyn', fullName: 'Ronwen Williams', name: 'Williams', position: 'GK', height: '184', foot: 'Right', club: 'Athletic Bilbao', country: 'South Africa', imgBase: 'Williams3_DLS26.webp', statsBase: { spe: 61, acc: 59, sta: 80, str: 60, con: 59, pas: 61, sho: 78, tac: 49 } }, 
+            { id: 'rios_dyn', fullName: 'Richard Ríos', name: 'Richard Ríos', position: 'DM', height: '187', foot: 'Right', club: 'Palmeiras', country: 'Colombia', imgBase: 'Richard_Ríos_DLS26.webp', statsBase: { spe: 77, acc: 77, sta: 85, str: 77, con: 84, pas: 79, sho: 61, tac: 77 } },
+            { id: 'marmoush_dyn', fullName: 'Omar Marmoush', name: 'Marmoush', position: 'LW', height: '180', foot: 'Right', club: 'Manchester City', country: 'Egypt', imgBase: 'Marmoush_DLS26.webp', statsBase: { spe: 91, acc: 88, sta: 75, str: 67, con: 85, pas: 83, sho: 85, tac: 30 } },
+            { id: 'darwin_dyn', fullName: 'Darwin Núñez', name: 'Darwin', position: 'CF', height: '187', foot: 'Right', club: 'Al Hilal', country: 'Uruguay', imgBase: 'Darwin_DLS26.webp', statsBase: { spe: 90, acc: 79, sta: 85, str: 82, con: 77, pas: 75, sho: 80, tac: 41 } },
+            { id: 'aitnouri_dyn', fullName: 'Rayan Aït-Nouri', name: 'Aït-Nouri', position: 'LB', height: '180', foot: 'Left', club: 'Manchester City', country: 'Algeria', imgBase: 'Aït-Nouri_DLS26.webp', statsBase: { spe: 86, acc: 84, sta: 81, str: 64, con: 82, pas: 80, sho: 59, tac: 77 } },
+            { id: 'hincapie_dyn', fullName: 'Piero Hincapié', name: 'Hincapié', position: 'CB', height: '184', foot: 'Left', club: 'Arsenal', country: 'Ecuador', imgBase: 'Hincapié_DLS26.webp', statsBase: { spe: 86, acc: 76, sta: 81, str: 82, con: 76, pas: 78, sho: 47, tac: 86 } },
+            { id: 'iwilliams_dyn', fullName: 'Iñaki Williams', name: 'Williams', position: 'RW', height: '186', foot: 'Right', club: 'Athletic Bilbao', country: 'Ghana', imgBase: 'Williams_DLS26.webp', statsBase: { spe: 90, acc: 82, sta: 82, str: 81, con: 80, pas: 76, sho: 80, tac: 40 } }, 
+            { id: 'ndiaye_dyn', fullName: 'Iliman Ndiaye', name: 'Ndiaye', position: 'RW', height: '180', foot: 'Right', club: 'Everton', country: 'Senegal', imgBase: 'Ndiaye_DLS26.webp', statsBase: { spe: 84, acc: 87, sta: 79, str: 67, con: 87, pas: 76, sho: 80, tac: 45 } },
+            { id: 'irvine_dyn', fullName: 'Jackson Irvine', name: 'Irvine', position: 'CM', height: '189', foot: 'Right', club: 'St. Pauli', country: 'Australia', imgBase: 'Irvine_DLS26.webp', statsBase: { spe: 79, acc: 70, sta: 93, str: 83, con: 77, pas: 79, sho: 70, tac: 80 } },
+            { id: 'khusanov_dyn', fullName: 'Abdukodir Khusanov', name: 'Khusanov', position: 'CB', height: '186', foot: 'Right', club: 'Manchester City', country: 'Uzbekistan', imgBase: 'Khusanov_DLS26.webp', statsBase: { spe: 92, acc: 80, sta: 74, str: 81, con: 75, pas: 77, sho: 45, tac: 83 } },
+            { id: 'muharemovic_dyn', fullName: 'Tarik Muharemović', name: 'Muharemović', position: 'CB', height: '187', foot: 'Left', club: 'Sassuolo', country: 'Bosnia & Herzegovina', imgBase: 'Muharemović_DLS26.webp', statsBase: { spe: 78, acc: 70, sta: 79, str: 90, con: 75, pas: 76, sho: 55, tac: 90 } },
+            { id: 'kangin_dyn', fullName: 'Kang-in Lee', name: 'Kang In', position: 'AM', height: '173', foot: 'Left', club: 'PSG', country: 'South Korea', imgBase: 'Kang_In_DLS26.webp', statsBase: { spe: 79, acc: 87, sta: 80, str: 63, con: 85, pas: 86, sho: 77, tac: 55 } },
+            { id: 'wissa_dyn', fullName: 'Yoane Wissa', name: 'Wissa', position: 'CF', height: '176', foot: 'Right', club: 'Newcastle United', country: 'DR Congo', imgBase: 'Wissa_DLS26.webp', statsBase: { spe: 87, acc: 89, sta: 79, str: 73, con: 81, pas: 77, sho: 85, tac: 34 } },
+            { id: 'kubo_dyn', fullName: 'Takefusa Kubo', name: 'Take', position: 'RW', height: '173', foot: 'Left', club: 'Real Sociedad', country: 'Japan', imgBase: 'Take_DLS26.webp', statsBase: { spe: 83, acc: 88, sta: 76, str: 64, con: 87, pas: 79, sho: 79, tac: 52 } },
+            { id: 'isidor_dyn', fullName: 'Wilson Isidor', name: 'Isidor', position: 'CF', height: '186', foot: 'Right', club: 'Sunderland', country: 'Haiti', imgBase: 'Isidor_DLS26.webp', statsBase: { spe: 88, acc: 82, sta: 81, str: 79, con: 81, pas: 75, sho: 84, tac: 35 } },
+            { id: 'guler_dyn', fullName: 'Arda Güler', name: 'Arda Güler', position: 'AM', height: '175', foot: 'Left', club: 'Real Madrid', country: 'Turkey', imgBase: 'Arda_Güler_DLS26.webp', statsBase: { spe: 77, acc: 84, sta: 79, str: 57, con: 87, pas: 88, sho: 80, tac: 62 } },
+            { id: 'saud_dyn', fullName: 'Saud Abdulhamid', name: 'Saud', position: 'CB', height: '175', foot: 'Right', club: 'Lens', country: 'Saudi Arabia', imgBase: 'Saud_DLS26.webp', statsBase: { spe: 90, acc: 91, sta: 82, str: 71, con: 78, pas: 78, sho: 52, tac: 77 } },
+            { id: 'ndicka_dyn', fullName: 'Evan Ndicka', name: 'Ndicka', position: 'CB', height: '192', foot: 'Left', club: 'AS Roma', country: 'Ivory Coast', imgBase: 'Ndicka_DLS26.webp', statsBase: { spe: 80, acc: 72, sta: 79, str: 87, con: 76, pas: 78, sho: 52, tac: 89 } },
+            { id: 'wood2_dyn', fullName: 'Chris Wood', name: 'Wood', position: 'CF', height: '191', foot: 'Right', club: 'Nottingham Forest', country: 'New Zealand', imgBase: 'Wood_DLS26.webp', statsBase: { spe: 76, acc: 68, sta: 79, str: 94, con: 82, pas: 75, sho: 86, tac: 45 } }, 
+            { id: 'laimer_dyn', fullName: 'Konrad Laimer', name: 'Laimer', position: 'RB', height: '180', foot: 'Right', club: 'Bayern Munich', country: 'Austria', imgBase: 'Laimer_DLS26.webp', statsBase: { spe: 88, acc: 82, sta: 84, str: 68, con: 78, pas: 84, sho: 67, tac: 82 } },
+            { id: 'woltemade_dyn', fullName: 'Nick Woltemade', name: 'Woltemade', position: 'CF', height: '198', foot: 'Right', club: 'Newcastle United', country: 'Germany', imgBase: 'Woltemade_DLS26.webp', statsBase: { spe: 81, acc: 73, sta: 79, str: 87, con: 83, pas: 78, sho: 86, tac: 36 } },
+            { id: 'elanga_dyn', fullName: 'Anthony Elanga', name: 'Elanga', position: 'RW', height: '178', foot: 'Right', club: 'Newcastle United', country: 'Sweden', imgBase: 'Elanga_DLS26.webp', statsBase: { spe: 92, acc: 93, sta: 77, str: 70, con: 82, pas: 79, sho: 77, tac: 32 } },
+            { id: 'alderete_dyn', fullName: 'Omar Alderete', name: 'Alderete', position: 'CB', height: '188', foot: 'Left', club: 'Sunderland', country: 'Paraguay', imgBase: 'Alderete_DLS26.webp', statsBase: { spe: 78, acc: 71, sta: 81, str: 88, con: 76, pas: 77, sho: 53, tac: 90 } },
+            
+            // World Cup Heroes Category (8 players)
+            { id: 'ronaldo_wch', fullName: 'Cristiano Ronaldo', name: 'Ronaldo', position: 'CF', height: '187', foot: 'Both', club: 'Al Nassr', country: 'Portugal', imgBase: 'Ronaldo_DLS26.webp', statsBase: { spe: 86, acc: 81, sta: 83, str: 85, con: 90, pas: 83, sho: 95, tac: 41 } },
+            { id: 'messi_wch', fullName: 'Lionel Messi', name: 'Messi', position: 'SS', height: '170', foot: 'Left', club: 'Inter Miami', country: 'Argentina', imgBase: 'Messi_DLS26.webp', statsBase: { spe: 81, acc: 91, sta: 80, str: 68, con: 95, pas: 93, sho: 93, tac: 45 } },
+            { id: 'debruyne_wch', fullName: 'Kevin De Bruyne', name: 'De Bruyne', position: 'AM', height: '181', foot: 'Right', club: 'Napoli', country: 'Belgium', imgBase: 'De_Bruyne_DLS26.webp', statsBase: { spe: 80, acc: 77, sta: 86, str: 73, con: 88, pas: 95, sho: 85, tac: 73 } },
+            { id: 'james_wch', fullName: 'James Rodríguez', name: 'James', position: 'AM', height: '180', foot: 'Left', club: 'São Paulo', country: 'Colombia', imgBase: 'James_DLS26.webp', statsBase: { spe: 80, acc: 86, sta: 82, str: 72, con: 92, pas: 89, sho: 90, tac: 50 } },
+            { id: 'navas_wch', fullName: 'Keylor Navas', name: 'K. Navas', position: 'GK', height: '185', foot: 'Right', club: 'Pumas', country: 'Costa Rica', imgBase: 'K._Navas_DLS26.webp', statsBase: { spe: 67, acc: 67, sta: 84, str: 54, con: 62, pas: 60, sho: 81, tac: 50 } },
+            { id: 'walker_wch', fullName: 'Kyle Walker', name: 'Walker', position: 'RB', height: '183', foot: 'Right', club: 'Burnley', country: 'England', imgBase: 'Walker_DLS26.webp', statsBase: { spe: 94, acc: 94, sta: 87, str: 78, con: 78, pas: 78, sho: 45, tac: 87 } },
+            { id: 'gvardiol_wch', fullName: 'Joško Gvardiol', name: 'Gvardiol', position: 'CB', height: '185', foot: 'Left', club: 'Manchester City', country: 'Croatia', imgBase: 'Gvardiol_DLS26.webp', statsBase: { spe: 83, acc: 76, sta: 82, str: 83, con: 78, pas: 80, sho: 68, tac: 91 } },
+            { id: 'perisic_wch', fullName: 'Ivan Perišić', name: 'Perišić', position: 'LW', height: '186', foot: 'Both', club: 'PSV', country: 'Croatia', imgBase: 'Perišić_DLS26.webp', statsBase: { spe: 84, acc: 80, sta: 87, str: 78, con: 87, pas: 85, sho: 85, tac: 56 } },
+
+            // World Cup Winners Category (8 players)
+            { id: 'pavard_wcw', fullName: 'Benjamin Pavard', name: 'Pavard', category: 'World Cup Winners', position: 'CB', club: 'Inter Milan', country: 'France', imgBase: 'Pavard_DLS26-1.webp', statsBase: { spe: 81, acc: 77, sta: 83, str: 81, con: 78, pas: 80, sho: 7, tac: 85 }, height: '186', foot: 'Right' },
+            { id: 'enzo_wcw', fullName: 'Enzo Fernández', name: 'Enzo', category: 'World Cup Winners', position: 'CM', club: 'Chelsea', country: 'Argentina', imgBase: 'Enzo_DLS26 (1)-1.webp', statsBase: { spe: 74, acc: 77, sta: 87, str: 69, con: 90, pas: 93, sho: 77, tac: 77 }, height: '178', foot: 'Right' },
+            { id: 'cucurella_wcw', fullName: 'Marc Cucurella', name: 'Cucurella', category: 'World Cup Winners', position: 'LB', club: 'Real Madrid', country: 'Spain', imgBase: 'Cucurella_DLS26-2.webp', statsBase: { spe: 83, acc: 85, sta: 92, str: 74, con: 82, pas: 87, sho: 62, tac: 89 }, height: '174', foot: 'Left' },
+            { id: 'cubarsi_wcw', fullName: 'Pau Cubarsí', name: 'Cubarsí', category: 'World Cup Winners', position: 'CB', club: 'Barcelona', country: 'Spain', imgBase: 'Cubarsi_DLS26 (1)-1.webp', statsBase: { spe: 83, acc: 77, sta: 83, str: 89, con: 84, pas: 84, sho: 47, tac: 94 }, height: '183', foot: 'Right' },
+            { id: 'yamal_wcw', fullName: 'Lamine Yamal', name: 'Yamal', category: 'World Cup Winners', position: 'RW', club: 'Barcelona', country: 'Spain', imgBase: 'Yamal_DLS26-1.webp', statsBase: { spe: 88, acc: 93, sta: 85, str: 66, con: 96, pas: 91, sho: 89, tac: 41 }, height: '179', foot: 'Left' },
+            { id: 'rodrigo_wcw', fullName: 'Rodri', name: 'Rodri', category: 'World Cup Winners', position: 'DM', club: 'Real Madrid', country: 'Spain', imgBase: 'Rodrigo_DLS26-2.webp', statsBase: { spe: 75, acc: 70, sta: 88, str: 89, con: 92, pas: 92, sho: 73, tac: 90 }, height: '190', foot: 'Right' },
+            { id: 'pogba_wcw', fullName: 'Paul Pogba', name: 'Pogba', category: 'World Cup Winners', position: 'CM', club: 'Monaco', country: 'France', imgBase: 'Pogba_DLS26 (1).webp', statsBase: { spe: 77, acc: 71, sta: 85, str: 89, con: 89, pas: 92, sho: 82, tac: 71 }, height: '191', foot: 'Both' },
+            { id: 'martinez_wcw', fullName: 'Emiliano Martínez', name: 'Martínez', category: 'World Cup Winners', position: 'GK', club: 'Aston Villa', country: 'Argentina', imgBase: 'Martínez_DLS6.webp', statsBase: { spe: 61, acc: 57, sta: 84, str: 72, con: 63, pas: 63, sho: 83, tac: 46 }, height: '195', foot: 'Right' },
+
+// --- NORMAL CATEGORY ---
+
+// Image 42502 & 40287
+
+
+// Image 43847
+{ id: 'rodri_84', fullName: 'Rodri', category: 'New Updates', position: 'DM', club: 'Real Madrid', country: 'Spain', imgBase: 'Rodrigo_DLS.webp', statsBase: { spe: 72, acc: 66, sta: 83, str: 88, con: 86, pas: 89, sho: 72, tac: 88 }, height: '190', foot: 'Right' },
+{ id: 'saka_84', fullName: 'Bukayo Saka', category: 'New Updates', position: 'RW', club: 'Arsenal', country: 'England', imgBase: 'Saka_DLS26.webp', statsBase: { spe: 81, acc: 86, sta: 82, str: 69, con: 90, pas: 87, sho: 83, tac: 58 }, height: '178', foot: 'Left' },
+{ id: 'kvaratskhelia_84', fullName: 'Khvicha Kvaratskhelia', category: 'New Updates', position: 'LW', club: 'PSG', country: 'Georgia', imgBase: 'Kvaratskhelia_DLS26.webp', statsBase: { spe: 84, acc: 88, sta: 79, str: 71, con: 91, pas: 84, sho: 85, tac: 52 }, height: '183', foot: 'Both' },
+{ id: 'saliba_84', fullName: 'William Saliba', category: 'New Updates', position: 'CB', club: 'Arsenal', country: 'France', imgBase: 'Saliba_DLS26.webp', statsBase: { spe: 83, acc: 75, sta: 81, str: 86, con: 80, pas: 82, sho: 49, tac: 93 }, height: '192', foot: 'Right' },
+{ id: 'alvarez_84', fullName: 'Julián Álvarez', category: 'New Updates', position: 'CF', club: 'Atletico Madrid', country: 'Argentina', imgBase: 'J._Alvarez_DLS26.webp', statsBase: { spe: 83, acc: 85, sta: 83, str: 70, con: 86, pas: 85, sho: 88, tac: 55 }, height: '170', foot: 'Right' },
+{ id: 'szoboszlai_84', fullName: 'Dominik Szoboszlai', category: 'New Updates', position: 'AM', club: 'Liverpool', country: 'Hungary', imgBase: 'Szoboszlai_DLS26.webp', statsBase: { spe: 84, acc: 76, sta: 89, str: 72, con: 83, pas: 88, sho: 81, tac: 76 }, height: '186', foot: 'Right' },
+{ id: 'dimarco_84', fullName: 'Federico Dimarco', category: 'New Updates', position: 'CB', club: 'Inter Milan', country: 'Italy', imgBase: 'Dimarco_DLS26.webp', statsBase: { spe: 78, acc: 82, sta: 87, str: 68, con: 83, pas: 92, sho: 77, tac: 79 }, height: '175', foot: 'Left' },
+{ id: 'diaz_84', fullName: 'Luis Díaz', category: 'New Updates', position: 'LW', club: 'Bayern Munich', country: 'Colombia', imgBase: 'Luis_Díaz_DLS26.webp', statsBase: { spe: 85, acc: 87, sta: 84, str: 68, con: 87, pas: 87, sho: 87, tac: 49 }, height: '178', foot: 'Right' },
+{ id: 'mendes_84', fullName: 'Nuno Mendes', category: 'New Updates', position: 'LB', club: 'PSG', country: 'Portugal', imgBase: 'N._Mendes_DLS26.webp', statsBase: { spe: 94, acc: 90, sta: 82, str: 67, con: 82, pas: 81, sho: 64, tac: 83 }, height: '180', foot: 'Left' },
+{ id: 'raya_84', fullName: 'David Raya', category: 'New Updates', position: 'GK', club: 'Arsenal', country: 'Spain', imgBase: 'Raya_DLS26.webp', statsBase: { spe: 69, acc: 66, sta: 80, str: 63, con: 61, pas: 66, sho: 82, tac: 51 }, height: '183', foot: 'Right' },
+{ id: 'bellingham_84', fullName: 'Jude Bellingham', category: 'New Updates', position: 'AM', club: 'Real Madrid', country: 'England', imgBase: 'Bellingham_DLS26.webp', statsBase: { spe: 76, acc: 77, sta: 89, str: 78, con: 87, pas: 85, sho: 80, tac: 76 }, height: '186', foot: 'Right' },
+{ id: 'bastoni_84', fullName: 'Alessandro Bastoni', category: 'New Updates', position: 'CB', club: 'Inter Milan', country: 'Italy', imgBase: 'Bastoni_DLS26.webp', statsBase: { spe: 80, acc: 72, sta: 82, str: 88, con: 81, pas: 82, sho: 53, tac: 91 }, height: '190', foot: 'Left' },
+
+// Image 43849
+{ id: 'hakimi_85', fullName: 'Achraf Hakimi', category: 'New Updates', position: 'RB', club: 'PSG', country: 'Morocco', imgBase: 'Hakimi_DLS26.webp', statsBase: { spe: 94, acc: 87, sta: 89, str: 67, con: 81, pas: 85, sho: 74, tac: 80 }, height: '181', foot: 'Right' },
+{ id: 'kane_86', fullName: 'Harry Kane', category: 'New Updates', position: 'CF', club: 'Bayern Munich', country: 'England', imgBase: 'Kane_DLS26.webp', statsBase: { spe: 75, acc: 70, sta: 86, str: 91, con: 88, pas: 90, sho: 96, tac: 50 }, height: '188', foot: 'Right' },
+{ id: 'raphinha_85', fullName: 'Raphinha', category: 'New Updates', position: 'LW', club: 'Barcelona', country: 'Brazil', imgBase: 'Raphinha_DLS26.webp', statsBase: { spe: 85, acc: 87, sta: 85, str: 71, con: 87, pas: 90, sho: 91, tac: 51 }, height: '176', foot: 'Left' },
+{ id: 'mbappe_86', fullName: 'Kylian Mbappé', category: 'New Updates', position: 'CF', club: 'Real Madrid', country: 'France', imgBase: 'Mbappé_DLS26.webp', statsBase: { spe: 94, acc: 94, sta: 83, str: 74, con: 90, pas: 83, sho: 95, tac: 27 }, height: '178', foot: 'Right' },
+{ id: 'donnarumma_85', fullName: 'Gianluigi Donnarumma', category: 'New Updates', position: 'GK', club: 'Manchester City', country: 'Italy', imgBase: 'Donnarumma_DLS26.webp', statsBase: { spe: 58, acc: 55, sta: 84, str: 68, con: 61, pas: 66, sho: 80, tac: 43 }, height: '196', foot: 'Right' },
+{ id: 'dembele_86', fullName: 'Ousmane Dembélé', category: 'New Updates', position: 'CF', club: 'PSG', country: 'France', imgBase: 'O._Dembélé_DLS26.webp', statsBase: { spe: 89, acc: 93, sta: 75, str: 62, con: 93, pas: 91, sho: 90, tac: 45 }, height: '178', foot: 'Both' },
+{ id: 'fernandes_85', fullName: 'Bruno Fernandes', category: 'New Updates', position: 'AM', club: 'Manchester United', country: 'Portugal', imgBase: 'B._Fernandes_DLS26.webp', statsBase: { spe: 76, acc: 79, sta: 93, str: 69, con: 85, pas: 95, sho: 82, tac: 72 }, height: '179', foot: 'Right' },
+{ id: 'haaland_86', fullName: 'Erling Haaland', category: 'New Updates', position: 'CF', club: 'Manchester City', country: 'Norway', imgBase: 'Haaland_DLS26.webp', statsBase: { spe: 92, acc: 80, sta: 81, str: 93, con: 82, pas: 78, sho: 95, tac: 40 }, height: '195', foot: 'Left' },
+{ id: 'yamal_86', fullName: 'Lamine Yamal', category: 'New Updates', position: 'RW', club: 'Barcelona', country: 'Spain', imgBase: 'Lamine_Yamal_DLS26.webp', statsBase: { spe: 84, acc: 93, sta: 82, str: 65, con: 95, pas: 90, sho: 88, tac: 39 }, height: '179', foot: 'Left' },
+{ id: 'olise_86', fullName: 'Michael Olise', category: 'New Updates', position: 'RW', club: 'Bayern Munich', country: 'France', imgBase: 'Olise_DLS26.webp', statsBase: { spe: 85, acc: 87, sta: 82, str: 65, con: 92, pas: 91, sho: 89, tac: 54 }, height: '184', foot: 'Left' },
+
+// Image 43923
+{ id: 'akanji_80', fullName: 'Manuel Akanji', category: 'New Updates', position: 'CB', club: 'Inter Milan', country: 'Switzerland', imgBase: 'Akanji_DLS26 (1).webp', statsBase: { spe: 81, acc: 71, sta: 77, str: 81, con: 77, pas: 80, sho: 47, tac: 86 }, height: '188', foot: 'Right' },
+{ id: 'neves_80', fullName: 'Rúben Neves', category: 'New Updates', position: 'DM', club: 'Al Hilal', country: 'Portugal', imgBase: 'R._Neves_DLS26.webp', statsBase: { spe: 68, acc: 61, sta: 83, str: 73, con: 82, pas: 85, sho: 74, tac: 79 }, height: '180', foot: 'Right' },
+{ id: 'trincao_80', fullName: 'Francisco Trincão', category: 'New Updates', position: 'AM', club: 'Sporting CP', country: 'Portugal', imgBase: 'Trincão_DLS26.webp', statsBase: { spe: 77, acc: 81, sta: 82, str: 70, con: 83, pas: 83, sho: 80, tac: 41 }, height: '184', foot: 'Left' },
+{ id: 'minjae_80', fullName: 'Min-Jae Kim', category: 'New Updates', position: 'CB', club: 'Bayern Munich', country: 'South Korea', imgBase: 'Min_Jae_DLS26.webp', statsBase: { spe: 82, acc: 70, sta: 74, str: 84, con: 76, pas: 80, sho: 48, tac: 86 }, height: '190', foot: 'Right' },
+{ id: 'coman_80', fullName: 'Kingsley Coman', category: 'New Updates', position: 'RW', club: 'Al Nassr', country: 'France', imgBase: 'Coman_DLS26.webp', statsBase: { spe: 86, acc: 88, sta: 74, str: 64, con: 84, pas: 81, sho: 77, tac: 35 }, height: '181', foot: 'Right' },
+{ id: 'huijsen_80', fullName: 'Dean Huijsen', category: 'New Updates', position: 'CB', club: 'Real Madrid', country: 'Spain', imgBase: 'Huijsen_DLS26.webp', statsBase: { spe: 79, acc: 73, sta: 74, str: 82, con: 78, pas: 80, sho: 50, tac: 84 }, height: '196', foot: 'Both' },
+{ id: 'hjulmand_80', fullName: 'Morten Hjulmand', category: 'New Updates', position: 'DM', club: 'Sporting CP', country: 'Denmark', imgBase: 'Hjulmand_DLS26.webp', statsBase: { spe: 71, acc: 68, sta: 87, str: 81, con: 78, pas: 81, sho: 70, tac: 82 }, height: '185', foot: 'Right' },
+{ id: 'cucurella_80', fullName: 'Marc Cucurella', category: 'New Updates', position: 'LB', club: 'Chelsea', country: 'Spain', imgBase: 'Cucurella_DLS26.webp', statsBase: { spe: 77, acc: 80, sta: 86, str: 71, con: 77, pas: 81, sho: 60, tac: 81 }, height: '174', foot: 'Left' },
+{ id: 'oyarzabal_80', fullName: 'Mikel Oyarzabal', category: 'New Updates', position: 'CF', club: 'Real Sociedad', country: 'Spain', imgBase: 'Oyarzabal_DLS26.webp', statsBase: { spe: 75, acc: 75, sta: 81, str: 72, con: 82, pas: 78, sho: 86, tac: 49 }, height: '181', foot: 'Left' },
+{ id: 'svilar_80', fullName: 'Mile Svilar', category: 'New Updates', position: 'GK', club: 'AS Roma', country: 'Serbia', imgBase: 'Svilar_DLS26.webp', statsBase: { spe: 65, acc: 64, sta: 79, str: 60, con: 59, pas: 60, sho: 75, tac: 43 }, height: '189', foot: 'Right' },
+{ id: 'eze_80', fullName: 'Eberechi Eze', category: 'New Updates', position: 'AM', club: 'Arsenal', country: 'England', imgBase: 'Eze_DLS26 (1).webp', statsBase: { spe: 80, acc: 84, sta: 75, str: 67, con: 84, pas: 80, sho: 80, tac: 52 }, height: '178', foot: 'Right' },
+{ id: 'tielemans_80', fullName: 'Youri Tielemans', category: 'New Updates', position: 'CM', club: 'Aston Villa', country: 'Belgium', imgBase: 'Tielemans_DLS26.webp', statsBase: { spe: 71, acc: 77, sta: 80, str: 70, con: 83, pas: 86, sho: 73, tac: 74 }, height: '176', foot: 'Right' },
+
+// Image 43925
+{ id: 'anguissa_80', fullName: 'André-Frank Zambo Anguissa', category: 'New Updates', position: 'CM', club: 'Napoli', country: 'Cameroon', imgBase: 'Anguissa_DLS26.webp', statsBase: { spe: 74, acc: 68, sta: 84, str: 84, con: 78, pas: 79, sho: 74, tac: 75 }, height: '184', foot: 'Right' },
+{ id: 'barcola_80', fullName: 'Bradley Barcola', category: 'New Updates', position: 'LW', club: 'PSG', country: 'France', imgBase: 'B._Barcola_DLS26 (1).webp', statsBase: { spe: 91, acc: 91, sta: 74, str: 64, con: 83, pas: 80, sho: 81, tac: 35 }, height: '182', foot: 'Right' },
+{ id: 'dilorenzo_80', fullName: 'Giovanni Di Lorenzo', category: 'New Updates', position: 'RB', club: 'Napoli', country: 'Italy', imgBase: 'Di_Lorenzo_DLS26.webp', statsBase: { spe: 80, acc: 77, sta: 85, str: 78, con: 76, pas: 76, sho: 59, tac: 81 }, height: '183', foot: 'Right' },
+{ id: 'antony_80', fullName: 'Antony', category: 'New Updates', position: 'RW', club: 'Real Betis', country: 'Brazil', imgBase: 'Antony_DLS26.webp', statsBase: { spe: 84, acc: 87, sta: 77, str: 61, con: 83, pas: 80, sho: 81, tac: 40 }, height: '174', foot: 'Left' },
+{ id: 'marmoush_80', fullName: 'Omar Marmoush', category: 'New Updates', position: 'CF', club: 'Manchester City', country: 'Egypt', imgBase: 'Marmoush_DLS26 (1).webp', statsBase: { spe: 88, acc: 88, sta: 72, str: 65, con: 82, pas: 81, sho: 81, tac: 30 }, height: '180', foot: 'Right' },
+{ id: 'rashford_80', fullName: 'Marcus Rashford', category: 'New Updates', position: 'LW', club: 'Barcelona', country: 'England', imgBase: 'Rashford_DLS26.webp', statsBase: { spe: 90, acc: 81, sta: 74, str: 73, con: 81, pas: 80, sho: 82, tac: 33 }, height: '188', foot: 'Right' },
+{ id: 'cunha_80', fullName: 'Matheus Cunha', category: 'New Updates', position: 'SS', club: 'Manchester United', country: 'Brazil', imgBase: 'Cunha_DLS26 (1).webp', statsBase: { spe: 83, acc: 82, sta: 79, str: 73, con: 85, pas: 77, sho: 82, tac: 41 }, height: '183', foot: 'Right' },
+{ id: 'rrahmani_80', fullName: 'Amir Rrahmani', category: 'New Updates', position: 'CB', club: 'Napoli', country: 'Kosovo', imgBase: 'Rrahmani_DLS26.webp', statsBase: { spe: 77, acc: 65, sta: 74, str: 88, con: 75, pas: 78, sho: 51, tac: 87 }, height: '192', foot: 'Right' },
+{ id: 'provedel_80', fullName: 'Ivan Provedel', category: 'New Updates', position: 'GK', club: 'Lazio', country: 'Italy', imgBase: 'Provedel_DLS26.webp', statsBase: { spe: 66, acc: 62, sta: 78, str: 59, con: 60, pas: 63, sho: 75, tac: 43 }, height: '194', foot: 'Right' },
+{ id: 'dearrascaeta_80', fullName: 'Giorgian De Arrascaeta', category: 'New Updates', position: 'AM', club: 'Flamengo', country: 'Uruguay', imgBase: 'de_Arrascaeta_DLS26.webp', statsBase: { spe: 74, acc: 81, sta: 77, str: 63, con: 84, pas: 83, sho: 83, tac: 53 }, height: '174', foot: 'Right' },
+{ id: 'orban_80', fullName: 'Willi Orbán', category: 'New Updates', position: 'CB', club: 'RB Leipzig', country: 'Hungary', imgBase: 'Orbán_DLS26.webp', statsBase: { spe: 77, acc: 69, sta: 77, str: 87, con: 75, pas: 77, sho: 54, tac: 84 }, height: '186', foot: 'Right' },
+{ id: 'yildiz_80', fullName: 'Kenan Yildiz', category: 'New Updates', position: 'SS', club: 'Juventus', country: 'Turkey', imgBase: 'Yildiz_DLS26.webp', statsBase: { spe: 83, acc: 82, sta: 77, str: 69, con: 85, pas: 81, sho: 80, tac: 30 }, height: '187', foot: 'Both' },
+
+// Image 43932
+{ id: 'merino_80', fullName: 'Mikel Merino', category: 'New Updates', position: 'CM', club: 'Arsenal', country: 'Spain', imgBase: 'Merino_DLS26.webp', statsBase: { spe: 68, acc: 64, sta: 79, str: 81, con: 79, pas: 80, sho: 77, tac: 79 }, height: '189', foot: 'Left' },
+{ id: 'ferran_80', fullName: 'Ferran Torres', category: 'New Updates', position: 'CF', club: 'Barcelona', country: 'Spain', imgBase: 'Ferran_DLS26.webp', statsBase: { spe: 83, acc: 87, sta: 73, str: 73, con: 79, pas: 78, sho: 87, tac: 31 }, height: '182', foot: 'Right' },
+{ id: 'mkhitaryan_80', fullName: 'Henrikh Mkhitaryan', category: 'New Updates', position: 'CM', club: 'Inter Milan', country: 'Armenia', imgBase: 'Mkhitaryan_DLS26.webp', statsBase: { spe: 73, acc: 77, sta: 79, str: 69, con: 81, pas: 83, sho: 73, tac: 71 }, height: '177', foot: 'Both' },
+{ id: 'trossard_80', fullName: 'Leandro Trossard', category: 'New Updates', position: 'LW', club: 'Arsenal', country: 'Belgium', imgBase: 'Trossard_DLS26.webp', statsBase: { spe: 79, acc: 87, sta: 77, str: 60, con: 82, pas: 80, sho: 80, tac: 50 }, height: '172', foot: 'Right' },
+{ id: 'rodrygo_80', fullName: 'Rodrygo', category: 'New Updates', position: 'RW', club: 'Real Madrid', country: 'Brazil', imgBase: 'Rodrygo_DLS26.webp', statsBase: { spe: 83, acc: 85, sta: 75, str: 61, con: 85, pas: 82, sho: 77, tac: 45 }, height: '174', foot: 'Right' },
+{ id: 'imartinez_80', fullName: 'Iñigo Martínez', category: 'New Updates', position: 'CB', club: 'Al Nassr', country: 'Spain', imgBase: 'I._Martinez_DLS26.webp', statsBase: { spe: 72, acc: 68, sta: 76, str: 84, con: 78, pas: 80, sho: 51, tac: 87 }, height: '182', foot: 'Left' },
+{ id: 'pickford_80', fullName: 'Jordan Pickford', category: 'New Updates', position: 'GK', club: 'Everton', country: 'England', imgBase: 'Pickford_DLS26.webp', statsBase: { spe: 66, acc: 64, sta: 79, str: 55, con: 59, pas: 61, sho: 75, tac: 52 }, height: '185', foot: 'Left' },
+
+{ id: 'joaopedro_80', fullName: 'João Pedro', category: 'New Updates', position: 'CF', club: 'Chelsea', country: 'Brazil', imgBase: 'João_Pedro_DLS26.webp', statsBase: { spe: 83, acc: 83, sta: 77, str: 79, con: 82, pas: 79, sho: 84, tac: 29 }, height: '182', foot: 'Right' },
+{ id: 'williamsjr_80', fullName: 'Nico Williams', category: 'New Updates', position: 'LW', club: 'Athletic Bilbao', country: 'Spain', imgBase: 'Williams_Jr_DLS26.webp', statsBase: { spe: 89, acc: 91, sta: 75, str: 60, con: 87, pas: 77, sho: 77, tac: 36 }, height: '181', foot: 'Right' },
+{ id: 'lobotka_80', fullName: 'Stanislav Lobotka', category: 'New Updates', position: 'DM', club: 'Napoli', country: 'Slovakia', imgBase: 'Lobotka_DLS26.webp', statsBase: { spe: 71, acc: 77, sta: 84, str: 63, con: 85, pas: 86, sho: 65, tac: 77 }, height: '168', foot: 'Right' },
+{ id: 'barrios_80', fullName: 'Pablo Barrios', category: 'New Updates', position: 'CM', club: 'Atlético Madrid', country: 'Spain', imgBase: 'Barrios_DLS26.webp', statsBase: { spe: 77, acc: 78, sta: 83, str: 73, con: 79, pas: 81, sho: 66, tac: 78 }, height: '181', foot: 'Right' },
+{ id: 'kante_80', fullName: "N'Golo Kanté", category: 'New Updates', position: 'DM', club: 'Al Ittihad', country: 'France', imgBase: 'Kanté_DLS26.webp', statsBase: { spe: 71, acc: 76, sta: 89, str: 71, con: 79, pas: 78, sho: 62, tac: 89 }, height: '168', foot: 'Right' },
+{ id: 'lookman_80', fullName: 'Ademola Lookman', category: 'New Updates', position: 'SS', club: 'Atlético Madrid', country: 'Nigeria', imgBase: 'Lookman_DLS26.webp', statsBase: { spe: 82, acc: 87, sta: 72, str: 65, con: 83, pas: 79, sho: 82, tac: 37 }, height: '174', foot: 'Right' },
+
+// Image 43934
+{ id: 'carvajal_81', fullName: 'Daniel Carvajal', category: 'New Updates', position: 'RB', club: 'Real Madrid', country: 'Spain', imgBase: 'Carvajal_DLS26.webp', statsBase: { spe: 78, acc: 79, sta: 72, str: 72, con: 81, pas: 81, sho: 57, tac: 85 }, height: '173', foot: 'Right' },
+{ id: 'pavlidis_80', fullName: 'Vangelis Pavlidis', category: 'New Updates', position: 'CF', club: 'Benfica', country: 'Greece', imgBase: 'Pavlidis_DLS26.webp', statsBase: { spe: 77, acc: 74, sta: 84, str: 81, con: 78, pas: 77, sho: 87, tac: 41 }, height: '186', foot: 'Both' },
+{ id: 'son_81', fullName: 'Heung-Min Son', category: 'New Updates', position: 'CF', club: 'Los Angeles', country: 'South Korea', imgBase: 'Son_DLS26.webp', statsBase: { spe: 85, acc: 85, sta: 82, str: 66, con: 84, pas: 84, sho: 83, tac: 37 }, height: '183', foot: 'Both' },
+{ id: 'mancini_80', fullName: 'Gianluca Mancini', category: 'New Updates', position: 'CB', club: 'AS Roma', country: 'Italy', imgBase: 'Mancini_DLS26.webp', statsBase: { spe: 74, acc: 64, sta: 81, str: 86, con: 76, pas: 77, sho: 54, tac: 88 }, height: '190', foot: 'Right' },
+{ id: 'griezmann_81', fullName: 'Antoine Griezmann', category: 'New Updates', position: 'SS', club: 'Atletico Madrid', country: 'France', imgBase: 'Griezmann_DLS26.webp', statsBase: { spe: 72, acc: 82, sta: 73, str: 69, con: 87, pas: 83, sho: 82, tac: 58 }, height: '176', foot: 'Left' },
+{ id: 'konate_80', fullName: 'Ibrahima Konaté', category: 'New Updates', position: 'CB', club: 'Real Madrid', country: 'France', imgBase: 'Konaté_DLS26.webp', statsBase: { spe: 86, acc: 67, sta: 76, str: 92, con: 74, pas: 77, sho: 44, tac: 85 }, height: '194', foot: 'Right' },
+{ id: 'odegaard_81', fullName: 'Martin Ødegaard', category: 'New Updates', position: 'AM', club: 'Arsenal', country: 'Norway', imgBase: 'Ødegaard_DLS26.webp', statsBase: { spe: 74, acc: 82, sta: 79, str: 62, con: 85, pas: 89, sho: 74, tac: 67 }, height: '178', foot: 'Left' },
+{ id: 'gakpo_80', fullName: 'Cody Gakpo', category: 'New Updates', position: 'LW', club: 'Liverpool', country: 'Netherlands', imgBase: 'Gakpo_DLS26.webp', statsBase: { spe: 84, acc: 80, sta: 79, str: 78, con: 83, pas: 80, sho: 79, tac: 37 }, height: '193', foot: 'Right' },
+{ id: 'carnesecchi_81', fullName: 'Marco Carnesecchi', category: 'New Updates', position: 'GK', club: 'Atalanta', country: 'Italy', imgBase: 'Carnesecchi_DLS26.webp', statsBase: { spe: 64, acc: 61, sta: 80, str: 61, con: 57, pas: 59, sho: 77, tac: 49 }, height: '191', foot: 'Right' },
+{ id: 'mendy_80', fullName: 'Edouard Mendy', category: 'New Updates', position: 'GK', club: 'Real Madrid', country: 'Senegal', imgBase: 'Mendy_DLS26.webp', statsBase: { spe: 64, acc: 63, sta: 77, str: 70, con: 59, pas: 61, sho: 78, tac: 44 }, height: '194', foot: 'Right' },
+{ id: 'ekitike_80', fullName: 'Hugo Ekitiké', category: 'New Updates', position: 'CF', club: 'Liverpool', country: 'France', imgBase: 'Ekitiké_DLS26.webp', statsBase: { spe: 88, acc: 80, sta: 75, str: 72, con: 85, pas: 79, sho: 85, tac: 27 }, height: '190', foot: 'Right' },
+{ id: 'hincapie_80', fullName: 'Piero Hincapié', category: 'New Updates', position: 'LB', club: 'Arsenal', country: 'Ecuador', imgBase: 'Hincapié_DLS26 (1).webp', statsBase: { spe: 86, acc: 75, sta: 82, str: 80, con: 75, pas: 78, sho: 44, tac: 86 }, height: '184', foot: 'Left' },
+
+// Image 43938
+{ id: 'schick_81', fullName: 'Patrik Schick', category: 'New Updates', position: 'CF', club: 'Bayer Leverkusen', country: 'Czech Republic', imgBase: 'Schick_DLS26 (1).webp', statsBase: { spe: 80, acc: 72, sta: 76, str: 88, con: 82, pas: 77, sho: 89, tac: 39 }, height: '187', foot: 'Left' },
+{ id: 'rudiger_81', fullName: 'Antonio Rüdiger', category: 'New Updates', position: 'CB', club: 'Real Madrid', country: 'Germany', imgBase: 'Rüdiger_DLS26.webp', statsBase: { spe: 82, acc: 70, sta: 71, str: 92, con: 75, pas: 79, sho: 53, tac: 86 }, height: '190', foot: 'Right' },
+{ id: 'dumfries_81', fullName: 'Denzel Dumfries', category: 'New Updates', position: 'CB', club: 'Real Madrid', country: 'Netherlands', imgBase: 'Dumfries_DLS26.webp', statsBase: { spe: 82, acc: 71, sta: 81, str: 82, con: 77, pas: 74, sho: 69, tac: 76 }, height: '188', foot: 'Right' },
+{ id: 'olmo_81', fullName: 'Dani Olmo', category: 'New Updates', position: 'AM', club: 'Barcelona', country: 'Spain', imgBase: 'Olmo_DLS26.webp', statsBase: { spe: 74, acc: 83, sta: 75, str: 69, con: 85, pas: 84, sho: 79, tac: 54 }, height: '182', foot: 'Right' },
+{ id: 'reijnders_81', fullName: 'Tijjani Reijnders', category: 'New Updates', position: 'CM', club: 'Manchester City', country: 'Netherlands', imgBase: 'Reijnders_DLS26.webp', statsBase: { spe: 76, acc: 77, sta: 87, str: 70, con: 83, pas: 83, sho: 76, tac: 73 }, height: '185', foot: 'Right' },
+{ id: 'cancelo_81', fullName: 'João Cancelo', category: 'New Updates', position: 'RB', club: 'Barcelona', country: 'Portugal', imgBase: 'João_Cancelo_DLS26.webp', statsBase: { spe: 79, acc: 84, sta: 75, str: 66, con: 83, pas: 83, sho: 66, tac: 77 }, height: '182', foot: 'Right' },
+{ id: 'agarcia_81', fullName: 'Aleix García', category: 'New Updates', position: 'CM', club: 'Bayer Leverkusen', country: 'Spain', imgBase: 'Aleix_García_DLS26.webp', statsBase: { spe: 71, acc: 79, sta: 79, str: 62, con: 85, pas: 88, sho: 73, tac: 75 }, height: '173', foot: 'Right' },
+{ id: 'rabiot_81', fullName: 'Adrien Rabiot', category: 'New Updates', position: 'CM', club: 'AC Milan', country: 'France', imgBase: 'Rabiot_DLS26.webp', statsBase: { spe: 78, acc: 66, sta: 86, str: 83, con: 78, pas: 82, sho: 75, tac: 78 }, height: '191', foot: 'Left' },
+{ id: 'laimer_81', fullName: 'Konrad Laimer', category: 'New Updates', position: 'RB', club: 'Bayern Munich', country: 'Austria', imgBase: 'Laimer_DLS26 (1).webp', statsBase: { spe: 86, acc: 81, sta: 82, str: 67, con: 77, pas: 82, sho: 66, tac: 80 }, height: '180', foot: 'Right' },
+{ id: 'bernardo_81', fullName: 'Bernardo Silva', category: 'New Updates', position: 'AM', club: 'Real Madrid', country: 'Portugal', imgBase: 'Bernardo_DLS26.webp', statsBase: { spe: 66, acc: 86, sta: 87, str: 55, con: 88, pas: 84, sho: 73, tac: 75 }, height: '173', foot: 'Left' },
+{ id: 'james_81', fullName: 'Reece James', category: 'New Updates', position: 'RB', club: 'Chelsea', country: 'England', imgBase: 'James_DLS26 (1).webp', statsBase: { spe: 77, acc: 75, sta: 73, str: 82, con: 79, pas: 84, sho: 63, tac: 85 }, height: '180', foot: 'Right' },
+{ id: 'cubarsi_81', fullName: 'Pau Cubarsí', category: 'New Updates', position: 'CB', club: 'Barcelona', country: 'Spain', imgBase: 'Cubarsi_DLS26.webp', statsBase: { spe: 77, acc: 72, sta: 77, str: 85, con: 80, pas: 81, sho: 42, tac: 85 }, height: '183', foot: 'Right' },
+
+// Image 43942
+{ id: 'militao_81', fullName: 'Éder Militão', category: 'New Updates', position: 'CB', club: 'Real Madrid', country: 'Brazil', imgBase: 'E._Militão_DLS26.webp', statsBase: { spe: 83, acc: 76, sta: 71, str: 84, con: 75, pas: 79, sho: 51, tac: 90 }, height: '186', foot: 'Right' },
+{ id: 'guehi_81', fullName: 'Marc Guéhi', category: 'New Updates', position: 'CB', club: 'Manchester City', country: 'England', imgBase: 'Guéhi_DLS26.webp', statsBase: { spe: 80, acc: 71, sta: 82, str: 87, con: 75, pas: 77, sho: 51, tac: 86 }, height: '182', foot: 'Right' },
+{ id: 'macallister_81', fullName: 'Alexis Mac Allister', category: 'New Updates', position: 'CM', club: 'Liverpool', country: 'Argentina', imgBase: 'Mac_Allister_DLS26.webp', statsBase: { spe: 74, acc: 78, sta: 83, str: 66, con: 82, pas: 84, sho: 76, tac: 76 }, height: '176', foot: 'Right' },
+{ id: 'unaisimon_81', fullName: 'Unai Simón', category: 'New Updates', position: 'GK', club: 'Athletic Bilbao', country: 'Spain', imgBase: 'Unai_Simón_DLS26.webp', statsBase: { spe: 62, acc: 60, sta: 78, str: 61, con: 60, pas: 62, sho: 77, tac: 54 }, height: '190', foot: 'Right' },
+{ id: 'ruben_81', fullName: 'Rúben Dias', category: 'New Updates', position: 'CB', club: 'Manchester City', country: 'Portugal', imgBase: 'Rúben_DLS26.webp', statsBase: { spe: 75, acc: 70, sta: 74, str: 87, con: 79, pas: 81, sho: 51, tac: 90 }, height: '187', foot: 'Right' },
+{ id: 'trent_81', fullName: 'Trent Alexander-Arnold', category: 'New Updates', position: 'RB', club: 'Real Madrid', country: 'England', imgBase: 'Trent_DLS26.webp', statsBase: { spe: 81, acc: 80, sta: 80, str: 63, con: 81, pas: 92, sho: 73, tac: 75 }, height: '180', foot: 'Right' },
+{ id: 'rafaleao_81', fullName: 'Rafael Leão', category: 'New Updates', position: 'CF', club: 'AC Milan', country: 'Portugal', imgBase: 'Rafa_Leão_DLS26.webp', statsBase: { spe: 92, acc: 89, sta: 74, str: 79, con: 84, pas: 78, sho: 80, tac: 23 }, height: '188', foot: 'Right' },
+{ id: 'fermin_81', fullName: 'Fermín López', category: 'New Updates', position: 'AM', club: 'Barcelona', country: 'Spain', imgBase: 'Fermín_DLS26.webp', statsBase: { spe: 75, acc: 80, sta: 77, str: 59, con: 84, pas: 85, sho: 82, tac: 71 }, height: '176', foot: 'Right' },
+{ id: 'ardaguler_81', fullName: 'Arda Güler', category: 'New Updates', position: 'AM', club: 'Real Madrid', country: 'Turkey', imgBase: 'Arda_Güler_DLS26 (1).webp', statsBase: { spe: 76, acc: 83, sta: 80, str: 58, con: 85, pas: 88, sho: 78, tac: 62 }, height: '175', foot: 'Left' },
+{ id: 'rogers_81', fullName: 'Morgan Rogers', category: 'New Updates', position: 'AM', club: 'Aston Villa', country: 'England', imgBase: 'Rogers_DLS26.webp', statsBase: { spe: 80, acc: 84, sta: 84, str: 72, con: 83, pas: 81, sho: 80, tac: 53 }, height: '187', foot: 'Right' },
+{ id: 'ddoue_81', fullName: 'Désiré Doué', category: 'New Updates', position: 'RW', club: 'PSG', country: 'France', imgBase: 'D._Doué_DLS26.webp', statsBase: { spe: 82, acc: 86, sta: 76, str: 66, con: 89, pas: 82, sho: 81, tac: 48 }, height: '181', foot: 'Right' },
+{ id: 'semenyo_81', fullName: 'Antoine Semenyo', category: 'New Updates', position: 'RW', club: 'Manchester City', country: 'Ghana', imgBase: 'Semenyo_DLS26.webp', statsBase: { spe: 84, acc: 79, sta: 83, str: 82, con: 83, pas: 76, sho: 83, tac: 37 }, height: '185', foot: 'Right' },
+
+// Image 43940
+{ id: 'marquinhos_82', fullName: 'Marquinhos', category: 'New Updates', position: 'CB', club: 'PSG', country: 'Brazil', imgBase: 'Marquinhos_DLS26.webp', statsBase: { spe: 79, acc: 73, sta: 75, str: 85, con: 78, pas: 82, sho: 52, tac: 91 }, height: '183', foot: 'Right' },
+{ id: 'mbeumo_81', fullName: 'Bryan Mbeumo', category: 'New Updates', position: 'SS', club: 'Manchester United', country: 'Cameroon', imgBase: 'Mbeumo_DLS26.webp', statsBase: { spe: 91, acc: 91, sta: 82, str: 69, con: 81, pas: 80, sho: 84, tac: 35 }, height: '171', foot: 'Left' },
+{ id: 'gyokeres_82', fullName: 'Viktor Gyökeres', category: 'New Updates', position: 'CF', club: 'Arsenal', country: 'Sweden', imgBase: 'Gyökeres_DLS26.webp', statsBase: { spe: 85, acc: 78, sta: 86, str: 86, con: 80, pas: 75, sho: 88, tac: 34 }, height: '189', foot: 'Right' },
+{ id: 'doku_81', fullName: 'Jérémy Doku', category: 'New Updates', position: 'LW', club: 'Manchester City', country: 'Belgium', imgBase: 'Doku_DLS26.webp', statsBase: { spe: 86, acc: 91, sta: 74, str: 64, con: 92, pas: 82, sho: 77, tac: 30 }, height: '173', foot: 'Right' },
+{ id: 'xhaka_82', fullName: 'Granit Xhaka', category: 'New Updates', position: 'DM', club: 'Bayer Leverkusen', country: 'Switzerland', imgBase: 'Xhaka_DLS26.webp', statsBase: { spe: 71, acc: 62, sta: 90, str: 81, con: 81, pas: 86, sho: 72, tac: 81 }, height: '186', foot: 'Left' },
+{ id: 'tchouameni_81', fullName: 'Aurélien Tchouaméni', category: 'New Updates', position: 'DM', club: 'Real Madrid', country: 'France', imgBase: 'Tchouaméni_DLS26.webp', statsBase: { spe: 74, acc: 67, sta: 83, str: 87, con: 80, pas: 82, sho: 61, tac: 88 }, height: '188', foot: 'Right' },
+{ id: 'isak_81', fullName: 'Alexander Isak', category: 'New Updates', position: 'CF', club: 'Liverpool', country: 'Sweden', imgBase: 'Isak_DLS26.webp', statsBase: { spe: 83, acc: 81, sta: 74, str: 79, con: 85, pas: 77, sho: 87, tac: 30 }, height: '192', foot: 'Right' },
+{ id: 'dcosta_81', fullName: 'Diogo Costa', category: 'New Updates', position: 'GK', club: 'FC Porto', country: 'Portugal', imgBase: 'D._Costa_DLS26.webp', statsBase: { spe: 65, acc: 64, sta: 79, str: 57, con: 62, pas: 64, sho: 76, tac: 48 }, height: '186', foot: 'Right' },
+{ id: 'palmer_81', fullName: 'Cole Palmer', category: 'New Updates', position: 'AM', club: 'Chelsea', country: 'England', imgBase: 'Palmer_DLS26.webp', statsBase: { spe: 78, acc: 82, sta: 77, str: 66, con: 86, pas: 85, sho: 83, tac: 51 }, height: '185', foot: 'Left' },
+{ id: 'greenwood_81', fullName: 'Mason Greenwood', category: 'New Updates', position: 'RW', club: 'Marseille', country: 'England', imgBase: 'Greenwood_DLS26.webp', statsBase: { spe: 84, acc: 83, sta: 80, str: 66, con: 84, pas: 81, sho: 86, tac: 35 }, height: '181', foot: 'Both' },
+{ id: 'cherki_81', fullName: 'Rayan Cherki', category: 'New Updates', position: 'RM', club: 'Manchester City', country: 'France', imgBase: 'Cherki_DLS26.webp', statsBase: { spe: 75, acc: 82, sta: 77, str: 65, con: 90, pas: 87, sho: 81, tac: 45 }, height: '177', foot: 'Both' },
+{ id: 'pulisic_81', fullName: 'Christian Pulisic', category: 'New Updates', position: 'RW', club: 'AC Milan', country: 'USA', imgBase: 'Pulisic_DLS26.webp', statsBase: { spe: 85, acc: 88, sta: 74, str: 60, con: 84, pas: 82, sho: 81, tac: 49 }, height: '178', foot: 'Right' },
+
+// Image 43944
+{ id: 'messi_83', fullName: 'Lionel Messi', category: 'New Updates', position: 'SS', club: 'Inter Miami', country: 'Argentina', imgBase: 'Messi_DLS26 (1).webp', statsBase: { spe: 72, acc: 82, sta: 74, str: 66, con: 95, pas: 90, sho: 91, tac: 41 }, height: '170', foot: 'Left' },
+{ id: 'upamecano_83', fullName: 'Dayot Upamecano', category: 'New Updates', position: 'CB', club: 'Bayern Munich', country: 'France', imgBase: 'Upamecano_DLS26.webp', statsBase: { spe: 84, acc: 75, sta: 74, str: 84, con: 78, pas: 80, sho: 52, tac: 90 }, height: '186', foot: 'Right' },
+{ id: 'martinez_83', fullName: 'Emiliano Martínez', category: 'New Updates', position: 'GK', club: 'Aston Villa', country: 'Argentina', imgBase: 'Martínez_DLS2.webp', statsBase: { spe: 57, acc: 54, sta: 80, str: 71, con: 61, pas: 61, sho: 82, tac: 44 }, height: '195', foot: 'Right' },
+{ id: 'mctominay_83', fullName: 'Scott McTominay', category: 'New Updates', position: 'CM', club: 'Napoli', country: 'Scotland', imgBase: 'McTominay_83_DLS26.webp', statsBase: { spe: 77, acc: 65, sta: 90, str: 84, con: 80, pas: 80, sho: 82, tac: 82 }, height: '191', foot: 'Right' },
+{ id: 'kounde_83', fullName: 'Jules Koundé', category: 'New Updates', position: 'RB', club: 'Barcelona', country: 'France', imgBase: 'Koundé_DLS26.webp', statsBase: { spe: 85, acc: 78, sta: 84, str: 85, con: 78, pas: 79, sho: 54, tac: 88 }, height: '181', foot: 'Right' },
+{ id: 'caicedo_83', fullName: 'Moisés Caicedo', category: 'New Updates', position: 'DM', club: 'Chelsea', country: 'Ecuador', imgBase: 'Caicedo_DLS26.webp', statsBase: { spe: 75, acc: 77, sta: 91, str: 77, con: 82, pas: 83, sho: 67, tac: 90 }, height: '178', foot: 'Right' },
+{ id: 'bremer_83', fullName: 'Gleison Bremer', category: 'New Updates', position: 'CB', club: 'Juventus', country: 'Brazil', imgBase: 'Bremer_DLS26.webp', statsBase: { spe: 83, acc: 75, sta: 76, str: 86, con: 74, pas: 79, sho: 58, tac: 91 }, height: '188', foot: 'Right' },
+{ id: 'pacho_83', fullName: 'Willian Pacho', category: 'New Updates', position: 'CB', club: 'PSG', country: 'Ecuador', imgBase: 'Pacho_DLS26.webp', statsBase: { spe: 83, acc: 75, sta: 80, str: 88, con: 76, pas: 79, sho: 48, tac: 91 }, height: '188', foot: 'Left' },
+{ id: 'wirtz_83', fullName: 'Florian Wirtz', category: 'New Updates', position: 'AM', club: 'Liverpool', country: 'Germany', imgBase: 'Wirtz_DLS26.webp', statsBase: { spe: 81, acc: 85, sta: 88, str: 59, con: 90, pas: 87, sho: 79, tac: 52 }, height: '176', foot: 'Right' },
+{ id: 'grimaldo_83', fullName: 'Alejandro Grimaldo', category: 'New Updates', position: 'LWB', club: 'Bayer Leverkusen', country: 'Spain', imgBase: 'Grimaldo_DLS26.webp', statsBase: { spe: 79, acc: 81, sta: 88, str: 61, con: 83, pas: 91, sho: 79, tac: 76 }, height: '171', foot: 'Left' },
+{ id: 'barella_83', fullName: 'Nicolò Barella', category: 'New Updates', position: 'CM', club: 'Inter Milan', country: 'Italy', imgBase: 'Barella_DLS26.webp', statsBase: { spe: 74, acc: 86, sta: 90, str: 67, con: 84, pas: 89, sho: 72, tac: 78 }, height: '175', foot: 'Right' },
+{ id: 'debruyne_83', fullName: 'Kevin De Bruyne', category: 'New Updates', position: 'AM', club: 'Napoli', country: 'Belgium', imgBase: 'De_Bruyne_DLS26 (1).webp', statsBase: { spe: 75, acc: 72, sta: 70, str: 71, con: 88, pas: 92, sho: 80, tac: 68 }, height: '181', foot: 'Right' },
+// --- NEW UPDATES (Part 2) ---
+
+// Image 43948 (João Neves to Luka Modrić)
+{ id: 'jneves_83', fullName: 'João Neves', category: 'New Updates', position: 'CM', club: 'PSG', country: 'Portugal', imgBase: 'João_Neves_DLS26.webp', statsBase: { spe: 72, acc: 80, sta: 88, str: 75, con: 85, pas: 86, sho: 75, tac: 82 }, height: '174', foot: 'Right' },
+{ id: 'thuram_82', fullName: 'Marcus Thuram', category: 'New Updates', position: 'CF', club: 'Inter Milan', country: 'France', imgBase: 'Thuram_DLS26.webp', statsBase: { spe: 85, acc: 78, sta: 80, str: 86, con: 81, pas: 79, sho: 85, tac: 40 }, height: '192', foot: 'Right' },
+{ id: 'dejong_83', fullName: 'Frenkie de Jong', category: 'New Updates', position: 'CM', club: 'Barcelona', country: 'Netherlands', imgBase: 'F._de_Jong_DLS26.webp', statsBase: { spe: 74, acc: 80, sta: 81, str: 70, con: 87, pas: 91, sho: 69, tac: 76 }, height: '182', foot: 'Right' },
+{ id: 'locatelli_82', fullName: 'Manuel Locatelli', category: 'New Updates', position: 'DM', club: 'Juventus', country: 'Italy', imgBase: 'Locatelli_DLS26.webp', statsBase: { spe: 68, acc: 64, sta: 87, str: 81, con: 82, pas: 84, sho: 70, tac: 85 }, height: '185', foot: 'Right' },
+{ id: 'maignan_83', fullName: 'Mike Maignan', category: 'New Updates', position: 'GK', club: 'AC Milan', country: 'France', imgBase: 'M._Maignan_DLS26.webp', statsBase: { spe: 65, acc: 63, sta: 80, str: 75, con: 60, pas: 62, sho: 80, tac: 45 }, height: '191', foot: 'Right' },
+{ id: 'theo_82', fullName: 'Theo Hernandez', category: 'New Updates', position: 'LB', club: 'Al Hilal', country: 'France', imgBase: 'Theo_DLS26.webp', statsBase: { spe: 87, acc: 80, sta: 84, str: 77, con: 79, pas: 78, sho: 69, tac: 74 }, height: '184', foot: 'Left' },
+{ id: 'brunog_83', fullName: 'Bruno Guimarães', category: 'New Updates', position: 'CM', club: 'Newcastle United', country: 'Brazil', imgBase: 'Bruno_G._DLS26.webp', statsBase: { spe: 73, acc: 70, sta: 90, str: 74, con: 83, pas: 85, sho: 77, tac: 81 }, height: '182', foot: 'Right' },
+{ id: 'fabian_82', fullName: 'Fabián Ruiz', category: 'New Updates', position: 'CM', club: 'PSG', country: 'Spain', imgBase: 'Fabián_DLS26.webp', statsBase: { spe: 74, acc: 73, sta: 80, str: 71, con: 84, pas: 85, sho: 74, tac: 76 }, height: '189', foot: 'Left' },
+{ id: 'lewandowski_83', fullName: 'Robert Lewandowski', category: 'New Updates', position: 'CF', club: 'Barcelona', country: 'Poland', imgBase: 'Lewandowski_DLS26.webp', statsBase: { spe: 74, acc: 69, sta: 75, str: 90, con: 87, pas: 79, sho: 92, tac: 46 }, height: '186', foot: 'Right' },
+{ id: 'nicopaz_82', fullName: 'Nico Paz', category: 'New Updates', position: 'AM', club: 'Como 1907', country: 'Argentina', imgBase: 'Nico_Paz_DLS26.webp', statsBase: { spe: 80, acc: 78, sta: 80, str: 67, con: 86, pas: 82, sho: 80, tac: 61 }, height: '186', foot: 'Left' },
+{ id: 'llorente_82', fullName: 'Marcos Llorente', category: 'New Updates', position: 'RB', club: 'Atletico Madrid', country: 'Spain', imgBase: 'M._Llorente_DLS26.webp', statsBase: { spe: 87, acc: 79, sta: 88, str: 73, con: 78, pas: 79, sho: 72, tac: 78 }, height: '184', foot: 'Right' },
+{ id: 'modric_82', fullName: 'Luka Modrić', category: 'New Updates', position: 'CM', club: 'AC Milan', country: 'Croatia', imgBase: 'Modrić_DLS26.webp', statsBase: { spe: 67, acc: 81, sta: 75, str: 62, con: 90, pas: 92, sho: 72, tac: 74 }, height: '172', foot: 'Both' },
+
+// Image 43946 (Phil Foden to Sandro Tonali)
+{ id: 'foden_82', fullName: 'Phil Foden', category: 'New Updates', position: 'AM', club: 'Manchester City', country: 'England', imgBase: 'Foden_DLS26.webp', statsBase: { spe: 78, acc: 86, sta: 83, str: 59, con: 88, pas: 88, sho: 81, tac: 57 }, height: '171', foot: 'Left' },
+{ id: 'timber_82', fullName: 'Jurriën Timber', category: 'New Updates', position: 'RB', club: 'Arsenal', country: 'Netherlands', imgBase: 'J._Timber_DLS26.webp', statsBase: { spe: 80, acc: 78, sta: 80, str: 81, con: 78, pas: 78, sho: 52, tac: 86 }, height: '179', foot: 'Right' },
+{ id: 'kobel_82', fullName: 'Gregor Kobel', category: 'New Updates', position: 'GK', club: 'Borussia Dortmund', country: 'Switzerland', imgBase: 'Kobel_DLS26.webp', statsBase: { spe: 62, acc: 59, sta: 81, str: 66, con: 58, pas: 59, sho: 78, tac: 43 }, height: '195', foot: 'Right' },
+{ id: 'enzo_82', fullName: 'Enzo Fernández', category: 'New Updates', position: 'CM', club: 'Chelsea', country: 'Argentina', imgBase: 'Enzo_DLS26.webp', statsBase: { spe: 73, acc: 78, sta: 83, str: 69, con: 83, pas: 86, sho: 78, tac: 74 }, height: '178', foot: 'Right' },
+{ id: 'joangarcia_82', fullName: 'Joan García', category: 'New Updates', position: 'GK', club: 'Barcelona', country: 'Spain', imgBase: 'Joan_García_DLS26.webp', statsBase: { spe: 61, acc: 57, sta: 81, str: 60, con: 65, pas: 67, sho: 78, tac: 52 }, height: '193', foot: 'Right' },
+{ id: 'sommer_82', fullName: 'Yann Sommer', category: 'New Updates', position: 'GK', club: 'Inter Milan', country: 'Switzerland', imgBase: 'Sommer_DLS26.webp', statsBase: { spe: 57, acc: 55, sta: 79, str: 62, con: 63, pas: 65, sho: 78, tac: 39 }, height: '183', foot: 'Right' },
+{ id: 'gvardiol_82', fullName: 'Joško Gvardiol', category: 'New Updates', position: 'CB', club: 'Manchester City', country: 'Croatia', imgBase: 'Gvardiol_DLS26 (1).webp', statsBase: { spe: 82, acc: 72, sta: 78, str: 83, con: 78, pas: 79, sho: 66, tac: 86 }, height: '185', foot: 'Left' },
+{ id: 'ronaldo_82', fullName: 'Cristiano Ronaldo', category: 'New Updates', position: 'CF', club: 'Al Nassr', country: 'Portugal', imgBase: 'Ronaldo_DLS26 (1).webp', statsBase: { spe: 77, acc: 73, sta: 79, str: 83, con: 87, pas: 74, sho: 93, tac: 37 }, height: '187', foot: 'Both' },
+{ id: 'oblak_82', fullName: 'Jan Oblak', category: 'New Updates', position: 'GK', club: 'Atletico Madrid', country: 'Slovenia', imgBase: 'Oblak_DLS26.webp', statsBase: { spe: 54, acc: 53, sta: 78, str: 67, con: 60, pas: 62, sho: 79, tac: 41 }, height: '188', foot: 'Right' },
+{ id: 'gravenberch_82', fullName: 'Ryan Gravenberch', category: 'New Updates', position: 'CM', club: 'Liverpool', country: 'Netherlands', imgBase: 'Gravenberch_DLS26.webp', statsBase: { spe: 78, acc: 72, sta: 82, str: 81, con: 82, pas: 82, sho: 70, tac: 81 }, height: '190', foot: 'Right' },
+{ id: 'zubimendi_82', fullName: 'Martín Zubimendi', category: 'New Updates', position: 'DM', club: 'Arsenal', country: 'Spain', imgBase: 'Zubimendi_DLS26.webp', statsBase: { spe: 72, acc: 72, sta: 83, str: 81, con: 83, pas: 84, sho: 71, tac: 83 }, height: '181', foot: 'Right' },
+{ id: 'tonali_82', fullName: 'Sandro Tonali', category: 'New Updates', position: 'DM', club: 'Newcastle United', country: 'Italy', imgBase: 'Tonali_DLS26.webp', statsBase: { spe: 82, acc: 74, sta: 85, str: 74, con: 80, pas: 81, sho: 71, tac: 81 }, height: '181', foot: 'Right' },
+
+// Image 44518 (Lautaro Martínez to Declan Rice)
+{ id: 'lautaro_84', fullName: 'Lautaro Martínez', category: 'New Updates', position: 'CF', club: 'Inter Milan', country: 'Argentina', imgBase: 'Lautaro_DLS26.webp', statsBase: { spe: 77, acc: 83, sta: 84, str: 84, con: 84, pas: 80, sho: 92, tac: 49 }, height: '174', foot: 'Right' },
+{ id: 'vitinha_85', fullName: 'Vitinha', category: 'New Updates', position: 'CM', club: 'Paris Saint-Germain (PSG)', country: 'Portugal', imgBase: 'Vitinha_DLS26.webp', statsBase: { spe: 76, acc: 87, sta: 87, str: 59, con: 91, pas: 93, sho: 78, tac: 80 }, height: '172', foot: 'Right' },
+{ id: 'alisson_84', fullName: 'Alisson', category: 'New Updates', position: 'GK', club: 'Liverpool', country: 'Brazil', imgBase: 'A.Becker_DLS26.webp', statsBase: { spe: 58, acc: 57, sta: 82, str: 67, con: 67, pas: 68, sho: 80, tac: 49 }, height: '193', foot: 'Right' },
+{ id: 'pedri_85', fullName: 'Pedri', category: 'New Updates', position: 'CM', club: 'Barcelona', country: 'Spain', imgBase: 'Pedri_DLS26.webp', statsBase: { spe: 74, acc: 86, sta: 85, str: 70, con: 90, pas: 92, sho: 73, tac: 76 }, height: '174', foot: 'Right' },
+{ id: 'salah_84', fullName: 'Mohamed Salah', category: 'New Updates', position: 'RW', club: 'Liverpool', country: 'Egypt', imgBase: 'M._Salah_DLS26.webp', statsBase: { spe: 85, acc: 86, sta: 82, str: 72, con: 86, pas: 88, sho: 88, tac: 39 }, height: '175', foot: 'Left' },
+{ id: 'valverde_85', fullName: 'Federico Valverde', category: 'New Updates', position: 'CM', club: 'Real Madrid', country: 'Uruguay', imgBase: 'Valverde_DLS26.webp', statsBase: { spe: 89, acc: 76, sta: 90, str: 75, con: 82, pas: 83, sho: 80, tac: 83 }, height: '182', foot: 'Right' },
+{ id: 'calhanoglu_84', fullName: 'Hakan Çalhanoğlu', category: 'New Updates', position: 'DM', club: 'Inter Milan', country: 'Turkey', imgBase: 'Çalhanoğlu_DLS26.webp', statsBase: { spe: 74, acc: 80, sta: 79, str: 71, con: 85, pas: 91, sho: 82, tac: 80 }, height: '178', foot: 'Right' },
+{ id: 'gabriel_85', fullName: 'Gabriel Magalhães', category: 'New Updates', position: 'CB', club: 'Arsenal', country: 'Brazil', imgBase: 'Gabriel_DLS26.webp', statsBase: { spe: 80, acc: 71, sta: 81, str: 94, con: 78, pas: 79, sho: 61, tac: 94 }, height: '190', foot: 'Left' },
+{ id: 'courtois_84', fullName: 'Thibaut Courtois', category: 'New Updates', position: 'GK', club: 'Real Madrid', country: 'Belgium', imgBase: 'Courtois_DLS26.webp', statsBase: { spe: 56, acc: 54, sta: 82, str: 71, con: 64, pas: 64, sho: 82, tac: 44 }, height: '200', foot: 'Left' },
+{ id: 'vini_85', fullName: 'Vinícius Júnior', category: 'New Updates', position: 'LW', club: 'Real Madrid', country: 'Brazil', imgBase: 'Vini_Jr._DLS26.webp', statsBase: { spe: 93, acc: 95, sta: 83, str: 62, con: 93, pas: 87, sho: 85, tac: 26 }, height: '176', foot: 'Right' },
+{ id: 'vandijk_84', fullName: 'Virgil van Dijk', category: 'New Updates', position: 'CB', club: 'Liverpool', country: 'Netherlands', imgBase: 'Virgil_DLS26.webp', statsBase: { spe: 82, acc: 67, sta: 82, str: 95, con: 79, pas: 81, sho: 60, tac: 92 }, height: '195', foot: 'Right' },
+{ id: 'rice_84', fullName: 'Declan Rice', category: 'New Updates', position: 'CM', club: 'Arsenal', country: 'England', imgBase: 'Rice_DLS26.webp', statsBase: { spe: 80, acc: 70, sta: 92, str: 82, con: 81, pas: 88, sho: 74, tac: 87 }, height: '188', foot: 'Right' },
+
+        ];
+
+
+let currentP1 = null;
+        let currentP2 = null;
+
+        function getShortName(fName) {
+            let p = fName.trim().split(/\s+/);
+            if(p.length === 1) return p[0];
+            return p[0].charAt(0) + '. ' + p.slice(1).join(' ');
+        }
+
+        function applyLanguage() {
+            const dict = langDict[currentLang];
+            document.getElementById('titleText').textContent = dict.title;
+            document.getElementById('lblGenInfo').textContent = dict.genInfo;
+            document.getElementById('lblStats').textContent = dict.statsInfo;
+            document.getElementById('lblDownload').textContent = dict.downloadText;
+            
+            document.querySelectorAll('.tap-text').forEach(el => {
+                el.innerText = el.getAttribute(`data-${currentLang}`) || "SELECT PLAYER";
+            });
+            initPlayers();
+        }
+                function resetComparison() {
+            document.getElementById('search-p1').value = "";
+            document.getElementById('search-p2').value = "";
+            document.getElementById('sugg-p1').style.display = 'none';
+            document.getElementById('sugg-p2').style.display = 'none';
+            
+            document.getElementById('c1-img').removeAttribute('src');
+            document.getElementById('c2-img').removeAttribute('src');
+            
+            initPlayers(); 
+        }
+
+        function getFilteredList(targetSide) {
+            let refPlayer = (targetSide === 'p2') ? currentP1 : currentP2;
+            if (!refPlayer) return playersData; 
+            const isGK = refPlayer.position === 'GK';
+            return playersData.filter(p => (p.position === 'GK') === isGK);
+        }
+
+        function renderDropdown(selectId, list, selectedValue) {
+            const sel = document.getElementById(selectId);
+            const defaultText = (currentLang === 'bn') ? "প্লেয়ার সিলেক্ট করুন" : "Select Player";
+            
+            sel.innerHTML = `<option value="" disabled ${!selectedValue ? 'selected' : ''}>-- ${defaultText} --</option>`;
+            list.forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = getShortName(p.fullName);
+                if (p.id === selectedValue) opt.selected = true;
+                sel.appendChild(opt);
+            });
+        }
+
+        function initPlayers() {
+            playersData.sort((a, b) => a.fullName.localeCompare(b.fullName));
+            currentP1 = null; 
+            currentP2 = null;
+            renderDropdown('p1-select', playersData, null);
+            renderDropdown('p2-select', playersData, null);
+            updatePlaceholders();
+            updateComparison('init');
+        }
+
+        function updatePlaceholders() {
+            const p1Input = document.getElementById('search-p1');
+            const p2Input = document.getElementById('search-p2');
+
+            let gkText = (currentLang === 'bn') ? "শুধু গোলকিপার খুঁজুন..." : "Search GK only...";
+            let outText = (currentLang === 'bn') ? "নরমাল প্লেয়ার খুঁজুন..." : "Search Outfield...";
+            let def1 = (currentLang === 'bn') ? "প্লেয়ার ১ খুঁজুন..." : "Search P1...";
+            let def2 = (currentLang === 'bn') ? "প্লেয়ার ২ খুঁজুন..." : "Search P2...";
+
+            p1Input.placeholder = currentP2 ? (currentP2.position === 'GK' ? gkText : outText) : def1;
+            p2Input.placeholder = currentP1 ? (currentP1.position === 'GK' ? gkText : outText) : def2;
+        }
+
+        function handleSearch(playerSide) {
+            let sName = document.getElementById('search-' + playerSide).value.toLowerCase().trim();
+            let suggBox = document.getElementById('sugg-' + playerSide);
+            
+            if (!sName) { suggBox.style.display = 'none'; return; }
+
+            let searchSpace = getFilteredList(playerSide);
+            let filtered = searchSpace.filter(p => {
+                const fullWords = (p.fullName || '').toLowerCase().split(/[\s-]+/);
+                const shortWords = (p.name || '').toLowerCase().split(/[\s-]+/);
+                return fullWords.some(w => w.startsWith(sName)) || shortWords.some(w => w.startsWith(sName));
+            });
+
+            if(filtered.length === 0) {
+                suggBox.innerHTML = `<div class="ac-empty">${currentLang === 'bn' ? 'কোনো প্লেয়ার মেলেনি' : 'No player found'}</div>`;
+            } else {
+                let html = '';
+                filtered.forEach(p => {
+                    html += `
+                        <div class="autocomplete-item" onclick="selectFromSearch('${p.id}', '${playerSide}')">
+                            <img src="${p.imgBase}" class="ac-img" onerror="this.src='fallback.png'">
+                            <div class="ac-details">
+                                <span class="ac-name">${p.fullName}</span>
+                                <span class="ac-pos">${p.position}</span>
+                            </div>
+                        </div>`;
+                });
+                suggBox.innerHTML = html;
+            }
+            suggBox.style.display = 'flex';
+        }
+
+        function selectFromSearch(playerId, playerSide) {
+            document.getElementById(playerSide + '-select').value = playerId;
+            document.getElementById('search-' + playerSide).value = '';
+            document.getElementById('sugg-' + playerSide).style.display = 'none';
+            updateComparison(playerSide);
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.p1-search')) document.getElementById('sugg-p1').style.display = 'none';
+            if (!e.target.closest('.p2-search')) document.getElementById('sugg-p2').style.display = 'none';
+        });
+
+        function getRadarPoint(val, index, maxR) { const angle = index * 45 * Math.PI / 180; const r = (val / 100) * maxR; return `${125 + r * Math.sin(angle)},${125 - r * Math.cos(angle)}`; }
+        
+                function generateDualRadar(stats1, stats2, isGK) {
+            const labels = ['SPE', 'ACC', isGK ? 'GKR' : 'STA', 'STR', 'CON', 'PAS', isGK ? 'GKH' : 'SHO', 'TAC'];
+            const v1 = [stats1.spe, stats1.acc, stats1.sta, stats1.str, stats1.con, stats1.pas, stats1.sho, stats1.tac];
+            const v2 = [stats2.spe, stats2.acc, stats2.sta, stats2.str, stats2.con, stats2.pas, stats2.sho, stats2.tac];
+            let c1 = 'rgba(0, 240, 255, 0.4)'; let b1 = '#00f0ff';
+            let c2 = 'rgba(249, 115, 22, 0.4)'; let b2 = '#f97316';
+            
+            let bgWeb = ''; for(let r=25; r<=75; r+=25) bgWeb += `<polygon points="${[0,1,2,3,4,5,6,7].map(i=>getRadarPoint(100,i,r)).join(' ')}" fill="none" class="radar-grid"/>`;
+            let lines = ''; for(let i=0; i<8; i++) lines += `<line x1="125" y1="125" x2="${getRadarPoint(100,i,75).split(',')[0]}" y2="${getRadarPoint(100,i,75).split(',')[1]}" class="radar-grid"/>`;
+            let poly1 = v1.map((v, i) => getRadarPoint(v, i, 75)).join(' '); let poly2 = v2.map((v, i) => getRadarPoint(v, i, 75)).join(' ');
+            
+            let texts = ''; labels.forEach((lbl, i) => {
+                let pt = getRadarPoint(100, i, 90); let [x,y] = pt.split(',');
+                texts += `<text x="${x}" y="${y}" class="radar-label" font-size="10" font-weight="700" text-anchor="middle" dominant-baseline="middle">${lbl}</text>`;
+            });
+            return `<svg viewBox="0 0 250 250" width="100%" height="100%">${bgWeb} ${lines} <polygon points="${poly1}" fill="${c1}" stroke="${b1}" stroke-width="2"/> <polygon points="${poly2}" fill="${c2}" stroke="${b2}" stroke-width="2"/> ${texts}</svg>`;
+        }
+
+        function downloadComparison() {
+            if (!currentP1 || !currentP2) {
+                alert(currentLang === 'bn' ? "ছবি সেভ করার আগে দুটি প্লেয়ার সিলেক্ট করুন!" : "Please select both players to save!");
+                return;
+            }
+            const dlArea = document.getElementById('download-area');
+            const clone = dlArea.cloneNode(true); clone.classList.add('export-mode');
+            const wrapBox = document.createElement('div');
+            wrapBox.style.position = 'fixed'; wrapBox.style.top = '-9999px'; wrapBox.style.left = '-9999px'; wrapBox.style.width = '1000px'; 
+            wrapBox.appendChild(clone); document.body.appendChild(wrapBox);
+
+            let isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            let bgColor = isLight ? '#f1f4f9' : '#0a0e17';
+
+            setTimeout(() => {
+                html2canvas(clone, { backgroundColor: bgColor, scale: 2, useCORS: true }).then(canvas => {
+                    let link = document.createElement('a'); link.download = 'NextGen_DLS_Comparison.png';
+                    link.href = canvas.toDataURL('image/png'); link.click(); document.body.removeChild(wrapBox); 
+                });
+            }, 100);
+        }
+
+                function renderCardVisual(side, playerObj) {
+            const holo = document.getElementById(`c${side}-holo`);
+            const img = document.getElementById(`c${side}-img`);
+            const plate = document.getElementById(`c${side}-plate`);
+            
+            if (!playerObj) {
+                holo.style.display = 'flex'; 
+                img.style.display = 'none';
+                img.src = "";
+                plate.style.display = 'none'; 
+                document.getElementById(`rad-name-${side}`).innerText = `P${side}`;
+            } else {
+                holo.style.display = 'none'; 
+                img.style.display = 'flex'; 
+                img.src = playerObj.imgBase; 
+                plate.style.display = 'block';
+                let short = getShortName(playerObj.fullName);
+                document.getElementById(`c${side}-name`).innerText = short;
+                document.getElementById(`rad-name-${side}`).innerText = short;
+            }
+        }
+
+        function updateComparison(source) {
+            const sel1 = document.getElementById('p1-select');
+            const sel2 = document.getElementById('p2-select');
+            
+            currentP1 = playersData.find(p => p.id === sel1.value) || null;
+            currentP2 = playersData.find(p => p.id === sel2.value) || null;
+
+            if (source === 'p1') {
+                let p2List = getFilteredList('p2');
+                renderDropdown('p2-select', p2List, currentP2?.id);
+                if (currentP2 && !p2List.some(p => p.id === currentP2.id)) { currentP2 = null; sel2.value = ""; }
+            } else if (source === 'p2') {
+                let p1List = getFilteredList('p1');
+                renderDropdown('p1-select', p1List, currentP1?.id);
+                if (currentP1 && !p1List.some(p => p.id === currentP1.id)) { currentP1 = null; sel1.value = ""; }
+            }
+            updatePlaceholders();
+
+            renderCardVisual('1', currentP1);
+            renderCardVisual('2', currentP2);
+
+            const dict = langDict[currentLang];
+
+            if (!currentP1 || !currentP2) {
+                document.getElementById('radar-box').innerHTML = `<div style="display:flex; justify-content:center; align-items:center; height:100%; color:var(--text-muted); font-size:11px; font-weight:800; letter-spacing:1px;">[ AWAITING PLAYER DATA ]</div>`;
+                
+                const emptyGen = [
+                    { label: dict.height, v1: currentP1 ? `${currentP1.height} CM` : '--', v2: currentP2 ? `${currentP2.height} CM` : '--' },
+                    { label: dict.foot, v1: currentP1?.foot || '--', v2: currentP2?.foot || '--' },
+                    { label: dict.position, v1: currentP1?.position || '--', v2: currentP2?.position || '--' },
+                    { label: dict.club, v1: currentP1?.club || '--', v2: currentP2?.club || '--' },
+                    { label: dict.nation, v1: currentP1?.country || '--', v2: currentP2?.country || '--' }
+                ];
+                let genHtml = '';
+                emptyGen.forEach(f => { genHtml += `<div class="info-row"><div class="info-val left">${f.v1}</div><div class="info-label">${f.label}</div><div class="info-val right">${f.v2}</div></div>`; });
+                document.getElementById('general-info-box').innerHTML = genHtml;
+
+                document.getElementById('stats-box').innerHTML = `<div style="text-align:center; padding: 50px 0; color: var(--text-muted); font-weight: 800; font-size:12px; letter-spacing:1px;">${currentLang === 'bn' ? 'স্কিল শোডাউন দেখতে দুটি প্লেয়ার সিলেক্ট করুন' : 'Select both players to view skill showdown'}</div>`;
+                return;
+            }
+
+            const isGK = currentP1.position === 'GK';
+            document.getElementById('radar-box').innerHTML = generateDualRadar(currentP1.statsBase, currentP2.statsBase, isGK);
+
+            const genFields = [
+                { label: dict.height, v1: (currentP1.height || '--') + ' CM', v2: (currentP2.height || '--') + ' CM' },
+                { label: dict.foot, v1: currentP1.foot || '--', v2: currentP2.foot || '--' },
+                { label: dict.position, v1: currentP1.position || '--', v2: currentP2.position || '--' },
+                { label: dict.club, v1: currentP1.club || '--', v2: currentP2.club || '--' },
+                { label: dict.nation, v1: currentP1.country || '--', v2: currentP2.country || '--' }
+            ];
+            let genHtml = ''; genFields.forEach(f => { genHtml += `<div class="info-row"><div class="info-val left">${f.v1}</div><div class="info-label">${f.label}</div><div class="info-val right">${f.v2}</div></div>`; });
+            document.getElementById('general-info-box').innerHTML = genHtml;
+
+            const statsOrder = [
+                { key: 'spe', label: 'SPE' }, { key: 'acc', label: 'ACC' }, 
+                { key: 'sta', label: isGK ? 'GKR' : 'STA' }, { key: 'str', label: 'STR' },
+                { key: 'con', label: 'CON' }, { key: 'pas', label: 'PAS' }, 
+                { key: 'sho', label: isGK ? 'GKH' : 'SHO' }, { key: 'tac', label: 'TAC' }
+            ];
+
+            let statHtml = ''; let total1 = 0, total2 = 0;
+            statsOrder.forEach(st => {
+                let v1 = currentP1.statsBase[st.key]; let v2 = currentP2.statsBase[st.key];
+                total1 += v1; total2 += v2;
+                let diff1 = v1 - v2; let d1Class = diff1 > 0 ? 'win' : (diff1 < 0 ? 'loss' : 'tie');
+                let diff2 = v2 - v1; let d2Class = diff2 > 0 ? 'win' : (diff2 < 0 ? 'loss' : 'tie');
+                let d1Text = diff1 > 0 ? `+${diff1}` : (diff1 < 0 ? diff1 : '-');
+                let d2Text = diff2 > 0 ? `+${diff2}` : (diff2 < 0 ? diff2 : '-');
+
+                statHtml += `
+                    <div class="stat-comp-row">
+                        <div class="stat-val-box left">${v1}</div>
+                        <div class="stat-diff-box"><div class="diff ${d1Class}">${d1Text}</div></div>
+                        <div class="stat-bars-container">
+                            <div class="bar-wrap bar-left"><div class="bar-fill" style="width: ${v1}%"></div></div>
+                            <div class="stat-label">${st.label}</div>
+                            <div class="bar-wrap bar-right"><div class="bar-fill" style="width: ${v2}%"></div></div>
+                        </div>
+                        <div class="stat-diff-box"><div class="diff ${d2Class}">${d2Text}</div></div>
+                        <div class="stat-val-box right">${v2}</div>
+                    </div>`;
+            });
+
+            let diffT1 = total1 - total2; let dT1Class = diffT1 > 0 ? 'win' : (diffT1 < 0 ? 'loss' : 'tie');
+            let diffT2 = total2 - total1; let dT2Class = diffT2 > 0 ? 'win' : (diffT2 < 0 ? 'loss' : 'tie');
+            
+            statHtml += `
+                <div class="stat-comp-row" style="margin-top: 15px; padding-top: 15px; border-top: 2px dashed rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                        <div class="stat-val-box left" style="font-size: 18px; width: auto; text-shadow: 0 0 10px var(--p1-glow);">${total1}</div>
+                        <div class="diff ${dT1Class}">${diffT1 > 0 ? '+'+diffT1 : (diffT1 < 0 ? diffT1 : '-')}</div>
+                    </div>
+                    <div class="stat-label" style="font-size: 13px; color: var(--text-main); letter-spacing: 1px; text-align: center; width: 100px;">${dict.totalStats}</div>
+                    <div style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end;">
+                        <div class="diff ${dT2Class}">${diffT2 > 0 ? '+'+diffT2 : (diffT2 < 0 ? diffT2 : '-')}</div>
+                        <div class="stat-val-box right" style="font-size: 18px; width: auto; text-shadow: 0 0 10px var(--p2-glow);">${total2}</div>
+                    </div>
+                </div>`;
+            document.getElementById('stats-box').innerHTML = statHtml;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            setTimeout(() => { document.body.style.opacity = '1'; document.body.style.transition = 'opacity 0.15s ease-out'; }, 50);
+        });
+    </script>
+</body>
+</html>
