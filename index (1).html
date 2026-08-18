@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VZNB67TTXC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VZNB67TTXC');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS App</title>
+    
+    <meta name="description" content="This is the official NextGen DLS App! Your ultimate hub for DLS News, Coaching Guides, Tips & Tricks, Custom Card Maker, Squad Builder, Kits, and Player Compare.">
+    
+    <link rel="icon" type="image/webp" sizes="96x96" href="/nextgen.webp">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        let initTheme = localStorage.getItem('savedTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', initTheme);
+        let initLang = localStorage.getItem('savedLang') || 'bn';
+        document.documentElement.setAttribute('data-lang', initLang);
+        document.documentElement.dir = (initLang === 'ar') ? 'rtl' : 'ltr';
+    </script>
+
+    <style>
+        /* === V3 Ultimate Clean & Modern Theme Variables === */
+        :root {
+            --bg-main: #05080f; 
+            --text-color: #f8fafc;
+            --text-dim: #94a3b8;
+            --card-bg: #111827; 
+            --card-border: rgba(255, 255, 255, 0.06);
+            --accent-start: #f97316; 
+            --accent-end: #ea580c;   
+            --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+            --accent-glow: rgba(249, 115, 22, 0.35);
+        }
+
+        :root[data-theme="light"] {
+            --bg-main: #eef2f6;
+            --text-color: #0f172a;
+            --text-dim: #64748b;
+            --card-bg: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.05);
+            --accent-start: #f97316;
+            --accent-end: #ea580c;
+            --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+            --accent-glow: rgba(249, 115, 22, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            background-color: var(--bg-main); color: var(--text-color); display: flex; justify-content: center; min-height: 100vh; 
+            transition: background-color 0.3s ease, color 0.3s ease; 
+            width: 100vw; max-width: 100%; overflow-x: hidden; touch-action: pan-y; 
+            -webkit-user-select: none; user-select: none;
+            position: relative;
+        }
+
+        a { -webkit-user-drag: none; text-decoration: none; }
+        
+        .app-container { 
+            width: 100%; max-width: 480px; position: relative; padding-bottom: 110px; overflow-x: hidden; 
+        }
+
+        /* Top Nav */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; }
+        
+        .theme-btn { 
+            width: 40px; height: 40px; border-radius: 12px; 
+            background: var(--card-bg); border: 1px solid var(--card-border); 
+            color: var(--text-color); display: flex; justify-content: center; align-items: center; 
+            cursor: pointer; transition: 0.3s; font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .theme-btn:active { transform: scale(0.9); }
+        
+        .lang-switch { 
+            display: flex; background: var(--card-bg); border-radius: 14px; 
+            border: 1px solid var(--card-border); padding: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .lang-switch button { 
+            background: transparent; border: none; color: var(--text-dim); 
+            padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; 
+            border-radius: 10px; transition: 0.3s; 
+        }
+        .lang-switch button.active { 
+            background: var(--accent-gradient); color: white; 
+            box-shadow: 0 2px 8px rgba(249,115,22,0.3);
+        }
+
+        /* Header Profile */
+        .header-profile { text-align: center; padding: 10px 0 22px 0; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .logo-row { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; margin-bottom: 12px; }
+        
+        .app-logo { 
+            width: 85px; height: 85px; border-radius: 22px; 
+            background-color: #000; object-fit: cover; 
+            box-shadow: 0 8px 20px rgba(249,115,22,0.25); 
+        }
+
+        .gaming-install-btn {
+            position: absolute; right: 20px; background: var(--card-bg); color: var(--accent-start); 
+            padding: 8px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; 
+            display: flex; align-items: center; gap: 6px; border: 1px solid var(--card-border); 
+            transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        html[dir="rtl"] .gaming-install-btn { right: auto; left: 20px; }
+        .gaming-install-btn:active { transform: scale(0.92); background: var(--accent-gradient); color: #ffffff; border-color: transparent; }
+
+        .app-title { font-family: 'Montserrat', sans-serif; font-size: 21px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-color); }
+        .app-subtitle { font-size: 11px; font-weight: 600; color: var(--accent-start); margin-top: 2px; letter-spacing: 1px; text-transform: uppercase;}
+
+        /* Main Services Grid */
+        .main-content { padding: 0 15px; }
+        .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 10px; align-items: start; }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* 🔥 Clean Minimalist Cards 🔥 */
+        .service-item { 
+            display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; width: 100%; color: inherit; transition: 0.25s; 
+            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            opacity: 0; animation: fadeInScale 0.35s ease-out forwards;
+        }
+        
+        .service-item:nth-child(1) { animation-delay: 0.03s; } .service-item:nth-child(2) { animation-delay: 0.06s; } 
+        .service-item:nth-child(3) { animation-delay: 0.09s; } .service-item:nth-child(4) { animation-delay: 0.12s; }
+        .service-item:nth-child(5) { animation-delay: 0.15s; } .service-item:nth-child(6) { animation-delay: 0.18s; } 
+        .service-item:nth-child(7) { animation-delay: 0.21s; } .service-item:nth-child(8) { animation-delay: 0.24s; }
+        .service-item:nth-child(9) { animation-delay: 0.27s; } .service-item:nth-child(10) { animation-delay: 0.30s; } 
+        .service-item:nth-child(11) { animation-delay: 0.33s; } .service-item:nth-child(12) { animation-delay: 0.36s; }
+        .service-item:nth-child(13) { animation-delay: 0.39s; } .service-item:nth-child(14) { animation-delay: 0.42s; } 
+        .service-item:nth-child(15) { animation-delay: 0.45s; } .service-item:nth-child(16) { animation-delay: 0.48s; }
+        .service-item:nth-child(17) { animation-delay: 0.51s; } .service-item:nth-child(18) { animation-delay: 0.54s; } 
+        .service-item:nth-child(19) { animation-delay: 0.57s; } .service-item:nth-child(20) { animation-delay: 0.60s; }
+
+        .service-item:active { transform: scale(0.94); background: rgba(249,115,22,0.04); }
+
+        /* 🔥 20 Completely Unique Gradients for Icons 🔥 */
+        .icon-box { 
+            width: 42px; height: 42px; flex-shrink: 0; border-radius: 12px; 
+            display: flex; justify-content: center; align-items: center; font-size: 18px; 
+            color: #ffffff; 
+        }
+
+        .c1 .icon-box { background: linear-gradient(135deg, #3b82f6, #1d4ed8); } 
+        .c2 .icon-box { background: linear-gradient(135deg, #f59e0b, #b45309); } 
+        .c3 .icon-box { background: linear-gradient(135deg, #8b5cf6, #6d28d9); } 
+        .c4 .icon-box { background: linear-gradient(135deg, #ef4444, #b91c1c); } 
+        .c5 .icon-box { background: linear-gradient(135deg, #eab308, #a16207); } 
+        .c6 .icon-box { background: linear-gradient(135deg, #10b981, #047857); } 
+        .c7 .icon-box { background: linear-gradient(135deg, #f97316, #c2410c); } 
+        .c8 .icon-box { background: linear-gradient(135deg, #ec4899, #be185d); } 
+        .c9 .icon-box { background: linear-gradient(135deg, #6366f1, #4338ca); } 
+        .c10 .icon-box{ background: linear-gradient(135deg, #06b6d4, #0e7490); } 
+        .c11 .icon-box{ background: linear-gradient(135deg, #d946ef, #a21caf); } 
+        .c12 .icon-box{ background: linear-gradient(135deg, #84cc16, #4d7c0f); } 
+        .c13 .icon-box{ background: linear-gradient(135deg, #14b8a6, #0f766e); } 
+        .c14 .icon-box{ background: linear-gradient(135deg, #f43f5e, #be123c); } 
+        .c15 .icon-box{ background: linear-gradient(135deg, #7c3aed, #4c1d95); } 
+        .c16 .icon-box{ background: linear-gradient(135deg, #0ea5e9, #0369a1); } 
+        .c17 .icon-box{ background: linear-gradient(135deg, #d97706, #78350f); } 
+        .c18 .icon-box{ background: linear-gradient(135deg, #fb7185, #e11d48); } 
+        .c19 .icon-box{ background: linear-gradient(135deg, #22c55e, #166534); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); } 
+        .c20 .icon-box{ background: linear-gradient(135deg, #475569, #1e293b); } 
+
+        .label { 
+            font-size: 10px; text-align: center; font-weight: 600; line-height: 1.2; 
+            display: block; width: 100%; height: 26px; word-wrap: break-word; color: var(--text-color);
+            margin-top: 2px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="app-container">
+    <div class="top-nav">
+        <div class="theme-btn" onclick="toggleT()"><i id="t-icon" class="fa-solid fa-moon"></i></div>
+        <div class="lang-switch">
+            <button id="bn-b" class="active" onclick="setL('bn')">BN</button>
+            <button id="en-b" onclick="setL('en')">EN</button>
+            <button id="vi-b" onclick="setL('vi')">VI</button>
+            <button id="ar-b" onclick="setL('ar')">AR</button>
+        </div>
+    </div>
+
+    <div class="header-profile">
+        <div class="logo-row">
+            <img src="nextgen.webp" class="app-logo" alt="NextGen Logo">
+            <a href="NextGen DLS.apk" download="NextGen DLS.apk" class="gaming-install-btn" id="app-download-btn">
+                <i class="fa-brands fa-android"></i> <span data-bn="অ্যাপ" data-en="APP" data-vi="ỨNG DỤNG" data-ar="تطبيق">অ্যাপ</span>
+            </a>
+        </div>
+        <h1 class="app-title">NEXTGEN DLS</h1>
+        <p class="app-subtitle" id="sub-t" data-bn="গেমিং হাব বাংলাদেশ" data-en="GAMING HUB BD" data-vi="TRUNG TÂM GAMING BD" data-ar="مركز الألعاب بنغلاديش">গেমিং হাব বাংলাদেশ</p>
+    </div>
+
+    <div class="main-content">
+        <div class="services-grid">
+            <a href="news2.html" class="service-item c1"><div class="icon-box"><i class="fa-solid fa-newspaper"></i></div><span class="label" data-bn="DLS নিউজ" data-en="DLS News" data-vi="Tin tức DLS" data-ar="أخبار DLS">DLS নিউজ</span></a>
+            <a href="tips-tricks2.html" class="service-item c2"><div class="icon-box"><i class="fa-solid fa-lightbulb"></i></div><span class="label" data-bn="টিপস ও ট্রিকস" data-en="Tips & Tricks" data-vi="Mẹo & Thủ thuật" data-ar="نصائح وحيل">টিপস ও ট্রিকস</span></a>
+            <a href="coaching-guide2.html" class="service-item c3"><div class="icon-box"><i class="fa-solid fa-chalkboard-user"></i></div><span class="label" data-bn="কোচিং গাইড" data-en="Coaching Guide" data-vi="Hướng dẫn Huấn luyện" data-ar="دليل التدريب">কোচিং গাইড</span></a>
+            <a href="live-events2.html" class="service-item c4"><div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div><span class="label" data-bn="লাইভ ইভেন্ট" data-en="Live Events" data-vi="Sự kiện Trực tiếp" data-ar="أحداث حية">লাইভ ইভেন্ট</span></a>
+            
+            <a href="current-event2.html" class="service-item c5"><div class="icon-box"><i class="fa-solid fa-bolt"></i></div><span class="label" data-bn="বর্তমান ইভেন্ট" data-en="Current Event" data-vi="Sự kiện Hiện tại" data-ar="الحدث الحالي">বর্তমান ইভেন্ট</span></a>
+            <a href="formations-guide2.html" class="service-item c6"><div class="icon-box"><i class="fa-solid fa-people-group"></i></div><span class="label" data-bn="ফরমেশন গাইড" data-en="Formations Guide" data-vi="Hướng dẫn Đội hình" data-ar="دليل التشكيلات">ফরমেশন গাইড</span></a>
+            <a href="best-cards2.html" class="service-item c7"><div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div><span class="label" data-bn="সেরা কার্ড" data-en="Best Cards" data-vi="Thẻ Tốt nhất" data-ar="أفضل البطاقات">সেরা কার্ড</span></a>
+            <a href="videos2.html" class="service-item c8"><div class="icon-box"><i class="fa-brands fa-youtube"></i></div><span class="label" data-bn="কোচিং ভিডিও" data-en="Coaching Videos" data-vi="Video Huấn luyện" data-ar="فيديو التدريب">কোচিং ভিডিও</span></a>
+            
+            <a href="kits-logo2.html" class="service-item c9"><div class="icon-box"><i class="fa-solid fa-shirt"></i></div><span class="label" data-bn="কিটস ও লোগো" data-en="Kits & Logo" data-vi="Kit & Logo" data-ar="أطقم وشعارات">কিটস ও লোগো</span></a>
+            <a href="uploader2.html" class="service-item c10"><div class="icon-box"><i class="fa-solid fa-cloud-arrow-up"></i></div><span class="label" data-bn="আপলোডার" data-en="Uploader" data-vi="Tải lên" data-ar="أداة الرفع">আপলোডার</span></a>
+            <a href="compare2.html" class="service-item c11"><div class="icon-box"><i class="fa-solid fa-scale-balanced"></i></div><span class="label" data-bn="প্লেয়ার কম্পেয়ার" data-en="Player Compare" data-vi="So sánh Cầu thủ" data-ar="مقارنة اللاعبين">প্লেয়ার কম্পেয়ার</span></a>
+            <a href="card-maker2.html" class="service-item c12"><div class="icon-box"><i class="fa-solid fa-id-card"></i></div><span class="label" data-bn="কার্ড মেকার" data-en="Card Maker" data-vi="Tạo Thẻ" data-ar="صانع البطاقات">কার্ড মেকার</span></a>
+            
+            <a href="squad-builder2.html" class="service-item c13"><div class="icon-box"><i class="fa-solid fa-users-gear"></i></div><span class="label" data-bn="স্কোয়াড বিল্ডার" data-en="Squad Builder" data-vi="Xây dựng Đội hình" data-ar="بناء التشكيلة">স্কোয়াড বিল্ডার</span></a>
+            <a href="stat-analyzer2.html" class="service-item c14"><div class="icon-box"><i class="fa-solid fa-chart-column"></i></div><span class="label" data-bn="স্ট্যাট অ্যানালাইজার" data-en="Stats Analyzer" data-vi="Phân tích Chỉ số" data-ar="محلل الإحصائيات">স্ট্যাট অ্যানালাইজার</span></a>
+            <a href="store2.html" class="service-item c15"><div class="icon-box"><i class="fa-solid fa-cart-shopping"></i></div><span class="label" data-bn="DLS স্টোর" data-en="DLS Store" data-vi="Cửa hàng DLS" data-ar="متجر DLS">DLS স্টোর</span></a>
+            <a href="social2.html" class="service-item c16"><div class="icon-box"><i class="fa-solid fa-link"></i></div><span class="label" data-bn="সোশ্যাল মিডিয়া" data-en="Social Media" data-vi="Mạng Xã hội" data-ar="وسائل التواصل">সোশ্যাল মিডিয়া</span></a>
+            
+            <a href="admin-deal2.html" class="service-item c17"><div class="icon-box"><i class="fa-solid fa-handshake"></i></div><span class="label" data-bn="এডমিন ডিল" data-en="Admin Deal" data-vi="Giao dịch" data-ar="صفقة المشرف">এডমিন ডিল</span></a>
+            <a href="quick_solutions2.html" class="service-item c18"><div class="icon-box"><i class="fa-solid fa-screwdriver-wrench"></i></div><span class="label" data-bn="কুইক সলিউশন" data-en="Quick Solutions" data-vi="Giải pháp Nhanh" data-ar="حلول سريعة">কুইক সলিউশন</span></a>
+            <a href="live-chat2.html" class="service-item c19"><div class="icon-box"><i class="fa-solid fa-headset"></i></div><span class="label" data-bn="লাইভ চ্যাট" data-en="Live Chat" data-vi="Trò chuyện" data-ar="دردشة مباشرة">লাইভ চ্যাট</span></a>
+            <a href="settings2.html" class="service-item c20"><div class="icon-box"><i class="fa-solid fa-gear"></i></div><span class="label" data-bn="সেটিংস" data-en="Settings" data-vi="Cài đặt" data-ar="إعدادات">সেটিংস</span></a>
+        </div>
+    </div>
+</div> 
+
+
+<script>
+    function toggleT() {
+        let currentTheme = document.documentElement.getAttribute('data-theme');
+        let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.getElementById('t-icon').className = newTheme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        localStorage.setItem('savedTheme', newTheme);
+    }
+    
+    function setL(l) {
+        localStorage.setItem('savedLang', l);
+        
+        document.getElementById('bn-b').className = (l === 'bn' ? 'active' : '');
+        document.getElementById('en-b').className = (l === 'en' ? 'active' : '');
+        document.getElementById('vi-b').className = (l === 'vi' ? 'active' : '');
+        document.getElementById('ar-b').className = (l === 'ar' ? 'active' : '');
+        
+        document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
+
+        document.querySelectorAll('[data-bn]').forEach(e => {
+            const text = e.getAttribute('data-' + l);
+            if(text) e.innerText = text;
+        });
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        let theme = localStorage.getItem('savedTheme') || 'dark';
+        document.getElementById('t-icon').className = theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        let lang = localStorage.getItem('savedLang') || 'bn';
+        setL(lang);
+
+        let ua = navigator.userAgent.toLowerCase();
+        let isApp = ua.includes("wv") || ua.includes("gonative") || ua.includes("median") || window.matchMedia('(display-mode: standalone)').matches;
+        
+        if (isApp) {
+            let appBtn = document.getElementById('app-download-btn');
+            if (appBtn) {
+                appBtn.style.display = 'none';
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

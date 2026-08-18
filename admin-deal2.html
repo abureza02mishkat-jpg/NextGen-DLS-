@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark" data-lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NextGen DLS - Admin Deal Rules</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+            document.documentElement.dir = (savedLang === 'ar') ? 'rtl' : 'ltr';
+
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) { event.preventDefault(); }
+            }, { passive: false });
+
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+                lastTouchEnd = now;
+            }, false);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg-main: #0b1120;
+            --card-bg: #1e293b;
+            --card-hover: #27354c;
+            --text-title: #ffffff;
+            --text-body: #94a3b8;
+            --border-color: #334155;
+            --accent-orange: #f97316;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        html[data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --card-bg: #ffffff;
+            --card-hover: #f8fafc;
+            --text-title: #0f172a;
+            --text-body: #475569;
+            --border-color: #cbd5e1;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent !important; }
+        
+        body { background-color: var(--bg-main); color: var(--text-title); overflow-x: hidden; width: 100vw; max-width: 100%; touch-action: pan-y; transition: background-color 0.3s, color 0.3s; margin: 0; padding: 0; padding-bottom: 50px; }
+        
+        /* Language Visibility Control */
+        html[data-lang="en"] .lang-bn, html[data-lang="en"] .lang-vi, html[data-lang="en"] .lang-ar { display: none !important; }
+        html[data-lang="bn"] .lang-en, html[data-lang="bn"] .lang-vi, html[data-lang="bn"] .lang-ar { display: none !important; }
+        html[data-lang="vi"] .lang-bn, html[data-lang="vi"] .lang-en, html[data-lang="vi"] .lang-ar { display: none !important; }
+        html[data-lang="ar"] .lang-bn, html[data-lang="ar"] .lang-en, html[data-lang="ar"] .lang-vi { display: none !important; }
+
+        .header { 
+            background: var(--card-bg); 
+            padding: 20px 20px; 
+            border-bottom: 2px solid var(--accent-orange);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .back-btn {
+            background: transparent; border: none; color: var(--text-title); font-size: 20px; cursor: pointer; padding: 5px;
+        }
+        html[dir="rtl"] .back-btn { transform: scaleX(-1); }
+        
+        .header-title-wrapper { display: flex; align-items: center; gap: 10px; }
+        
+        .page-title { 
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--accent-orange); 
+            text-transform: uppercase; 
+        }
+
+        .container { max-width: 550px; margin: 0 auto; }
+        .content-body { padding: 20px 15px; }
+
+        .rules-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Accent Line for Card */
+        .rules-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+        }
+
+        .rules-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .rules-header i {
+            font-size: 24px;
+            color: var(--accent-orange);
+        }
+
+        .rules-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-title);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rules-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .rules-list li {
+            position: relative;
+            padding-left: 28px;
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.7;
+            font-weight: 500;
+            text-align: justify;
+        }
+
+        html[dir="rtl"] .rules-list li {
+            padding-left: 0;
+            padding-right: 28px;
+        }
+
+        /* Custom Checkmark / Bullet */
+        .rules-list li::before {
+            content: '\f101'; /* FontAwesome Angle Right */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--accent-orange);
+            font-size: 14px;
+        }
+
+        html[dir="rtl"] .rules-list li::before {
+            content: '\f100'; /* Angle Left for RTL */
+            left: auto;
+            right: 0;
+        }
+
+        .highlight-text {
+            color: var(--text-title);
+            font-weight: 700;
+        }
+
+        /* 🔥 WhatsApp Button Styles 🔥 */
+        .wa-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 5px;
+        }
+
+        .wa-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer; /* পয়েন্টার অ্যাড করা হয়েছে */
+        }
+
+        .wa-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+        }
+
+        .wa-btn i {
+            font-size: 20px;
+        }
+
+        /* 🔥 Footer Note (ALL CAPS applied via CSS) 🔥 */
+        .footer-note {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(249, 115, 22, 0.08);
+            border-radius: 12px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            text-align: center;
+            line-height: 1.6;
+            text-transform: uppercase; 
+        }
+
+    </style>
+
+<style>
+    body {
+        -webkit-touch-callout: none; 
+        -webkit-user-select: none;   
+        -moz-user-select: none;      
+        -ms-user-select: none;       
+        user-select: none;           
+        -webkit-tap-highlight-color: transparent; 
+    }
+    /* Page Entry Animation */
+body {
+    animation: pageFadeIn 0.35s ease-out forwards;
+}
+
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px); /* নিচ থেকে হালকা উপরে উঠবে */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<script>
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+</script>
+
+</head>
+<body>
+
+    <div class="header">
+        
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-handshake" style="color: var(--accent-orange); font-size: 20px;"></i> 
+            <div class="page-title">
+                <span class="lang-bn">এডমিন ডিল</span>
+                <span class="lang-en">ADMIN DEAL</span>
+                <span class="lang-vi">GIAO DỊCH ADMIN</span>
+                <span class="lang-ar">صفقة المشرف</span>
+            </div>
+        </div>
+        <div style="width: 20px;"></div>
+    </div>
+    
+    <div class="container">
+        <div class="content-body">
+            
+            <div class="rules-card">
+                <div class="rules-header">
+                    <i class="fa-solid fa-file-contract"></i>
+                    <div class="lang-bn rules-title">নিয়মাবলী ও শর্তসমূহ</div>
+                    <div class="lang-en rules-title">Rules & Terms</div>
+                    <div class="lang-vi rules-title">Quy tắc & Điều khoản</div>
+                    <div class="lang-ar rules-title">القواعد والشروط</div>
+                </div>
+
+                <!-- BENGALI RULES -->
+                <ul class="rules-list lang-bn">
+                    <li>ফেক আইডি ও স্ক্যাম এড়াতে সকল এডমিন ডিল মেসেঞ্জারের পরিবর্তে শুধুমাত্র WhatsApp গ্রুপের মাধ্যমে সম্পন্ন হবে।</li>
+                    <li>ক্রেতা বা বিক্রেতার যেকোনো একজন আমাদের অফিসিয়াল WhatsApp নম্বরে যোগাযোগ করে একটি গ্রুপ তৈরি করবেন এবং সংশ্লিষ্ট এডমিনকে যুক্ত করবেন।</li>
+                    <li>এডমিনকে গ্রুপে যুক্ত করার পর তাকে Group Admin করতে হবে। এরপর গ্রুপ সৃষ্টিকারী নিজে Admin Status ত্যাগ করবেন, যাতে শুধুমাত্র অফিসিয়াল এডমিনের নিয়ন্ত্রণে গ্রুপটি থাকে।</li>
+                    <li>ডিলের মোট টাকা ও এডমিন ফি অনুযায়ী গ্রুপের নাম নির্ধারণ করতে হবে।</li>
+                    <li><span class="highlight-text">এডমিন ফি:</span> ৫০০ টাকা পর্যন্ত ডিলে এডমিন ফি ৫০ টাকা। ৫০০ থেকে ১,০০০ টাকা পর্যন্ত ৬০ টাকা। ১,০০০ টাকার পর প্রতি অতিরিক্ত ১,০০০ টাকার জন্য এডমিন ফি ২০ টাকা করে বৃদ্ধি পাবে। (ডিল শুরু হওয়ার আগে এডমিন ফি জানিয়ে দেওয়া হবে)।</li>
+                    <li>ক্রেতা ডিলের মূল টাকা এবং নির্ধারিত এডমিন ফি এডমিনকে সঠিকভাবে বুঝিয়ে দেওয়ার পর গ্রুপে এডমিনের প্রাথমিক দায়িত্ব সম্পন্ন হবে। এরপর ডিলের টাকা নিরাপদভাবে হোল্ডে (Escrow) থাকবে এবং ক্রেতার কনফার্মেশন না পাওয়া পর্যন্ত বিক্রেতাকে দেওয়া হবে না।</li>
+                    <li>আইডি দেওয়া-নেওয়া সম্পূর্ণভাবে ক্রেতা ও বিক্রেতার ব্যক্তিগত ইনবক্সে সম্পন্ন হবে। এডমিন কোনো আইডি চেক করবেন না, আইডির লগইন বা সিকিউরিটি নিজের দায়িত্বে নেবেন না এবং আইডির কোনো তথ্য সংরক্ষণ করবেন না।</li>
+                    <li>বিক্রেতা ইনবক্সে ক্রেতাকে আইডি ও প্রয়োজনীয় তথ্য বুঝিয়ে দেওয়ার পর ক্রেতা নিজ দায়িত্বে আইডিতে লগইন করে প্রয়োজনীয় যাচাই করবেন।</li>
+                    <li>ক্রেতা ইনবক্সে আইডি সঠিকভাবে বুঝে পাওয়ার পর গ্রুপে এডমিনকে Confirm করবেন। ক্রেতার Confirmation পাওয়ার সঙ্গে সঙ্গেই এডমিন বিক্রেতাকে ডিলের মূল টাকা বুঝিয়ে দেবেন।</li>
+                    <li>বিক্রেতা টাকা পাওয়ার বিষয়টি নিশ্চিত করার পর ডিলটি Completed/Closed হিসেবে গণ্য হবে। ডিল ক্লোজ হওয়ার পরবর্তী কোনো অ্যাকাউন্ট-সংক্রান্ত সমস্যার দায়ভার এডমিন গ্রহণ করবেন না।</li>
+                    <li>ডিল ক্লোজ করার আগে ক্রেতাকে অবশ্যই আইডি, লগইন এবং সম্পূর্ণভাবে যাচাই করে নিতে হবে। ডিল ক্লোজ হওয়ার পর কোনো অভিযোগ গ্রহণযোগ্য হবে না।</li>
+                </ul>
+
+                <!-- ENGLISH RULES -->
+                <ul class="rules-list lang-en">
+                    <li>To prevent fake IDs and scams, all admin deals will be conducted exclusively via WhatsApp groups instead of Messenger.</li>
+                    <li>Either the buyer or seller will contact our official WhatsApp number to create a group and add the respective admin.</li>
+                    <li>After adding the admin to the group, they must be made the Group Admin. The group creator must then resign their Admin Status so the group remains solely under the official admin's control.</li>
+                    <li>The group name must be set according to the total deal amount and admin fee.</li>
+                    <li><span class="highlight-text">Admin Fee:</span> 50 BDT for deals up to 500 BDT. 60 BDT for 500 to 1,000 BDT. Above 1,000 BDT, the fee increases by 20 BDT for every additional 1,000 BDT. (The fee will be informed before the deal starts).</li>
+                    <li>Once the buyer sends the main deal amount and the admin fee to the admin, the admin's initial duty is complete. The funds will be safely held in escrow and will not be released to the seller until the buyer's confirmation is received.</li>
+                    <li>The exchange of the ID will take place entirely in the private inbox of the buyer and seller. The admin will not check the ID, take responsibility for the ID's login or security, nor store any ID information.</li>
+                    <li>After the seller provides the ID and necessary information in the inbox, the buyer will log in and verify it at their own responsibility.</li>
+                    <li>Once the buyer successfully receives and verifies the ID in the inbox, they will Confirm the admin in the group. Upon receiving the buyer's confirmation, the admin will immediately send the main deal amount to the seller.</li>
+                    <li>When the seller confirms receiving the money, the deal will be considered Completed/Closed. The admin will not accept any liability for account-related issues after the deal is closed.</li>
+                    <li>Before closing the deal, the buyer must fully verify the ID and login details. No complaints will be entertained after the deal is closed.</li>
+                </ul>
+
+                <!-- VIETNAMESE RULES -->
+                <ul class="rules-list lang-vi">
+                    <li>Để ngăn chặn tài khoản giả mạo và lừa đảo, tất cả các giao dịch qua Admin sẽ chỉ được thực hiện qua nhóm WhatsApp thay vì Messenger.</li>
+                    <li>Người mua hoặc người bán sẽ liên hệ với số WhatsApp chính thức của chúng tôi để tạo nhóm và thêm Admin tương ứng vào.</li>
+                    <li>Sau khi thêm Admin, họ phải được cấp quyền Quản trị viên nhóm. Người tạo nhóm sau đó phải từ bỏ quyền Quản trị viên để nhóm hoàn toàn dưới sự kiểm soát của Admin chính thức.</li>
+                    <li>Tên nhóm phải được đặt theo tổng số tiền giao dịch và phí Admin.</li>
+                    <li><span class="highlight-text">Phí Admin:</span> 50 BDT cho giao dịch lên đến 500 BDT. 60 BDT cho 500 đến 1.000 BDT. Trên 1.000 BDT, phí tăng thêm 20 BDT cho mỗi 1.000 BDT bổ sung. (Phí sẽ được thông báo trước khi bắt đầu).</li>
+                    <li>Khi người mua gửi đủ tiền giao dịch và phí Admin cho Admin, nhiệm vụ ban đầu của Admin hoàn tất. Tiền sẽ được giữ an toàn (Escrow) và sẽ không được giao cho người bán cho đến khi có xác nhận từ người mua.</li>
+                    <li>Việc trao đổi ID sẽ diễn ra hoàn toàn trong hộp thư riêng của người mua và người bán. Admin sẽ không kiểm tra ID, không chịu trách nhiệm về đăng nhập/bảo mật ID và không lưu trữ thông tin ID.</li>
+                    <li>Sau khi người bán cung cấp ID và thông tin cần thiết trong hộp thư riêng, người mua sẽ tự chịu trách nhiệm đăng nhập và xác minh.</li>
+                    <li>Khi người mua nhận và xác minh ID thành công, họ sẽ Xác nhận với Admin trong nhóm. Ngay khi nhận được xác nhận, Admin sẽ chuyển tiền giao dịch cho người bán.</li>
+                    <li>Khi người bán xác nhận đã nhận tiền, giao dịch được coi là Hoàn tất/Đóng. Admin sẽ không chịu trách nhiệm cho bất kỳ vấn đề nào liên quan đến tài khoản sau khi giao dịch đóng.</li>
+                    <li>Trước khi đóng giao dịch, người mua phải kiểm tra kỹ ID và đăng nhập. Mọi khiếu nại sau đó sẽ không được giải quyết.</li>
+                </ul>
+
+                <!-- ARABIC RULES -->
+                <ul class="rules-list lang-ar">
+                    <li>لمنع الحسابات المزيفة وعمليات الاحتيال، ستتم جميع صفقات المشرفين حصريًا عبر مجموعات WhatsApp بدلاً من Messenger.</li>
+                    <li>سيقوم المشتري أو البائع بالاتصال برقم WhatsApp الرسمي الخاص بنا لإنشاء مجموعة وإضافة المشرف المختص.</li>
+                    <li>بعد إضافة المشرف، يجب تعيينه كمسؤول عن المجموعة. يجب على منشئ المجموعة التنازل عن حالة المسؤول الخاصة به لتبقى المجموعة تحت سيطرة المشرف الرسمي فقط.</li>
+                    <li>يجب تسمية المجموعة بناءً على إجمالي مبلغ الصفقة ورسوم المشرف.</li>
+                    <li><span class="highlight-text">رسوم المشرف:</span> 50 تاكا للصفقات حتى 500 تاكا. 60 تاكا من 500 إلى 1,000 تاكا. فوق 1,000 تاكا، تزيد الرسوم بمقدار 20 تاكا لكل 1,000 تاكا إضافية. (سيتم إبلاغ الرسوم قبل البدء).</li>
+                    <li>بمجرد أن يرسل المشتري مبلغ الصفقة الأساسي ورسوم المشرف إلى المشرف، تكتمل المهمة الأولية للمشرف. سيتم الاحتفاظ بالأموال بأمان في حساب ضمان ولن يتم تسليمها للبائع حتى يتم استلام تأكيد المشتري.</li>
+                    <li>سيتم تبادل الحساب (ID) بالكامل في البريد الوارد الخاص للمشتري والبائع. لن يقوم المشرف بفحص الحساب، ولا يتحمل مسؤولية تسجيل الدخول أو أمان الحساب، ولن يخزن أي معلومات خاصة بالحساب.</li>
+                    <li>بعد أن يقدم البائع الحساب والمعلومات اللازمة في البريد الوارد، سيقوم المشتري بتسجيل الدخول والتحقق منه على مسؤوليته الخاصة.</li>
+                    <li>بمجرد أن يستلم المشتري الحساب ويتحقق منه بنجاح، سيقوم بـ "تأكيد" المشرف في المجموعة. عند تلقي تأكيد المشتري، سيقوم المشرف بإرسال مبلغ الصفقة الأساسي إلى البائع فورًا.</li>
+                    <li>عندما يؤكد البائع استلام الأموال، تُعتبر الصفقة مكتملة/مغلقة. لن يتحمل المشرف أي مسؤولية عن المشكلات المتعلقة بالحساب بعد إغلاق الصفقة.</li>
+                    <li>قبل إغلاق الصفقة، يجب على المشتري التحقق بالكامل من الحساب وتفاصيل تسجيل الدخول. لن تُقبل أي شكاوى بعد ذلك.</li>
+                </ul>
+
+                <!-- 🔥 WhatsApp Button with Dynamic Pre-filled Message 🔥 -->
+                <div class="wa-btn-container">
+                    <!-- onclick ফাংশনের মাধ্যমে জাভাস্ক্রিপ্ট কল করা হচ্ছে -->
+                    <a href="javascript:void(0);" onclick="openWhatsApp()" class="wa-btn">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <span class="lang-bn">অফিসিয়াল এডমিন WHATSAPP</span>
+                        <span class="lang-en">OFFICIAL ADMIN WHATSAPP</span>
+                        <span class="lang-vi">WHATSAPP ADMIN CHÍNH THỨC</span>
+                        <span class="lang-ar">واتساب المشرف الرسمي</span>
+                    </a>
+                </div>
+
+                <div class="footer-note">
+                    <span class="lang-bn">সবার নিরাপত্তা, স্বচ্ছতা ও ন্যায্যতা নিশ্চিত করতে প্রতিটি এডমিন ডিল উপরোক্ত নিয়ম অনুযায়ী সম্পন্ন করা বাধ্যতামূলক।</span>
+                    <span class="lang-en">To ensure security, transparency, and fairness, completing every admin deal according to the above rules is mandatory.</span>
+                    <span class="lang-vi">Để đảm bảo an toàn, minh bạch và công bằng, bắt buộc phải hoàn thành mọi giao dịch qua admin theo các quy tắc trên.</span>
+                    <span class="lang-ar">لضمان الأمان والشفافية والعدالة، يُلزم إتمام كل صفقة مشرف وفقًا للقواعد المذكورة أعلاه.</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 🔥 JavaScript for WhatsApp Auto Message 🔥 -->
+    <script>
+        function openWhatsApp() {
+            // ইউজারের সিলেক্ট করা ভাষা বের করা
+            let lang = document.documentElement.getAttribute('data-lang') || 'bn';
+            let message = "";
+
+            // ভাষা অনুযায়ী অটোমেটিক মেসেজ সেট করা
+            if (lang === 'bn') {
+                message = "হ্যালো এডমিন, আমি একটি এডমিন ডিল করতে চাই।";
+            } else if (lang === 'en') {
+                message = "Hello Admin, I want to do an admin deal.";
+            } else if (lang === 'vi') {
+                message = "Xin chào Quản trị viên, tôi muốn thực hiện một giao dịch qua admin.";
+            } else if (lang === 'ar') {
+                message = "مرحبا مشرف، أود إجراء صفقة إدارية.";
+            } else {
+                message = "Hello Admin, I want to do an admin deal.";
+            }
+
+            // আপনার অরিজিনাল নাম্বার এবং মেসেজ লিংক
+            let phoneNumber = "8801936328243";
+            let encodedMessage = encodeURIComponent(message);
+            let whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            // নতুন ট্যাবে/অ্যাপে WhatsApp ওপেন হবে
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+
+</body>
+</html>

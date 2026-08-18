@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>NEXTGEN DLS - News Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+        })();
+    </script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --bg-main: #0b1120; 
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --accent: #f97316; 
+            --text-dim: #94a3b8;
+            --news-text: #cbd5e1;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-dim: #475569;
+            --news-text: #334155;
+        }
+
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-color); 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; padding: 0; 
+            padding-bottom: 50px;
+            transition: background-color 0.2s, color 0.2s;
+            visibility: hidden; 
+            width: 100vw;
+            max-width: 100%;
+            overflow-x: hidden; 
+            touch-action: pan-y; 
+        }
+
+        html[dir="rtl"] .news-content, html[dir="rtl"] .disclaimer-text {
+            text-align: right;
+        }
+        
+        .header { 
+            background: var(--card-bg); 
+            padding: 25px 20px 20px 20px; 
+            border-bottom: 2px solid var(--accent);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+        
+        .header-title-wrapper { display: flex; align-items: center; gap: 10px; }
+        .page-title { font-size: 20px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+        
+        .news-container { padding: 20px 15px; display: flex; flex-direction: column; gap: 20px; width: 100%; overflow-x: hidden;}
+
+        .disclaimer-box {
+            background: rgba(249, 115, 22, 0.08);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 10px; padding: 15px; margin-bottom: 5px;
+        }
+        .disclaimer-title {
+            color: var(--accent); font-size: 15px; font-weight: 700; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .disclaimer-text {
+            font-family: 'Hind Siliguri', 'Roboto', sans-serif; font-size: 14px; color: var(--text-dim); line-height: 1.6; 
+            text-align: justify; 
+        }
+
+        .news-card {
+            background: var(--card-bg); border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 22px 20px; width: 100%; overflow-x: hidden;
+        }
+
+        .news-category {
+            font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;
+        }
+
+        .news-main-title {
+            font-size: 21px; font-weight: 700; color: var(--accent);
+            line-height: 1.4; margin-bottom: 22px; font-family: 'Poppins', sans-serif;
+        }
+
+        .news-block { 
+            position: relative; margin-bottom: 25px; padding-left: 18px; 
+        }
+        html[dir="rtl"] .news-block {
+            padding-left: 0; padding-right: 18px;
+        }
+        .news-block:last-child { margin-bottom: 0; }
+        
+        .news-block::before {
+            content: ''; position: absolute; left: 0; top: 4px; bottom: 4px;
+            width: 4px; background-color: var(--accent); border-radius: 20px;
+        }
+        html[dir="rtl"] .news-block::before {
+            left: auto; right: 0;
+        }
+
+        .news-sub-title {
+            font-size: 16px; font-weight: 700; color: var(--text-color);
+            margin-bottom: 8px; font-family: 'Poppins', sans-serif;
+        }
+
+        .news-content {
+            font-size: 15.5px; color: var(--news-text); line-height: 1.75; 
+            text-align: justify; 
+            font-family: 'Hind Siliguri', 'Roboto', sans-serif; 
+        }
+
+        .highlight { color: var(--accent); font-weight: 700; }
+    </style>
+    <style>
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            user-select: auto;
+        }
+        /* Page Entry Animation */
+body {
+    animation: pageFadeIn 0.35s ease-out forwards;
+}
+
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px); /* নিচ থেকে হালকা উপরে উঠবে */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+    </style>
+    <script>
+        window.oncontextmenu = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        };
+    </script>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title-wrapper">
+            <i class="fa-solid fa-newspaper" style="color: var(--accent); font-size: 22px;"></i> 
+            <div class="page-title">
+                <span data-bn="ডিএলএস নিউজ পোর্টাল" data-en="DLS NEWS PORTAL" data-vi="CỔNG TIN TỨC DLS" data-ar="بوابة أخبار DLS">ডিএলএস নিউজ পোর্টাল</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="news-container">
+        
+        <div class="disclaimer-box">
+            <div class="disclaimer-title">
+                <i class="fa-solid fa-triangle-exclamation"></i> 
+                <span data-bn="গুরুত্বপূর্ণ নোটিশ" data-en="IMPORTANT NOTICE" data-vi="THÔNG BÁO QUAN TRỌNG" data-ar="ملاحظة هامة">গুরুত্বপূর্ণ নোটিশ</span>
+            </div>
+            <div class="disclaimer-text">
+                <span data-bn="এখানে দেওয়া গেমের বিভিন্ন আপডেট, ইভেন্ট এবং সেগুলোর সম্ভাব্য তারিখ সম্পর্কিত তথ্যগুলো মূলত আমাদের দীর্ঘদিনের গেমিং অভিজ্ঞতা ও পূর্ববর্তী বছরগুলোর রেকর্ডের ওপর ভিত্তি করে তৈরি করা হয়েছে। <br><br>যেহেতু গেমটির মূল স্বত্বাধিকারী <span class='highlight'>FTG (First Touch Games)</span>, তাই গেমের যেকোনো আপডেট, ইভেন্টের শিডিউল বা নিয়মে যেকোনো সময় পরিবর্তন আনার সম্পূর্ণ অধিকার তাদের রয়েছে। পূর্বের রেকর্ড অনুযায়ী দেওয়া সম্ভাব্য তারিখগুলোর সাথে বর্তমান বা ভবিষ্যতের আপডেটের সময়কাল হুবহু না-ও মিলতে পারে। <br><br>আমাদের এই তথ্যের মূল উদ্দেশ্য হলো আপনাদের ইভেন্টগুলো সম্পর্কে একটি আগাম ধারণা দেওয়া। গেমের যেকোনো চূড়ান্ত সিদ্ধান্ত বা পরিবর্তনের বিষয়টি সম্পূর্ণভাবে <span class='highlight'>FTG</span>-এর ওপর নির্ভরশীল।" 
+                      data-en="The information provided here regarding various game updates, events, and their probable dates is mainly based on our long-term gaming experience and records from previous years. <br><br>Since the main owner of the game is <span class='highlight'>FTG (First Touch Games)</span>, they reserve the full right to bring changes to any update, event schedule, or rules at any time. The probable dates given according to previous records may not exactly match the timing of current or future updates. <br><br>Our main objective with this information is to give you an advance idea about the events. Any final decision or change in the game depends entirely on <span class='highlight'>FTG</span>."
+                      data-vi="Thông tin được cung cấp ở đây về các bản cập nhật, sự kiện của trò chơi và ngày dự kiến của chúng chủ yếu dựa trên kinh nghiệm chơi game lâu năm của chúng tôi và hồ sơ từ các năm trước. <br><br>Vì chủ sở hữu chính của trò chơi là <span class='highlight'>FTG (First Touch Games)</span>, họ có toàn quyền thay đổi bất kỳ bản cập nhật, lịch trình sự kiện hoặc quy tắc nào vào bất kỳ lúc nào. Những ngày dự kiến được đưa ra theo hồ sơ trước đây có thể không khớp chính xác với thời gian của các bản cập nhật hiện tại hoặc tương lai. <br><br>Mục tiêu chính của chúng tôi với thông tin này là cung cấp cho bạn ý tưởng trước về các sự kiện. Bất kỳ quyết định cuối cùng hoặc thay đổi nào trong trò chơi đều phụ thuộc hoàn toàn vào <span class='highlight'>FTG</span>."
+                      data-ar="المعلومات المقدمة هنا بخصوص تحديثات اللعبة المختلفة والأحداث وتواريخها المحتملة تعتمد بشكل أساسي على خبرتنا الطويلة في الألعاب والسجلات من السنوات السابقة. <br><br>نظرًا لأن المالك الرئيسي للعبة هو <span class='highlight'>FTG (First Touch Games)</span>، فإنهم يحتفظون بالحق الكامل في إجراء تغييرات على أي تحديث أو جدول أحداث أو قواعد في أي وقت. قد لا تتطابق التواريخ المحتملة المعطاة وفقًا للسجلات السابقة تمامًا مع توقيت التحديثات الحالية أو المستقبلية. <br><br>هدفنا الرئيسي من هذه المعلومات هو إعطائك فكرة مسبقة عن الأحداث. أي قرار نهائي أو تغيير في اللعبة يعتمد كليًا على <span class='highlight'>FTG</span>.">
+                    এখানে দেওয়া গেমের বিভিন্ন আপডেট, ইভেন্ট এবং সেগুলোর সম্ভাব্য তারিখ সম্পর্কিত তথ্যগুলো মূলত আমাদের দীর্ঘদিনের গেমিং অভিজ্ঞতা ও পূর্ববর্তী বছরগুলোর রেকর্ডের ওপর ভিত্তি করে তৈরি করা হয়েছে। <br><br>যেহেতু গেমটির মূল স্বত্বাধিকারী <span class='highlight'>FTG (First Touch Games)</span>, তাই গেমের যেকোনো আপডেট, ইভেন্টের শিডিউল বা নিয়মে যেকোনো সময় পরিবর্তন আনার সম্পূর্ণ অধিকার তাদের রয়েছে। পূর্বের রেকর্ড অনুযায়ী দেওয়া সম্ভাব্য তারিখগুলোর সাথে বর্তমান বা ভবিষ্যতের আপডেটের সময়কাল হুবহু না-ও মিলতে পারে। <br><br>আমাদের এই তথ্যের মূল উদ্দেশ্য হলো আপনাদের ইভেন্টগুলো সম্পর্কে একটি আগাম ধারণা দেওয়া। গেমের যেকোনো চূড়ান্ত সিদ্ধান্ত বা পরিবর্তনের বিষয়টি সম্পূর্ণভাবে <span class='highlight'>FTG</span>-এর ওপর নির্ভরশীল।
+                </span>
+            </div>
+        </div>
+
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-gamepad"></i>
+                <span data-bn="গেম পরিচিতি" data-en="GAME INTRODUCTION" data-vi="GIỚI THIỆU TRÒ CHƠI" data-ar="مقدمة اللعبة">গেম পরিচিতি</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="ডিএলএস গেমের ইতিহাস ও লাইসেন্সিং" data-en="History & Licensing of DLS Game" data-vi="Lịch sử & Bản quyền DLS" data-ar="تاريخ وتراخيص لعبة DLS">ডিএলএস গেমের ইতিহাস ও লাইসেন্সিং</span>
+            </div>
+            <div class="news-block">
+                <div class="news-content">
+                    <span data-bn="ড্রিম লিগ সকার (DLS) বর্তমানে ফুটবল গেম প্রেমীদের কাছে এক জনপ্রিয় নাম। <span class='highlight'>২০১১ সালে</span> আইওএস (iOS) প্ল্যাটফর্মের মাধ্যমে যাত্রা শুরু করলেও, <span class='highlight'>২০১৪ সালে</span> অ্যান্ড্রয়েডে আসার পর এটি বিশ্বব্যাপী জনপ্রিয়তা পায়। তবে বর্তমানে আমরা যে আধুনিক ইন্টারফেস ও ফিচারের গেমটি খেলি, তার অফিশিয়াল যাত্রা শুরু হয় <span class='highlight'>২০১৬ সাল</span> থেকে।" 
+                          data-en="Dream League Soccer (DLS) is currently a popular name among football game lovers. Although it started its journey through the iOS platform in <span class='highlight'>2011</span>, it gained worldwide popularity after coming to Android in <span class='highlight'>2014</span>. However, the official journey of the game with the modern interface and features that we play today began in <span class='highlight'>2016</span>."
+                          data-vi="Dream League Soccer (DLS) hiện là một cái tên phổ biến trong giới yêu thích game bóng đá. Mặc dù bắt đầu hành trình thông qua nền tảng iOS vào năm <span class='highlight'>2011</span>, nó đã trở nên phổ biến trên toàn thế giới sau khi xuất hiện trên Android vào năm <span class='highlight'>2014</span>. Tuy nhiên, hành trình chính thức của trò chơi với giao diện và các tính năng hiện đại mà chúng ta chơi ngày nay bắt đầu từ năm <span class='highlight'>2016</span>."
+                          data-ar="تعتبر لعبة دريم ليج سوكر (DLS) حاليًا اسمًا شائعًا بين عشاق ألعاب كرة القدم. على الرغم من أنها بدأت رحلتها عبر منصة iOS في عام <span class='highlight'>2011</span>، إلا أنها اكتسبت شعبية عالمية بعد وصولها إلى Android في عام <span class='highlight'>2014</span>. ومع ذلك، بدأت الرحلة الرسمية للعبة بالواجهة والميزات الحديثة التي نلعبها اليوم في عام <span class='highlight'>2016</span>.">
+                        ড্রিম লিগ সকার (DLS) বর্তমানে ফুটবল গেম প্রেমীদের কাছে এক জনপ্রিয় নাম। <span class='highlight'>২০১১ সালে</span> আইওএস (iOS) প্ল্যাটফর্মের মাধ্যমে যাত্রা শুরু করলেও, <span class='highlight'>২০১৪ সালে</span> অ্যান্ড্রয়েডে আসার পর এটি বিশ্বব্যাপী জনপ্রিয়তা পায়। তবে বর্তমানে আমরা যে আধুনিক ইন্টারফেস ও ফিচারের গেমটি খেলি, তার অফিশিয়াল যাত্রা শুরু হয় <span class='highlight'>২০১৬ সাল</span> থেকে।
+                    </span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-content">
+                    <span data-bn="এই গেমের সবচেয়ে গুরুত্বপূর্ণ নিয়ম হলো, একটি প্লেয়ার গেমে ততক্ষণ পর্যন্তই পাওয়া যাবে, যতক্ষণ পর্যন্ত সে <span class='highlight'>লাইসেন্সকৃত দেশ বা ক্লাবের</span> সাথে যুক্ত থাকে। অর্থাৎ যদি কোনো প্লেয়ার চুক্তিবদ্ধ দেশ বা ক্লাবে খেলে, তাহলে আপনি তাকে গেমে পাবেন। কিন্তু সে যদি ক্লাব ছেড়ে দিয়ে এমন কোনো ক্লাবে চলে যায় যেটা গেমে নেই অথবা <span class='highlight'>অবসর গ্রহণ</span> করে, তবে সেই প্লেয়ারের কার্ড গেমে আর পাওয়া যাবে না। তবে বিভিন্ন স্পেশাল ইভেন্টের মাধ্যমে <span class='highlight'>লিজেন্ড প্লেয়ার</span> বা গেম থেকে চলে যাওয়া প্লেয়ারদের পাওয়ার সুযোগ থাকে।" 
+                          data-en="The most important rule of this game is that a player will only be available in the game as long as they are associated with a <span class='highlight'>licensed country or club</span>. That means if a player plays for a contracted country or club, you will find them in the game. But if they leave the club and go to a club that is not in the game, or if they <span class='highlight'>retire</span>, that player's card will no longer be available in the game. However, there are opportunities to get <span class='highlight'>legend players</span> or players who have left the game through various special events."
+                          data-vi="Quy tắc quan trọng nhất của trò chơi này là một cầu thủ sẽ chỉ có mặt trong trò chơi chừng nào họ còn gắn bó với một <span class='highlight'>quốc gia hoặc câu lạc bộ được cấp phép</span>. Điều đó có nghĩa là nếu một cầu thủ chơi cho một quốc gia hoặc câu lạc bộ có hợp đồng, bạn sẽ tìm thấy họ trong trò chơi. Nhưng nếu họ rời câu lạc bộ và đến một câu lạc bộ không có trong trò chơi, hoặc nếu họ <span class='highlight'>giải nghệ</span>, thẻ của cầu thủ đó sẽ không còn trong trò chơi. Tuy nhiên, có những cơ hội để nhận được <span class='highlight'>cầu thủ huyền thoại</span> hoặc những cầu thủ đã rời trò chơi thông qua các sự kiện đặc biệt."
+                          data-ar="أهم قاعدة في هذه اللعبة هي أن اللاعب سيكون متاحًا في اللعبة فقط طالما أنه مرتبط بـ <span class='highlight'>دولة أو نادٍ مرخص</span>. هذا يعني أنه إذا كان اللاعب يلعب لدولة أو نادٍ متعاقد، فستجده في اللعبة. ولكن إذا غادر النادي وذهب إلى نادٍ غير موجود في اللعبة، أو إذا <span class='highlight'>اعتزل</span>، فلن تكون بطاقة هذا اللاعب متاحة في اللعبة. ومع ذلك، هناك فرص للحصول على <span class='highlight'>لاعبين أساطير</span> أو لاعبين غادروا اللعبة من خلال أحداث خاصة مختلفة.">
+                        এই গেমের সবচেয়ে গুরুত্বপূর্ণ নিয়ম হলো, একটি প্লেয়ার গেমে ততক্ষণ পর্যন্তই পাওয়া যাবে, যতক্ষণ পর্যন্ত সে <span class='highlight'>লাইসেন্সকৃত দেশ বা ক্লাবের</span> সাথে যুক্ত থাকে। অর্থাৎ যদি কোনো প্লেয়ার চুক্তিবদ্ধ দেশ বা ক্লাবে খেলে, তাহলে আপনি তাকে গেমে পাবেন। কিন্তু সে যদি ক্লাব ছেড়ে দিয়ে এমন কোনো ক্লাবে চলে যায় যেটা গেমে নেই অথবা <span class='highlight'>অবসর গ্রহণ</span> করে, তবে সেই প্লেয়ারের কার্ড গেমে আর পাওয়া যাবে না। তবে বিভিন্ন স্পেশাল ইভেন্টের মাধ্যমে <span class='highlight'>লিজেন্ড প্লেয়ার</span> বা গেম থেকে চলে যাওয়া প্লেয়ারদের পাওয়ার সুযোগ থাকে।
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                <span data-bn="আপডেট নিউজ" data-en="UPDATE NEWS" data-vi="TIN TỨC CẬP NHẬT" data-ar="أخبار التحديث">আপডেট নিউজ</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="মেজর, মাইনর ও সিজনাল আপডেট" data-en="Major, Minor & Seasonal Updates" data-vi="Cập nhật Chính, Phụ & Theo mùa" data-ar="التحديثات الرئيسية والفرعية والموسمية">মেজর, মাইনর ও সিজনাল আপডেট</span>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Major Update - ভার্সন আপগ্রেড:" data-en="Major Update or Version Upgrade:" data-vi="Major Update - Nâng cấp Phiên bản:" data-ar="التحديث الرئيسي (Major Update):">Major Update - ভার্সন আপগ্রেড:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="গেমে সাধারণত দুই ধরনের আপডেট আসে—একটি হলো <span class='highlight'>মেজর (Major)</span> আপডেট এবং অন্যটি <span class='highlight'>মাইনর (Minor)</span> আপডেট। মেজর আপডেটে গেমে নতুন ভার্সন যুক্ত হয়। এই আপডেটের মাধ্যমে ট্রান্সফার আপডেট করা হয়, অর্থাৎ প্লেয়ারদের ক্লাব পরিবর্তন, নতুন প্লেয়ার যুক্ত করা এবং রিটায়ার হওয়া প্লেয়ারদের গেম থেকে রিমুভ করা হয়। এছাড়া প্লেয়ারের রেটিং বাড়ানো বা কমানো এবং গ্রাফিক্স ও গেম প্লে পরিবর্তন করা হয়। তাছাড়া কমেন্ট্রি ও বিভিন্ন ফিচার যুক্ত করা হয়। সাধারণত DLS গেমে এই ধরনের আপডেট প্রতি বছরের <span class='highlight'>ডিসেম্বরের প্রথম সপ্তাহে</span> (১-৫ ডিসেম্বরের মধ্যে) আসে।" 
+                          data-en="Usually, two types of updates come to the game—one is the <span class='highlight'>Major</span> update and the other is the <span class='highlight'>Minor</span> update. A new version is added to the game in a major update. Transfer updates are done through this update, which means players' club changes, adding new players, and removing retired players from the game. Apart from this, players' ratings are increased or decreased, and graphics and gameplay are changed. Moreover, commentary and various features are added. Typically, this type of update in the DLS game arrives in the <span class='highlight'>first week of December</span> every year (between December 1-5)."
+                          data-vi="Thông thường, trò chơi có hai loại cập nhật—một là cập nhật <span class='highlight'>Lớn (Major)</span> và hai là cập nhật <span class='highlight'>Nhỏ (Minor)</span>. Một phiên bản mới được thêm vào trò chơi trong bản cập nhật lớn. Các bản cập nhật chuyển nhượng được thực hiện thông qua bản cập nhật này, nghĩa là sự thay đổi câu lạc bộ của cầu thủ, thêm cầu thủ mới và loại bỏ các cầu thủ đã giải nghệ khỏi trò chơi. Ngoài ra, xếp hạng của cầu thủ được tăng hoặc giảm, đồ họa và lối chơi được thay đổi. Hơn nữa, bình luận và nhiều tính năng khác được thêm vào. Thông thường, loại cập nhật này trong trò chơi DLS diễn ra vào <span class='highlight'>tuần đầu tiên của tháng 12</span> hàng năm (từ 1-5 tháng 12)."
+                          data-ar="عادةً، يتوفر نوعان من التحديثات للعبة—أحدهما التحديث <span class='highlight'>الرئيسي (Major)</span> والآخر التحديث <span class='highlight'>الفرعي (Minor)</span>. تتم إضافة إصدار جديد للعبة في التحديث الرئيسي. يتم إجراء تحديثات الانتقالات من خلال هذا التحديث، مما يعني تغيير أندية اللاعبين، وإضافة لاعبين جدد، وإزالة اللاعبين المعتزلين من اللعبة. بصرف النظر عن ذلك، يتم زيادة أو تقليل تقييمات اللاعبين، وتغيير الرسومات وأسلوب اللعب. علاوة على ذلك، يتم إضافة التعليق والعديد من الميزات. عادةً ما يصل هذا النوع من التحديث في لعبة DLS في <span class='highlight'>الأسبوع الأول من شهر ديسمبر</span> من كل عام (بين 1 و 5 ديسمبر).">
+                        গেমে সাধারণত দুই ধরনের আপডেট আসে—একটি হলো <span class='highlight'>মেজর (Major)</span> আপডেট এবং অন্যটি <span class='highlight'>মাইনর (Minor)</span> আপডেট। মেজর আপডেটে গেমে নতুন ভার্সন যুক্ত হয়। এই আপডেটের মাধ্যমে ট্রান্সফার আপডেট করা হয়, অর্থাৎ প্লেয়ারদের ক্লাব পরিবর্তন, নতুন প্লেয়ার যুক্ত করা এবং রিটায়ার হওয়া প্লেয়ারদের গেম থেকে রিমুভ করা হয়। এছাড়া প্লেয়ারের রেটিং বাড়ানো বা কমানো এবং গ্রাফিক্স ও গেম প্লে পরিবর্তন করা হয়। তাছাড়া কমেন্ট্রি ও বিভিন্ন ফিচার যুক্ত করা হয়। সাধারণত DLS গেমে এই ধরনের আপডেট প্রতি বছরের <span class='highlight'>ডিসেম্বরের প্রথম সপ্তাহে</span> (১-৫ ডিসেম্বরের মধ্যে) আসে।
+                    </span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Minor Update - ছোট আপডেট:" data-en="Minor Update:" data-vi="Minor Update - Bản cập nhật nhỏ:" data-ar="التحديث الفرعي (Minor Update):">Minor Update - ছোট আপডেট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="গেমে নিয়মিত অনেকগুলো ছোট ছোট আপডেট দেওয়া হয়। এই আপডেটগুলোর মাধ্যমে মূলত গেমের বিভিন্ন <span class='highlight'>বাগ (Bug), গ্লিচ</span> বা কারিগরি সমস্যাগুলো ফিক্সড করা হয়। সাধারণত বড় আপডেটের পর যেসব সমস্যা দেখা দেয়, সেগুলো পরবর্তী মাইনর আপডেট দিয়ে ঠিক করে দেওয়া হয়।" 
+                          data-en="Many small updates are regularly provided in the game. Through these updates, various <span class='highlight'>bugs, glitches</span>, or technical issues of the game are mainly fixed. Usually, the problems that appear after a major update are fixed with subsequent minor updates."
+                          data-vi="Nhiều bản cập nhật nhỏ thường xuyên được cung cấp trong trò chơi. Thông qua các bản cập nhật này, các <span class='highlight'>lỗi (bug), sự cố (glitch)</span> hoặc các vấn đề kỹ thuật của trò chơi chủ yếu được khắc phục. Thông thường, các vấn đề xuất hiện sau một bản cập nhật lớn sẽ được sửa bằng các bản cập nhật nhỏ sau đó."
+                          data-ar="يتم توفير العديد من التحديثات الصغيرة بانتظام في اللعبة. من خلال هذه التحديثات، يتم بشكل أساسي إصلاح <span class='highlight'>الأخطاء والخلل</span> والمشكلات الفنية المختلفة في اللعبة. عادةً ما يتم إصلاح المشكلات التي تظهر بعد التحديث الرئيسي من خلال التحديثات الفرعية اللاحقة.">
+                        গেমে নিয়মিত অনেকগুলো ছোট ছোট আপডেট দেওয়া হয়। এই আপডেটগুলোর মাধ্যমে মূলত গেমের বিভিন্ন <span class='highlight'>বাগ (Bug), গ্লিচ</span> বা কারিগরি সমস্যাগুলো ফিক্সড করা হয়। সাধারণত বড় আপডেটের পর যেসব সমস্যা দেখা দেয়, সেগুলো পরবর্তী মাইনর আপডেট দিয়ে ঠিক করে দেওয়া হয়।
+                    </span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Winter Update - শীতকালীন আপডেট:" data-en="Winter Update:" data-vi="Winter Update - Bản cập nhật Mùa đông:" data-ar="تحديث الشتاء (Winter Update):">Winter Update - শীতকালীন আপডেট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="এটি প্রতি বছর <span class='highlight'>ফেব্রুয়ারি মাসে</span> আসা একটি বড় আপডেট। এখানে গেমের ডেটা ও ফিচারে বড় পরিবর্তন আনা হয়। বিশেষ করে <span class='highlight'>জানুয়ারির ট্রান্সফার উইন্ডো</span> অনুযায়ী নতুন সাইনিং, লোন এবং প্লেয়ারদের রেটিং আপগ্রেড বা ডাউনগ্রেড করা হয়।" 
+                          data-en="This is a major update that arrives in <span class='highlight'>February</span> every year. Significant changes are made to the game's data and features here. In particular, according to the <span class='highlight'>January transfer window</span>, new signings, loans, and players' ratings are upgraded or downgraded."
+                          data-vi="Đây là một bản cập nhật lớn đến vào tháng <span class='highlight'>Hai</span> hàng năm. Những thay đổi đáng kể được thực hiện đối với dữ liệu và tính năng của trò chơi. Đặc biệt, theo <span class='highlight'>kỳ chuyển nhượng tháng Giêng</span>, các bản hợp đồng mới, cho mượn và xếp hạng của người chơi được nâng cấp hoặc hạ cấp."
+                          data-ar="هذا تحديث رئيسي يصل في شهر <span class='highlight'>فبراير</span> من كل عام. يتم إجراء تغييرات كبيرة على بيانات اللعبة وميزاتها هنا. على وجه الخصوص، وفقًا لـ <span class='highlight'>نافذة الانتقالات في يناير</span>، تتم ترقية أو تخفيض التوقيعات الجديدة والإعارات وتقييمات اللاعبين.">
+                        এটি প্রতি বছর <span class='highlight'>ফেব্রুয়ারি মাসে</span> আসা একটি বড় আপডেট। এখানে গেমের ডেটা ও ফিচারে বড় পরিবর্তন আনা হয়। বিশেষ করে <span class='highlight'>জানুয়ারির ট্রান্সফার উইন্ডো</span> অনুযায়ী নতুন সাইনিং, লোন এবং প্লেয়ারদের রেটিং আপগ্রেড বা ডাউনগ্রেড করা হয়।
+                    </span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Summer Update - গ্রীষ্মকালীন আপডেট:" data-en="Summer Update:" data-vi="Summer Update - Bản cập nhật Mùa hè:" data-ar="تحديث الصيف (Summer Update):">Summer Update - গ্রীষ্মকালীন আপডেট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="এটি হলো সিজন-এন্ড মেজর আপডেট, যা <span class='highlight'>মে মাসের শেষে বা জুনের শুরুতে</span> আসে। পুরো সিজনের পারফরম্যান্সের ভিত্তিতে প্লেয়ারদের রেটিং আপডেট করা হয়। সিজনের পারফরম্যান্স অনুযায়ী প্লেয়ারদের রেটিং আপগ্রেড এবং ডাউনগ্রেড করা হয়। এছাড়া নতুন কিছু ফিচার যুক্ত করা হয়।" 
+                          data-en="This is the season-end major update, which comes at the <span class='highlight'>end of May or the beginning of June</span>. Based on the performance of the entire season, players' ratings are updated alongside the addition of new features and graphics."
+                          data-vi="Đây là bản cập nhật lớn cuối mùa giải, xuất hiện vào <span class='highlight'>cuối tháng Năm hoặc đầu tháng Sáu</span>. Dựa trên hiệu suất của toàn bộ mùa giải, xếp hạng của người chơi được cập nhật cùng với việc bổ sung các tính năng và đồ họa mới."
+                          data-ar="هذا هو التحديث الرئيسي لنهاية الموسم، والذي يأتي في <span class='highlight'>نهاية شهر مايو أو بداية شهر يونيو</span>. بناءً على أداء الموسم بأكمله، يتم تحديث تقييمات اللاعبين جنبًا إلى جنب مع إضافة ميزات ورسومات جديدة.">
+                        এটি হলো সিজন-এন্ড মেজর আপডেট, যা <span class='highlight'>মে মাসের শেষে বা জুনের শুরুতে</span> আসে। পুরো সিজনের পারফরম্যান্সের ভিত্তিতে প্লেয়ারদের রেটিং আপডেট করা হয়। সিজনের পারফরম্যান্স অনুযায়ী প্লেয়ারদের রেটিং আপগ্রেড এবং ডাউনগ্রেড করা হয়। এছাড়া নতুন কিছু ফিচার যুক্ত করা হয়।
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-trophy"></i>
+                <span data-bn="স্পেশাল ইভেন্ট" data-en="SPECIAL EVENTS" data-vi="SỰ KIỆN ĐẶC BIỆT" data-ar="الأحداث الخاصة">স্পেশাল ইভেন্ট</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="লিজেন্ডারি ক্লাসিক, চ্যাম্পিয়নস, World Cup ও TOTY ইভেন্ট" data-en="Legendary Classic, Champions, World Cup & TOTY Events" data-vi="Legendary Classic, Champions, World Cup & TOTY Sự kiện" data-ar="أحداث الأساطير الكلاسيكية والأبطال وكأس العالم و TOTY">লিজেন্ডারি ক্লাসিক, চ্যাম্পিয়নস, World Cup ও TOTY ইভেন্ট</span>
+            </div>
+            
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Special Legendary Classic Players Event:" data-en="Special Legendary Classic Players Event:" data-vi="Sự kiện Cầu thủ Cổ điển Huyền thoại Đặc biệt:" data-ar="حدث اللاعبين الأسطوريين الكلاسيكيين:">Special Legendary Classic Players Event:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>২০২৫ সালে</span> এফটিজি (FTG) গেমে '<span class='highlight'>স্পেশাল লিজেন্ডারি ক্লাসিক প্লেয়ার</span>' ফিচারটি নিয়ে আসে। যারা ফুটবল থেকে অবসর নিয়েছেন, তাদের নির্দিষ্ট সময়ের পারফরম্যান্স অনুযায়ী আলাদা স্পেশাল কার্ড হিসেবে গেমে ফিরিয়ে আনা হয়। এগুলো প্রাইজ লিডারের মাধ্যমে পেতে হয়, যার জন্য নির্ধারিত <span class='highlight'>ডিপি (DP)</span> পয়েন্ট অর্জন করা প্রয়োজন। গড়ে একটি ক্যারিয়ার ম্যাচ জিতলে <span class='highlight'>১১০ ডিপি</span> পাওয়া যায়। প্রথম সিজনে <span class='highlight'>২ লাখ ডিপি</span> পয়েন্টে <span class='highlight'>৪ জন</span> প্লেয়ার দেওয়া হলেও দ্বিতীয় সিজন থেকে লক্ষ্যমাত্রা বাড়িয়ে <span class='highlight'>২.৫ লাখ</span> করা হয়েছে।" 
+                          data-en="In <span class='highlight'>2025</span>, FTG introduced the '<span class='highlight'>Special Legendary Classic Player</span>' feature to the game. Those who have retired from football are brought back to the game as separate special cards based on their performance during a specific period. These have to be obtained through the Prize Ladder, which requires earning specific <span class='highlight'>DP (Dream Points)</span>. On average, winning a career match grants <span class='highlight'>110 DP</span>. Although <span class='highlight'>4 players</span> were given for <span class='highlight'>200,000 DP</span> points in the first season, the target has been increased to <span class='highlight'>250,000</span> from the second season."
+                          data-vi="Vào năm <span class='highlight'>2025</span>, FTG đã giới thiệu tính năng '<span class='highlight'>Cầu thủ Cổ điển Huyền thoại Đặc biệt</span>' vào trò chơi. Những người đã giải nghệ được đưa trở lại trò chơi dưới dạng thẻ đặc biệt riêng biệt dựa trên thành tích của họ trong một khoảng thời gian nhất định. Bạn có thể nhận được những thẻ này thông qua Thang Giải Thưởng (Prize Ladder), yêu cầu kiếm được số điểm <span class='highlight'>DP (Dream Points)</span> nhất định. Trung bình, thắng một trận đấu sự nghiệp sẽ cấp <span class='highlight'>110 DP</span>. Mặc dù <span class='highlight'>4 cầu thủ</span> được tặng với <span class='highlight'>200.000 DP</span> trong mùa giải đầu tiên, mục tiêu đã được tăng lên <span class='highlight'>250.000</span> từ mùa giải thứ hai."
+                          data-ar="في عام <span class='highlight'>2025</span>، قدمت FTG ميزة '<span class='highlight'>اللاعب الأسطوري الكلاسيكي الخاص</span>' إلى اللعبة. أولئك الذين اعتزلوا كرة القدم تمت إعادتهم إلى اللعبة كبطاقات خاصة منفصلة بناءً على أدائهم خلال فترة محددة. يجب الحصول على هؤلاء من خلال سلم الجوائز (Prize Ladder)، والذي يتطلب كسب نقاط <span class='highlight'>DP (نقاط الحلم)</span> محددة. في المتوسط، الفوز في مباراة المهنة يمنح <span class='highlight'>110 DP</span>. على الرغم من أنه تم إعطاء <span class='highlight'>4 لاعبين</span> مقابل <span class='highlight'>200,000 DP</span> في الموسم الأول، إلا أنه تم زيادة الهدف إلى <span class='highlight'>250,000</span> بدءًا من الموسم الثاني.">
+                        <span class='highlight'>২০২৫ সালে</span> এফটিজি (FTG) গেমে '<span class='highlight'>স্পেশাল লিজেন্ডারি ক্লাসিক প্লেয়ার</span>' ফিচারটি নিয়ে আসে। যারা ফুটবল থেকে অবসর নিয়েছেন, তাদের নির্দিষ্ট সময়ের পারফরম্যান্স অনুযায়ী আলাদা স্পেশাল কার্ড হিসেবে গেমে ফিরিয়ে আনা হয়। এগুলো প্রাইজ লিডারের মাধ্যমে পেতে হয়, যার জন্য নির্ধারিত <span class='highlight'>ডিপি (DP)</span> পয়েন্ট অর্জন করা প্রয়োজন। গড়ে একটি ক্যারিয়ার ম্যাচ জিতলে <span class='highlight'>১১০ ডিপি</span> পাওয়া যায়। প্রথম সিজনে <span class='highlight'>২ লাখ ডিপি</span> পয়েন্টে <span class='highlight'>৪ জন</span> প্লেয়ার দেওয়া হলেও দ্বিতীয় সিজন থেকে লক্ষ্যমাত্রা বাড়িয়ে <span class='highlight'>২.৫ লাখ</span> করা হয়েছে।
+                    </span>
+                </div>
+            </div>
+            
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Champions Player Event - চ্যাম্পিয়নস খেলোয়াড়দের ইভেন্ট:" data-en="Champions Player Event:" data-vi="Sự kiện Cầu thủ Champions:" data-ar="حدث لاعبي الأبطال (Champions):">Champions Player Event - চ্যাম্পিয়নস খেলোয়াড়দের ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="ডিএলএস ইতিহাসের সবচেয়ে আকর্ষণীয় ইভেন্ট এটি। এখানে <span class='highlight'>৮৮ রেটিংয়ের মেসি-রোনালদো</span> এবং <span class='highlight'>৮৬ রেটিংয়ের মদরিচসহ</span> অনেক চ্যাম্পিয়ন প্লেয়ার ছিল। এই প্লেয়ারগুলো নেওয়ার জন্য <span class='highlight'>লিজেন্ডারি এজেন্টের</span> মাধ্যমে স্পিন করতে হয়। <span class='highlight'>২০২৫ সালের ১৭ জুলাই</span> <span class='highlight'>ডিএলএস ২৫</span>-এ প্রথম এই ইভেন্ট আসে। এই ইভেন্টটি বেশ অনিশ্চয়তার ছিল, কারণ অনেকে হাজার হাজার ডায়মন্ড খরচ করেও প্লেয়ার পায়নি, আবার কেউ কেউ একটি এজেন্টেই পেয়ে গেছে। <span class='highlight'>ডিএলএস ২৬</span>-এ এমন ইভেন্টের জন্য আমাদের <span class='highlight'>জুলাই</span> পর্যন্ত অপেক্ষা করতে হবে।" 
+                          data-en="This is the most attractive event in DLS history. There were many champion players here, including <span class='highlight'>88-rated Messi and Ronaldo</span>, and <span class='highlight'>86-rated Modric</span>. To get these players, you have to spin through the <span class='highlight'>Legendary Agent</span>. This event first appeared in <span class='highlight'>DLS 25</span> on <span class='highlight'>July 17, 2025</span>. This event was quite uncertain because many did not get a player even after spending thousands of diamonds, while some got one with just a single agent. We will have to wait until <span class='highlight'>July</span> for such an event in <span class='highlight'>DLS 26</span>."
+                          data-vi="Đây là sự kiện hấp dẫn nhất trong lịch sử DLS. Đã có rất nhiều cầu thủ vô địch ở đây, bao gồm <span class='highlight'>Messi và Ronaldo đánh giá 88</span>, và <span class='highlight'>Modric đánh giá 86</span>. Để có được những cầu thủ này, bạn phải quay thông qua <span class='highlight'>Đặc vụ Huyền thoại (Legendary Agent)</span>. Sự kiện này lần đầu tiên xuất hiện trong <span class='highlight'>DLS 25</span> vào ngày <span class='highlight'>17 tháng 7 năm 2025</span>. Sự kiện này khá không chắc chắn vì nhiều người đã không nhận được cầu thủ ngay cả sau khi tiêu hàng ngàn viên kim cương, trong khi một số người lại nhận được chỉ với một đặc vụ duy nhất. Chúng ta sẽ phải đợi đến <span class='highlight'>tháng Bảy</span> cho một sự kiện như vậy trong <span class='highlight'>DLS 26</span>."
+                          data-ar="هذا هو الحدث الأكثر جاذبية في تاريخ DLS. كان هناك العديد من اللاعبين الأبطال هنا، بما في ذلك <span class='highlight'>ميسي ورونالدو بتقييم 88</span>، و<span class='highlight'>مودريتش بتقييم 86</span>. للحصول على هؤلاء اللاعبين، عليك الدوران عبر <span class='highlight'>الوكيل الأسطوري (Legendary Agent)</span>. ظهر هذا الحدث لأول مرة في <span class='highlight'>DLS 25</span> في <span class='highlight'>17 يوليو 2025</span>. كان هذا الحدث غير مؤكد تمامًا لأن الكثيرين لم يحصلوا على لاعب حتى بعد إنفاق الآلاف من الجواهر، بينما حصل البعض على واحد من خلال وكيل واحد فقط. سيتعين علينا الانتظار حتى <span class='highlight'>يوليو</span> لحدث مثل هذا في <span class='highlight'>DLS 26</span>.">
+                        ডিএলএস ইতিহাসের সবচেয়ে আকর্ষণীয় ইভেন্ট এটি। এখানে <span class='highlight'>৮৮ রেটিংয়ের মেসি-রোনালদো</span> এবং <span class='highlight'>৮৬ রেটিংয়ের মদরিচসহ</span> অনেক চ্যাম্পিয়ন প্লেয়ার ছিল। এই প্লেয়ারগুলো নেওয়ার জন্য <span class='highlight'>লিজেন্ডারি এজেন্টের</span> মাধ্যমে স্পিন করতে হয়। <span class='highlight'>২০২৫ সালের ১৭ জুলাই</span> <span class='highlight'>ডিএলএস ২৫</span>-এ প্রথম এই ইভেন্ট আসে। এই ইভেন্টটি বেশ অনিশ্চয়তার ছিল, কারণ অনেকে হাজার হাজার ডায়মন্ড খরচ করেও প্লেয়ার পায়নি, আবার কেউ কেউ একটি এজেন্টেই পেয়ে গেছে। <span class='highlight'>ডিএলএস ২৬</span>-এ এমন ইভেন্টের জন্য আমাদের <span class='highlight'>জুলাই</span> পর্যন্ত অপেক্ষা করতে হবে।
+                    </span>
+                </div>
+            </div>
+
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="World Cup Heroes Event - বিশ্বকাপ হিরোজ ইভেন্ট:" data-en="World Cup Heroes Event:" data-vi="Sự kiện Anh hùng World Cup:" data-ar="حدث أبطال كأس العالم:">World Cup Heroes Event - বিশ্বকাপ হিরোজ ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="এই ইভেন্ট প্রথমবারের মতো ডিএলএস গেমে এসেছে। মূলত বিশ্বকাপ উপলক্ষে বিগত বিশ্বকাপের টপ পারফরম্যান্স করা <span class='highlight'>৮ জন</span> প্লেয়ার দেয়া হয়েছে এই ইভেন্টে। World Cup Heroes ইভেন্ট ৮ জুলাই গেমে এসেছে এবং দীর্ঘ <span class='highlight'>১ মাস</span> ধরে ইভেন্ট চলমান ছিলো।<br><br>এই ইভেন্টের প্লেয়ার পেতে হলে লিজেন্ডারি এজেন্টের মাধ্যমে স্পিন করতে হয়েছে। তবে <span class='highlight'>১৫ বার</span> স্পিন করলে ১ টা প্লেয়ার শিওর পাবার নিশ্চয়তা রয়েছে। পূর্বের Champions, TOTY ইভেন্টের মতোই সেম ইভেন্ট হলো এই World Cup Heroes প্লেয়ার্স ইভেন্ট।<br><br>এই ইভেন্টের প্লেয়ারের নামগুলো হলো: <br>🇦🇷 Lionel Messi — World Cup 2022<br>🇵🇹 Cristiano Ronaldo — World Cup 2018<br>🇧🇪 Kevin De Bruyne — World Cup 2018<br>🇨🇴 James Rodríguez — World Cup 2014<br>🇨🇷 Keylor Navas — World Cup 2014<br>🇭🇷 Ivan Perišić — World Cup 2018<br>🇭🇷 Joško Gvardiol — World Cup 2022<br>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Kyle Walker — World Cup 2018" 
+                          data-en="This event appeared in the DLS game for the first time. Primarily on the occasion of the World Cup, <span class='highlight'>8 top-performing players</span> from previous World Cups were given in this event. The World Cup Heroes event arrived in the game on July 8 and ran for a long <span class='highlight'>1 month</span>.<br><br>To get players from this event, you had to spin via the Legendary Agent. However, spinning <span class='highlight'>15 times</span> guaranteed 1 player. This World Cup Heroes players event is the same as the previous Champions and TOTY events.<br><br>The players of this event are:<br>🇦🇷 Lionel Messi — World Cup 2022<br>🇵🇹 Cristiano Ronaldo — World Cup 2018<br>🇧🇪 Kevin De Bruyne — World Cup 2018<br>🇨🇴 James Rodríguez — World Cup 2014<br>🇨🇷 Keylor Navas — World Cup 2014<br>🇭🇷 Ivan Perišić — World Cup 2018<br>🇭🇷 Joško Gvardiol — World Cup 2022<br>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Kyle Walker — World Cup 2018"
+                          data-vi="Sự kiện này lần đầu tiên xuất hiện trong game DLS. Nhân dịp World Cup, <span class='highlight'>8 cầu thủ</span> có màn trình diễn xuất sắc nhất từ các kỳ World Cup trước đã được đưa vào sự kiện này. Sự kiện ra mắt vào ngày 8 tháng 7 và kéo dài trong <span class='highlight'>1 tháng</span>.<br><br>Để nhận cầu thủ, bạn phải quay thông qua Đặc vụ Huyền thoại (Legendary Agent). Tuy nhiên, quay <span class='highlight'>15 lần</span> chắc chắn nhận được 1 cầu thủ. Sự kiện này giống hệt các sự kiện Champions và TOTY trước đó.<br><br>Danh sách cầu thủ của sự kiện này là:<br>🇦🇷 Lionel Messi — World Cup 2022<br>🇵🇹 Cristiano Ronaldo — World Cup 2018<br>🇧🇪 Kevin De Bruyne — World Cup 2018<br>🇨🇴 James Rodríguez — World Cup 2014<br>🇨🇷 Keylor Navas — World Cup 2014<br>🇭🇷 Ivan Perišić — World Cup 2018<br>🇭🇷 Joško Gvardiol — World Cup 2022<br>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Kyle Walker — World Cup 2018"
+                          data-ar="ظهر هذا الحدث في لعبة DLS لأول مرة. بمناسبة كأس العالم، تم توفير <span class='highlight'>8 لاعبين</span> قدموا أفضل أداء في بطولات كأس العالم السابقة. وصل الحدث في 8 يوليو واستمر لمدة <span class='highlight'>شهر كامل</span>.<br><br>للحصول على لاعبي هذا الحدث، كان عليك الدوران عبر الوكيل الأسطوري (Legendary Agent). ومع ذلك، فإن الدوران <span class='highlight'>15 مرة</span> يضمن لك الحصول على لاعب واحد. هذا الحدث هو نفسه أحداث Champions و TOTY السابقة.<br><br>اللاعبون هم:<br>🇦🇷 Lionel Messi — World Cup 2022<br>🇵🇹 Cristiano Ronaldo — World Cup 2018<br>🇧🇪 Kevin De Bruyne — World Cup 2018<br>🇨🇴 James Rodríguez — World Cup 2014<br>🇨🇷 Keylor Navas — World Cup 2014<br>🇭🇷 Ivan Perišić — World Cup 2018<br>🇭🇷 Joško Gvardiol — World Cup 2022<br>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Kyle Walker — World Cup 2018">
+                        এই ইভেন্ট প্রথমবারের মতো ডিএলএস গেমে এসেছে। মূলত বিশ্বকাপ উপলক্ষে বিগত বিশ্বকাপের টপ পারফরম্যান্স করা <span class='highlight'>৮ জন</span> প্লেয়ার দেয়া হয়েছে এই ইভেন্টে। World Cup Heroes ইভেন্ট ৮ জুলাই গেমে এসেছে এবং দীর্ঘ <span class='highlight'>১ মাস</span> ধরে ইভেন্ট চলমান ছিলো।<br><br>এই ইভেন্টের প্লেয়ার পেতে হলে লিজেন্ডারি এজেন্টের মাধ্যমে স্পিন করতে হয়েছে। তবে <span class='highlight'>১৫ বার</span> স্পিন করলে ১ টা প্লেয়ার শিওর পাবার নিশ্চয়তা রয়েছে। পূর্বের Champions, TOTY ইভেন্টের মতোই সেম ইভেন্ট হলো এই World Cup Heroes প্লেয়ার্স ইভেন্ট।<br><br>এই ইভেন্টের প্লেয়ারের নামগুলো হলো: <br>🇦🇷 Lionel Messi — World Cup 2022<br>🇵🇹 Cristiano Ronaldo — World Cup 2018<br>🇧🇪 Kevin De Bruyne — World Cup 2018<br>🇨🇴 James Rodríguez — World Cup 2014<br>🇨🇷 Keylor Navas — World Cup 2014<br>🇭🇷 Ivan Perišić — World Cup 2018<br>🇭🇷 Joško Gvardiol — World Cup 2022<br>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Kyle Walker — World Cup 2018
+                    </span>
+                </div>
+            </div>
+
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="DLS 26 World Cup Winners Event:" data-en="DLS 26 World Cup Winners Event:" data-vi="Sự kiện Nhà vô địch World Cup DLS 26:" data-ar="حدث الفائزين بكأس العالم DLS 26:">DLS 26 World Cup Winners Event:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="World Cup Winners ছিল DLS 26-এর World Cup কেন্দ্রিক বিশেষ ইভেন্টগুলোর অন্যতম আকর্ষণীয় অংশ। World Cup Heroes ইভেন্টের পরেই এই ইভেন্টটি আসে এবং এর মূল ধারণা ছিল—বিশ্বকাপ জয়ী দলের গুরুত্বপূর্ণ ও আলোচিত খেলোয়াড়দের বিশেষ কার্ডে অন্তর্ভুক্ত করা।<br><br>World Cup Heroes-এর মতোই Legendary Agent ব্যবহার করে World Cup Winners-এর বিশেষ খেলোয়াড় পাওয়ার সুযোগ ছিল। অর্থাৎ Legendary Agent ব্যবহার করে Spin করতে হয়েছে এবং ভাগ্য ভালো হলে সরাসরি একজন World Cup Winner পাওয়া গেছে। এই ইভেন্টেও <span class='highlight'>১৫টি</span> Legendary Agent ব্যবহার করলে অন্তত ১ জন World Cup Winner শিওর পাওয়া যেত।<br><br>এই ইভেন্টে আলোচিত World Cup-winning players হিসেবে দেখা গেছে:<br>🇪🇸 Lamine Yamal — World Cup 2026<br>🇪🇸 Rodri — World Cup 2026<br>🇫🇷 Paul Pogba — World Cup 2018<br>🇦🇷 Emiliano Martínez — World Cup 2022<br>🇦🇷 Enzo Fernández — World Cup 2022<br>🇪🇸 Marc Cucurella — World Cup 2026<br>🇪🇸 Pau Cubarsí — World Cup 2026<br>🇫🇷 Benjamin Pavard — World Cup 2018" 
+                          data-en="World Cup Winners was one of the most attractive parts of the World Cup-centric special events in DLS 26. This event came right after the World Cup Heroes event, and its main idea was to include important and much-talked-about players from World Cup-winning teams in special cards.<br><br>Like World Cup Heroes, there was an opportunity to get special World Cup Winners players using the Legendary Agent. That is, you had to Spin using the Legendary Agent, and if you were lucky, you could get a World Cup Winner directly. Using <span class='highlight'>15</span> Legendary Agents in this event also guaranteed at least 1 World Cup Winner.<br><br>Featured World Cup-winning players in this event included:<br>🇪🇸 Lamine Yamal — World Cup 2026<br>🇪🇸 Rodri — World Cup 2026<br>🇫🇷 Paul Pogba — World Cup 2018<br>🇦🇷 Emiliano Martínez — World Cup 2022<br>🇦🇷 Enzo Fernández — World Cup 2022<br>🇪🇸 Marc Cucurella — World Cup 2026<br>🇪🇸 Pau Cubarsí — World Cup 2026<br>🇫🇷 Benjamin Pavard — World Cup 2018"
+                          data-vi="Sự kiện Nhà vô địch World Cup là một trong những phần hấp dẫn nhất của chuỗi sự kiện World Cup trong DLS 26. Sự kiện này diễn ra ngay sau sự kiện Anh hùng World Cup, nhằm vinh danh các cầu thủ quan trọng của các đội vô địch World Cup bằng các thẻ đặc biệt.<br><br>Giống như Anh hùng World Cup, bạn có cơ hội nhận được thông qua Đặc vụ Huyền thoại (Legendary Agent). Nghĩa là, bạn phải quay bằng Đặc vụ Huyền thoại và nếu may mắn sẽ trực tiếp nhận một Nhà vô địch. Sử dụng <span class='highlight'>15</span> Đặc vụ Huyền thoại cũng đảm bảo nhận được ít nhất 1 Nhà vô địch World Cup.<br><br>Các cầu thủ vô địch nổi bật trong sự kiện này bao gồm:<br>🇪🇸 Lamine Yamal — World Cup 2026<br>🇪🇸 Rodri — World Cup 2026<br>🇫🇷 Paul Pogba — World Cup 2018<br>🇦🇷 Emiliano Martínez — World Cup 2022<br>🇦🇷 Enzo Fernández — World Cup 2022<br>🇪🇸 Marc Cucurella — World Cup 2026<br>🇪🇸 Pau Cubarsí — World Cup 2026<br>🇫🇷 Benjamin Pavard — World Cup 2018"
+                          data-ar="كان حدث الفائزين بكأس العالم من أكثر الأجزاء جاذبية في الأحداث الخاصة بكأس العالم في DLS 26. جاء هذا الحدث مباشرة بعد حدث أبطال كأس العالم، وكانت فكرته الرئيسية هي تضمين لاعبين مهمين وبارزين من الفرق الفائزة بكأس العالم في بطاقات خاصة.<br><br>تمامًا مثل أبطال كأس العالم، كانت هناك فرصة للحصول عليهم باستخدام الوكيل الأسطوري (Legendary Agent). أي كان عليك الدوران باستخدام الوكيل الأسطوري وإذا كنت محظوظًا يمكنك الحصول على فائز بكأس العالم مباشرة. استخدام <span class='highlight'>15</span> وكيلاً أسطورياً في هذا الحدث يضمن أيضاً الحصول على فائز واحد بكأس العالم على الأقل.<br><br>اللاعبون الفائزون بكأس العالم البارزون في هذا الحدث شملوا:<br>🇪🇸 Lamine Yamal — World Cup 2026<br>🇪🇸 Rodri — World Cup 2026<br>🇫🇷 Paul Pogba — World Cup 2018<br>🇦🇷 Emiliano Martínez — World Cup 2022<br>🇦🇷 Enzo Fernández — World Cup 2022<br>🇪🇸 Marc Cucurella — World Cup 2026<br>🇪🇸 Pau Cubarsí — World Cup 2026<br>🇫🇷 Benjamin Pavard — World Cup 2018">
+                        World Cup Winners ছিল DLS 26-এর World Cup কেন্দ্রিক বিশেষ ইভেন্টগুলোর অন্যতম আকর্ষণীয় অংশ। World Cup Heroes ইভেন্টের পরেই এই ইভেন্টটি আসে এবং এর মূল ধারণা ছিল—বিশ্বকাপ জয়ী দলের গুরুত্বপূর্ণ ও আলোচিত খেলোয়াড়দের বিশেষ কার্ডে অন্তর্ভুক্ত করা।<br><br>World Cup Heroes-এর মতোই Legendary Agent ব্যবহার করে World Cup Winners-এর বিশেষ খেলোয়াড় পাওয়ার সুযোগ ছিল। অর্থাৎ Legendary Agent ব্যবহার করে Spin করতে হয়েছে এবং ভাগ্য ভালো হলে সরাসরি একজন World Cup Winner পাওয়া গেছে। এই ইভেন্টেও <span class='highlight'>১৫টি</span> Legendary Agent ব্যবহার করলে অন্তত ১ জন World Cup Winner শিওর পাওয়া যেত।<br><br>এই ইভেন্টে আলোচিত World Cup-winning players হিসেবে দেখা গেছে:<br>🇪🇸 Lamine Yamal — World Cup 2026<br>🇪🇸 Rodri — World Cup 2026<br>🇫🇷 Paul Pogba — World Cup 2018<br>🇦🇷 Emiliano Martínez — World Cup 2022<br>🇦🇷 Enzo Fernández — World Cup 2022<br>🇪🇸 Marc Cucurella — World Cup 2026<br>🇪🇸 Pau Cubarsí — World Cup 2026<br>🇫🇷 Benjamin Pavard — World Cup 2018
+                    </span>
+                </div>
+            </div>
+
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Team of the Year (TOTY) Event:" data-en="Team of the Year or TOTY Event:" data-vi="Sự kiện Đội hình Tiêu biểu của Năm (TOTY):" data-ar="حدث فريق العام (TOTY):">Team of the Year (TOTY) Event:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>২০২৬ সালের জানুয়ারি</span> মাস থেকে এই ইভেন্টটি আনুষ্ঠানিকভাবে শুরু হয়। এখানে ২০২৫ সালের সেরা ফর্মে থাকা <span class='highlight'>এমবাপ্পে, ডেম্বেলে, হ্যারি কেইনদের</span> মতো পারফর্মারদের রাখা হয়েছে। এই প্লেয়ারগুলো আনলক করতেও <span class='highlight'>লিজেন্ডারি এজেন্টের</span> প্রয়োজন হয়, তবে এখানে অনিশ্চয়তা কম। সর্বোচ্চ <span class='highlight'>১৬টি এজেন্ট</span> খরচ করলেই একটি স্পেশাল প্লেয়ার নিশ্চিতভাবে পাওয়া যায়।" 
+                          data-en="This event officially started in <span class='highlight'>January 2026</span>. Top performers in their best form from 2025 like <span class='highlight'>Mbappe, Dembele, and Harry Kane</span> are featured here. A <span class='highlight'>Legendary Agent</span> is also required to unlock these players, but there is less uncertainty here. Spending a maximum of <span class='highlight'>16 agents</span> guarantees a special player."
+                          data-vi="Sự kiện này chính thức bắt đầu vào <span class='highlight'>tháng 1 năm 2026</span>. Những cầu thủ có phong độ tốt nhất từ năm 2025 như <span class='highlight'>Mbappe, Dembele và Harry Kane</span> được đưa vào đây. Cần có <span class='highlight'>Đặc vụ Huyền thoại</span> để mở khóa các cầu thủ này, nhưng ít có sự không chắc chắn ở đây. Dùng tối đa <span class='highlight'>16 đặc vụ</span> chắc chắn sẽ nhận được một cầu thủ đặc biệt."
+                          data-ar="بدأ هذا الحدث رسميًا في <span class='highlight'>يناير 2026</span>. تم إدراج أفضل المؤدين في أفضل حالاتهم من عام 2025 مثل <span class='highlight'>مبابي وديمبيلي وهاري كين</span> هنا. مطلوب أيضًا <span class='highlight'>وكيل أسطوري</span> لفتح هؤلاء اللاعبين، ولكن هناك قدر أقل من عدم اليقين هنا. إنفاق <span class='highlight'>16 وكيلاً كحد أقصى</span> يضمن الحصول على لاعب خاص.">
+                        <span class='highlight'>২০২৬ সালের জানুয়ারি</span> মাস থেকে এই ইভেন্টটি আনুষ্ঠানিকভাবে শুরু হয়। এখানে ২০২৫ সালের সেরা ফর্মে থাকা <span class='highlight'>এমবাপ্পে, ডেম্বেলে, হ্যারি কেইনদের</span> মতো পারফর্মারদের রাখা হয়েছে। এই প্লেয়ারগুলো আনলক করতেও <span class='highlight'>লিজেন্ডারি এজেন্টের</span> প্রয়োজন হয়, তবে এখানে অনিশ্চয়তা কম। সর্বোচ্চ <span class='highlight'>১৬টি এজেন্ট</span> খরচ করলেই একটি স্পেশাল প্লেয়ার নিশ্চিতভাবে পাওয়া যায়।
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="news-card">
+            <div class="news-category">
+                <i class="fa-solid fa-star"></i>
+                <span data-bn="স্টার ইভেন্ট" data-en="STAR EVENTS" data-vi="SỰ KIỆN NGÔI SAO" data-ar="أحداث النجوم">স্টার ইভেন্ট</span>
+            </div>
+            <div class="news-main-title">
+                <span data-bn="Dream Stars, Kick Off ও Dynamic Stars ইভেন্ট" data-en="Dream Stars, Kick Off & Dynamic Stars Events" data-vi="Sự kiện Dream Stars, Kick Off & Dynamic Stars" data-ar="أحداث نجوم الحلم، ركلة البداية، والنجوم الديناميكيين">Dream Stars, Kick Off ও Dynamic Stars ইভেন্ট</span>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Dream Stars Event - ড্রিম স্টার্স ইভেন্ট:" data-en="Dream Stars Event:" data-vi="Sự kiện Dream Stars:" data-ar="حدث نجوم الحلم (Dream Stars):">Dream Stars Event - ড্রিম স্টার্স ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>ডিএলএস ২৫</span> থেকে এই ইভেন্টের যাত্রা শুরু হয়। বর্তমান ফুটবল বিশ্বের উদীয়মান এবং প্রতিভাবান তরুণ খেলোয়াড়দের স্পেশাল হাই-রেটেড কার্ড এখানে যুক্ত করা হয়। তাছাড়া <span class='highlight'>আন্ডাররেটেড সিনিয়ন প্লেয়ারও</span> যুক্ত করা হয় যারা সাম্প্রতিক সময়ে ভালো পারফরম্যান্স করে থাকে। এটা সম্পূর্ণ নির্ভর করে গেম ডেভেলপার কোম্পানি <span class='highlight'>এফটিজির</span> ওপর যে তারা কার কার্ড নিয়ে আসবে। ডিএলএস ২৫-এ এটি <span class='highlight'>জুন মাসে</span> আসলেও ডিএলএস ২৬-এ <span class='highlight'>এপ্রিল মাসে</span> এসেছে। এবার গত বছরের তুলনায় প্লেয়ার সংখ্যা বাড়িয়ে <span class='highlight'>১২ জন</span> করা হয়েছে এবং ১২তম প্লেয়ারটি ভোটিংয়ের মাধ্যমে নির্বাচন করা হয়েছে।" 
+                          data-en="This event started in <span class='highlight'>DLS 25</span>. Special high-rated cards of emerging and talented young players in the current football world are added here. Moreover, <span class='highlight'>underrated senior players</span> who have been performing well recently are also included. It entirely depends on the game developer company, <span class='highlight'>FTG</span>, as to whose cards they will bring. Although it arrived in <span class='highlight'>June in DLS 25</span>, it came in <span class='highlight'>April in DLS 26</span>. This time, the number of players has been increased to <span class='highlight'>12</span> compared to last year, and the <span class='highlight'>12th player</span> was selected through voting."
+                          data-vi="Sự kiện này bắt đầu từ <span class='highlight'>DLS 25</span>. Thẻ được đánh giá cao đặc biệt của các cầu thủ trẻ tài năng và mới nổi trong thế giới bóng đá hiện tại được thêm vào đây. Hơn nữa, <span class='highlight'>các cầu thủ kỳ cựu bị đánh giá thấp</span> có thành tích tốt gần đây cũng được đưa vào. Việc họ mang thẻ của ai hoàn toàn phụ thuộc vào công ty phát triển trò chơi <span class='highlight'>FTG</span>. Mặc dù nó ra mắt vào <span class='highlight'>tháng 6 trong DLS 25</span>, nhưng nó đã đến vào <span class='highlight'>tháng 4 trong DLS 26</span>. Lần này, số lượng người chơi đã tăng lên <span class='highlight'>12</span> so với năm ngoái và <span class='highlight'>người chơi thứ 12</span> được chọn thông qua bình chọn."
+                          data-ar="بدأ هذا الحدث في <span class='highlight'>DLS 25</span>. تمت إضافة بطاقات خاصة عالية التقييم للاعبين الشباب الناشئين والموهوبين في عالم كرة القدم الحالي هنا. علاوة على ذلك، يتم أيضًا تضمين <span class='highlight'>اللاعبين الكبار الذين لم يحظوا بالتقدير الكافي</span> والذين قدموا أداءً جيدًا مؤخرًا. يعتمد الأمر كليًا على شركة تطوير اللعبة، <span class='highlight'>FTG</span>، في تحديد بطاقات من سيحضرون. على الرغم من أنه وصل في <span class='highlight'>يونيو في DLS 25</span>، إلا أنه جاء في <span class='highlight'>أبريل في DLS 26</span>. هذه المرة، تمت زيادة عدد اللاعبين إلى <span class='highlight'>12</span> مقارنة بالعام الماضي، وتم اختيار <span class='highlight'>اللاعب الثاني عشر</span> من خلال التصويت.">
+                        <span class='highlight'>ডিএলএস ২৫</span> থেকে এই ইভেন্টের যাত্রা শুরু হয়। বর্তমান ফুটবল বিশ্বের উদীয়মান এবং প্রতিভাবান তরুণ খেলোয়াড়দের স্পেশাল হাই-রেটেড কার্ড এখানে যুক্ত করা হয়। তাছাড়া <span class='highlight'>আন্ডাররেটেড সিনিয়ন প্লেয়ারও</span> যুক্ত করা হয় যারা সাম্প্রতিক সময়ে ভালো পারফরম্যান্স করে থাকে। এটা সম্পূর্ণ নির্ভর করে গেম ডেভেলপার কোম্পানি <span class='highlight'>এফটিজির</span> ওপর যে তারা কার কার্ড নিয়ে আসবে। ডিএলএস ২৫-এ এটি <span class='highlight'>জুন মাসে</span> আসলেও ডিএলএস ২৬-এ <span class='highlight'>এপ্রিল মাসে</span> এসেছে। এবার গত বছরের তুলনায় প্লেয়ার সংখ্যা বাড়িয়ে <span class='highlight'>১২ জন</span> করা হয়েছে এবং ১২তম প্লেয়ারটি ভোটিংয়ের মাধ্যমে নির্বাচন করা হয়েছে।
+                    </span>
+                </div>
+            </div>
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Kick Off Stars Event - কিক অফ স্টার্স ইভেন্ট:" data-en="Kick Off Stars Event:" data-vi="Sự kiện Kick Off Stars:" data-ar="حدث نجوم ركلة البداية (Kick Off):">Kick Off Stars Event - কিক অফ স্টার্স ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="গেমের অ্যাম্বাসেডর বা কভার স্টারদের নিয়ে এই আকর্ষণীয় ইভেন্টটি সাজানো হয়। <span class='highlight'>ডিএলএস ১৬ (DLS 16)</span> থেকে শুরু করে বিভিন্ন সংস্করণে বিভিন্ন তারকারা গেমটির অ্যাম্বাসেডর হিসেবে ছিলেন। যেমন: ডিএলএস ১৬ ও ১৭-তে <span class='highlight'>ডিয়েগো কস্তা এবং অ্যারন রামসে</span>; ডিএলএস ১৮-তে <span class='highlight'>গ্যারেথ বেল ও আন্দ্রেস ইনিয়েস্তা</span>; ডিএলএস ۱۹-এ <span class='highlight'>গ্যারেথ বেল</span>; ডিএলএস ২০-তে <span class='highlight'>লুইস সুয়ারেজ ও গ্যারেথ বেল</span>; ডিএলএস ২১-এ <span class='highlight'>রবার্তো ফিরমিনো ও কেভিন ডি ব্রুইনা</span>; ডিএলএস ২২-এ <span class='highlight'>কেভিন ডি ব্রুইনা ও সার্জিনো ডেস্ট</span>; ডিএলএস ২৩-এ <span class='highlight'>ডি ব্রুইনা ও আশরাফ হাকিমি</span>; ডিএলএস ২৪-এ <span class='highlight'>ডি ব্রুইনা ও রদ্রিগো</span> এবং ডিএলএস ২৫-এ ছিলেন <span class='highlight'>রদ্রিগো ও হুলিয়ান আলভারেজ</span>। সর্বশেষ ডিএলএস ২৬-এ হুলিয়ান আলভারেজের সাথে নতুন যুক্ত হয়েছেন <span class='highlight'>রাফিনহা</span>।<br><br>দীর্ঘদিন ধরে অ্যাম্বাসেডর থাকার এই প্রথা চললেও, &quot;<span class='highlight'>কিক অফ স্টার্স</span>&quot; নামের স্পেশাল ইভেন্টটি মূলত এই বছর অর্থাৎ <span class='highlight'>ডিএলএস ২৬ (DLS 26)</span>-এর অ্যাম্বাসেডরদের কার্ড দিয়েই প্রথমবারের মতো শুরু হয়েছে। আশা করা যাচ্ছে, ভবিষ্যৎ সংস্করণগুলোতেও প্রতি বছর এই ইভেন্টটি নিয়মিত দেখা যাবে। এই ইভেন্টের স্পেশাল লিজেন্ডারি কার্ডগুলো মূলত <span class='highlight'>সিজন পাসের</span> মাধ্যমে আনলক করতে হয়।" 
+                          data-en="This exciting event revolves around the game's ambassadors or cover stars. Starting from <span class='highlight'>DLS 16</span>, various stars have featured as the game's ambassadors. For example: <span class='highlight'>Diego Costa and Aaron Ramsey</span> in DLS 16 & 17; <span class='highlight'>Gareth Bale and Andrés Iniesta</span> in DLS 18; <span class='highlight'>Gareth Bale</span> in DLS 19; <span class='highlight'>Luis Suárez and Gareth Bale</span> in DLS 20; <span class='highlight'>Roberto Firmino and Kevin De Bruyne</span> in DLS 21; <span class='highlight'>Kevin De Bruyne and Sergiño Dest</span> in DLS 22; <span class='highlight'>Kevin De Bruyne and Achraf Hakimi</span> in DLS 23; <span class='highlight'>Kevin De Bruyne and Rodrygo</span> in DLS 24; and <span class='highlight'>Rodrygo and Julián Álvarez</span> in DLS 25. Most recently, <span class='highlight'>Raphinha</span> joined Julián Álvarez as the new ambassador in DLS 26.<br><br>Although the tradition of having ambassadors has been around for a long time, the specific &quot;<span class='highlight'>Kick Off Stars</span>&quot; event officially debuted this year with the ambassador cards of <span class='highlight'>DLS 26</span>. It is expected that this event will become a regular yearly feature in future editions. The special legendary cards for this event mainly have to be unlocked through the <span class='highlight'>Season Pass</span>."
+                          data-vi="Sự kiện thú vị này xoay quanh các đại sứ hoặc ngôi sao trang bìa của trò chơi. Bắt đầu từ <span class='highlight'>DLS 16</span>, nhiều ngôi sao khác nhau đã xuất hiện với tư cách là đại sứ của trò chơi. Ví dụ: <span class='highlight'>Diego Costa và Aaron Ramsey</span> trong DLS 16 & 17; <span class='highlight'>Gareth Bale và Andrés Iniesta</span> trong DLS 18; <span class='highlight'>Gareth Bale</span> trong DLS 19; <span class='highlight'>Luis Suárez và Gareth Bale</span> trong DLS 20; <span class='highlight'>Roberto Firmino và Kevin De Bruyne</span> trong DLS 21; <span class='highlight'>Kevin De Bruyne và Sergiño Dest</span> trong DLS 22; <span class='highlight'>Kevin De Bruyne và Achraf Hakimi</span> trong DLS 23; <span class='highlight'>Kevin De Bruyne và Rodrygo</span> trong DLS 24; và <span class='highlight'>Rodrygo và Julián Álvarez</span> trong DLS 25. Gần đây nhất, <span class='highlight'>Raphinha</span> đã tham gia cùng Julián Álvarez với tư cách là đại sứ mới trong DLS 26.<br><br>Mặc dù truyền thống có các đại sứ đã có từ lâu, sự kiện đặc biệt &quot;<span class='highlight'>Kick Off Stars</span>&quot; đã chính thức ra mắt vào năm nay với thẻ đại sứ của <span class='highlight'>DLS 26</span>. Dự kiến sự kiện này sẽ trở thành một tính năng thường niên trong các phiên bản tương lai. Các thẻ huyền thoại đặc biệt cho sự kiện này chủ yếu phải được mở khóa thông qua <span class='highlight'>Season Pass (Vé Mùa Giải)</span>."
+                          data-ar="يتمحور هذا الحدث المثير حول سفراء اللعبة أو نجوم الغلاف. بدءًا من <span class='highlight'>DLS 16</span>، ظهر العديد من النجوم كسفراء للعبة. على سبيل المثال: <span class='highlight'>دييغو كوستا وآرون رامسي</span> في DLS 16 و 17؛ <span class='highlight'>غاريث بيل وأندريس إنييستا</span> في DLS 18؛ <span class='highlight'>غاريث بيل</span> في DLS 19؛ <span class='highlight'>لويس سواريز وغاريث بيل</span> في DLS 20؛ <span class='highlight'>روبرتو فيرمينو وكيفين دي بروين</span> في DLS 21؛ <span class='highlight'>كيفين دي بروين وسيرجينو ديست</span> في DLS 22؛ <span class='highlight'>كيفين دي بروين وأشرف حكيمي</span> في DLS 23؛ <span class='highlight'>كيفين دي بروين ورودريغو</span> في DLS 24؛ و <span class='highlight'>رودريغو وجوليان ألفاريز</span> في DLS 25. ومؤخراً، انضم <span class='highlight'>رافينيا</span> إلى جوليان ألفاريز كسفير جديد في DLS 26.<br><br>على الرغم من أن تقليد وجود سفراء كان موجوداً منذ فترة طويلة، إلا أن الحدث الخاص المسمى &quot;<span class='highlight'>نجوم ركلة البداية</span>&quot; ظهر رسمياً لأول مرة هذا العام مع بطاقات سفراء <span class='highlight'>DLS 26</span>. من المتوقع أن يصبح هذا الحدث ميزة سنوية منتظمة في الإصدارات المستقبلية. يجب فتح البطاقات الأسطورية الخاصة لهذا الحدث بشكل أساسي من خلال <span class='highlight'>تذكرة الموسم (Season Pass)</span>.">
+                        গেমের অ্যাম্বাসেডর বা কভার স্টারদের নিয়ে এই আকর্ষণীয় ইভেন্টটি সাজানো হয়। <span class='highlight'>ডিএলএস ১৬ (DLS 16)</span> থেকে শুরু করে বিভিন্ন সংস্করণে বিভিন্ন তারকারা গেমটির অ্যাম্বাসেডর হিসেবে ছিলেন। যেমন: ডিএলএস ১৬ ও ১৭-তে <span class='highlight'>ডিয়েগো কস্তা এবং অ্যারন রামসে</span>; ডিএলএস ১৮-তে <span class='highlight'>গ্যারেথ বেল ও আন্দ্রেস ইনিয়েস্তা</span>; ডিএলএস ১৯-এ <span class='highlight'>গ্যারেথ বেল</span>; ডিএলএস ২০-তে <span class='highlight'>লুইস সুয়ারেজ ও গ্যারেথ বেল</span>; ডিএলএস ২১-এ <span class='highlight'>রবার্তো ফিরমিনো ও কেভিন ডি ব্রুইনা</span>; ডিএলএস ২২-এ <span class='highlight'>কেভিন ডি ব্রুইনা ও সার্জিনো ডেস্ট</span>; ডিএলএস ২৩-এ <span class='highlight'>ডি ব্রুইনা ও আশরাফ হাকিমি</span>; ডিএলএস ২৪-এ <span class='highlight'>ডি ব্রুইনা ও রদ্রিগো</span> এবং ডিএলএস ২৫-এ ছিলেন <span class='highlight'>রদ্রিগো ও হুলিয়ান আলভারেজ</span>। সর্বশেষ ডিএলএস ২৬-এ হুলিয়ান আলভারেজের সাথে নতুন যুক্ত হয়েছেন <span class='highlight'>রাফিনহা</span>।<br><br>দীর্ঘদিন ধরে অ্যাম্বাসেডর থাকার এই প্রথা চললেও, &quot;<span class='highlight'>কিক অফ স্টার্স</span>&quot; নামের স্পেশাল ইভেন্টটি মূলত এই বছর অর্থাৎ <span class='highlight'>ডিএলএস ২৬ (DLS 26)</span>-এর অ্যাম্বাসেডরদের কার্ড দিয়েই প্রথমবারের মতো শুরু হয়েছে। আশা করা যাচ্ছে, ভবিষ্যৎ সংস্করণগুলোতেও প্রতি বছর এই ইভেন্টটি নিয়মিত দেখা যাবে। এই ইভেন্টের স্পেশাল লিজেন্ডারি কার্ডগুলো মূলত <span class='highlight'>সিজন পাসের</span> মাধ্যমে আনলক করতে হয়।
+                    </span>
+                </div>
+            </div>
+            
+            <div class="news-block">
+                <div class="news-sub-title">
+                    <span data-bn="Dynamic Stars Event - ডাইনামিক স্টার্স ইভেন্ট:" data-en="Dynamic Stars Event:" data-vi="Sự kiện Ngôi sao Năng động (Dynamic Stars):" data-ar="حدث النجوم الديناميكيين (Dynamic Stars):">Dynamic Stars Event - ডাইনামিক স্টার্স ইভেন্ট:</span>
+                </div>
+                <div class="news-content">
+                    <span data-bn="<span class='highlight'>DLS 26</span>-এ প্রথমবারের মতো ডাইনামিক স্টার্স (Dynamic Stars) ইভেন্টটি গেমে যুক্ত হয়। মূলত বিশ্বকাপ বা বড় টুর্নামেন্টকে সামনে রেখেই এই ধরনের ইভেন্ট আনা হয়। যেমন, ২০২৬ সালের বিশ্বকাপে অংশগ্রহণকারী দলগুলোর মধ্য থেকে বাছাইকৃত প্লেয়ারদের এই ইভেন্টে যুক্ত করা হয়েছিল। এখানে মূলত জাতীয় দলকে প্রতিনিধিত্ব করা প্লেয়ার, উদীয়মান তরুণ এবং হাইপে থাকা প্লেয়ারদের প্রাধান্য দেওয়া হয়。<br><br>ডাইনামিক স্টার্সের সবচেয়ে গুরুত্বপূর্ণ দিক হলো এটি <span class='highlight'>রিয়েল-লাইফ ফুটবলের</span> সাথে সরাসরি সম্পর্কিত। সাধারণত গেমে কোচিং করিয়ে প্লেয়ার ম্যাক্স করতে হয়, কিন্তু এই ইভেন্টে বাস্তব টুর্নামেন্টে দলের অগ্রগতির ওপর ভিত্তি করে প্লেয়ারের রেটিং স্বয়ংক্রিয়ভাবে বাড়তে থাকে। ইভেন্টের শুরুতে প্লেয়ারদের একটি নির্দিষ্ট বেস রেটিং (যেমন ৮২) থাকে, যা টুর্নামেন্ট চলাকালীন পরিবর্তিত হতে থাকে এবং চ্যাম্পিয়ন দলের প্লেয়ারের রেটিং সর্বোচ্চ (যেমন ৮৬) পর্যন্ত পৌঁছাতে পারে。<br><br>ডাইনামিক স্টার্স প্লেয়ারদের দলে ভেড়াতে <span class='highlight'>ডাইনামিক এজেন্ট (Dynamic Agent)</span>-এর প্রয়োজন হয়। এই স্পেশাল এজেন্টগুলো সাধারণত নিচের মাধ্যমগুলো থেকে সংগ্রহ করা যায়:<br>• লাইভ ইভেন্ট (Live Event)<br>• ফ্রি পাস (Free Pass)<br>• সিজন পাস (Season Pass)<br>• ড্রিম ড্রাফট (Dream Draft) {সম্ভাব্য}<br>• ক্ল্যান রিওয়ার্ড (Clan Rewards)<br>• লিমিটেড প্রমোশন (Limited Promotions)<br><br>টুর্নামেন্টের বিভিন্ন ধাপে দল উত্তীর্ণ হওয়ার সাথে সাথে রেটিং যেভাবে বৃদ্ধি পায় (একটি সাধারণ উদাহরণ):<br>জাতীয় দল গ্রুপ পর্বে থাকাকালীন: <span class='highlight'>বেস রেটিং (যেমন ৮২)</span><br>জাতীয় দল রাউন্ড ৩২-এ উঠলে: <span class='highlight'>+৩ (যেমন ৮৫)</span><br>জাতীয় দল রাউন্ড ১৬-তে উঠলে: <span class='highlight'>+৫ (যেমন ৮৭)</span><br>জাতীয় দল কোয়ার্টার ফাইনালে উঠলে: <span class='highlight'>+৭ (যেমন ৮৯)</span><br>জাতীয় দল সেমিফাইনালে উঠলে: <span class='highlight'>+৯ (যেমন ৯১)</span><br>জাতীয় দল ফাইনালে উঠলে: <span class='highlight'>+১১ (যেমন ৯৩)</span><br>টুর্নামেন্ট জয়ী দলের প্লেয়ার: <span class='highlight'>সর্বোচ্চ রেটিং (যেমন ৮৬)</span><br><br>ডাইনামিক এজেন্টগুলো টুর্নামেন্টের গ্রুপ পর্ব শেষ হওয়ার আগেই রিডিম বা ক্লেইম করতে হয়। নির্দিষ্ট সময় পার হয়ে গেলে এই এজেন্টগুলো স্বয়ংক্রিয়ভাবে বাতিল হয়ে যায় এবং তা থেকে আর কোনো প্লেয়ার পাওয়া যায় না। সাধারণত টুর্নামেন্ট শুরুর কিছু দিন আগে থেকে এই এজেন্টগুলো কালেক্ট বা রিডিম করার সুযোগ দেওয়া হয় এবং গ্রুপ পর্বের শেষ দিন পর্যন্ত তা কার্যকর থাকে。<br><br>ডাইনামিক স্টার্সের কোনো প্লেয়ারকে রিলিজ দিলে একটি <span class='highlight'>কমন স্পেশাল কোচ (Common Special Coach)</span> পাওয়া যায়। তবে চাইলেই যেকোনো সময় এই প্লেয়ারদের রিলিজ দেওয়া যায় না; এর জন্য টুর্নামেন্টের ফাইনাল পর্যন্ত অপেক্ষা করতে হয়। টুর্নামেন্ট শেষের ফাইনাল আপগ্রেডগুলো গেমে সম্পূর্ণভাবে অ্যাপ্লাই হওয়ার <span class='highlight'>৪৮ ঘণ্টা পর</span> প্লেয়ারটিকে রিলিজ দেওয়ার অপশন আনলক হয়।" 
+                          data-en="The Dynamic Stars event was first introduced to the game in <span class='highlight'>DLS 26</span>. This type of event is usually brought in anticipation of major tournaments like the World Cup. For instance, selected players from the participating teams of the 2026 World Cup were included in this event. Priority is mainly given to players representing their national teams, emerging talents, and highly-hyped players.<br><br>The most important aspect of Dynamic Stars is its direct connection to <span class='highlight'>real-life football</span>. Usually, players are maxed out through coaching, but in this event, a player's rating automatically increases based on their team's real-life progression in the tournament. Initially, players have a specific base rating (e.g., 82), which keeps changing during the tournament, and the rating of a player from the winning team can reach the maximum level (e.g., 86).<br><br>To get Dynamic Stars players, <span class='highlight'>Dynamic Agents</span> are required. These special agents can generally be obtained through the following ways:<br>• Live Event<br>• Free Pass<br>• Season Pass<br>• Dream Draft {Probable}<br>• Clan Rewards<br>• Limited Promotions<br><br>As the team advances through various stages of the tournament, the rating increases. Here is a general example of the progression:<br>National team in Group Stage: <span class='highlight'>Base Rating (e.g., 82)</span><br>National team reaches Round of 32: <span class='highlight'>+3 (e.g., 85)</span><br>National team reaches Round of 16: <span class='highlight'>+5 (e.g., 87)</span><br>National team reaches Quarter-Finals: <span class='highlight'>+7 (e.g., 89)</span><br>National team reaches Semi-Finals: <span class='highlight'>+9 (e.g., 91)</span><br>National team reaches Final: <span class='highlight'>+11 (e.g., 93)</span><br>Tournament winning team's player: <span class='highlight'>Max Rating (e.g., 86)</span><br><br>Dynamic Agents must be redeemed or claimed before the group stage of the tournament ends. Once the specific timeframe passes, these agents automatically expire, and players can no longer be obtained from them. Generally, the opportunity to collect or redeem these agents is given a few days before the tournament starts and remains valid until the end of the group stage.<br><br>Releasing a Dynamic Stars player yields a <span class='highlight'>Common Special Coach</span>. However, these players cannot be released at any time; you have to wait until the tournament final. The option to release the player unlocks <span class='highlight'>48 hours</span> after the final upgrades of the tournament are completely applied to the game."
+                          data-vi="Sự kiện Dynamic Stars (Ngôi sao Năng động) lần đầu tiên được giới thiệu trong <span class='highlight'>DLS 26</span>. Chủ yếu được đưa vào để chuẩn bị cho các giải đấu lớn như World Cup. Ví dụ, các cầu thủ được chọn từ các đội tham gia World Cup 2026 đã được đưa vào sự kiện này. Ưu tiên chủ yếu được dành cho các cầu thủ đại diện cho ĐTQG, các tài năng trẻ và những cầu thủ đang nổi.<br><br>Khía cạnh quan trọng nhất của Dynamic Stars là sự kết nối trực tiếp với <span class='highlight'>bóng đá ngoài đời thực</span>. Thông thường, cầu thủ được max chỉ số thông qua huấn luyện, nhưng trong sự kiện này, chỉ số của cầu thủ tự động tăng dựa trên tiến trình ngoài đời thực của đội bóng. Ban đầu, các cầu thủ có một chỉ số cơ bản (ví dụ: 82), chỉ số này liên tục thay đổi trong suốt giải đấu và chỉ số của một cầu thủ thuộc đội vô địch có thể đạt mức tối đa (ví dụ: 86).<br><br>Để có được cầu thủ Dynamic Stars, cần có <span class='highlight'>Đặc vụ Năng động (Dynamic Agents)</span>. Những đặc vụ đặc biệt này thường có thể kiếm được qua:<br>• Sự kiện Trực tiếp (Live Event)<br>• Vé Miễn phí (Free Pass)<br>• Vé Mùa giải (Season Pass)<br>• Dream Draft {Có thể}<br>• Phần thưởng Bang hội (Clan Rewards)<br>• Khuyến mãi Giới hạn (Limited Promotions)<br><br>Khi đội bóng tiến qua các vòng đấu, chỉ số sẽ tăng lên (ví dụ chung):<br>ĐTQG ở Vòng bảng: <span class='highlight'>Chỉ số cơ bản (ví dụ: 82)</span><br>ĐTQG vào Vòng 32 đội: <span class='highlight'>+3 (ví dụ: 85)</span><br>ĐTQG vào Vòng 16 đội: <span class='highlight'>+5 (ví dụ: 87)</span><br>ĐTQG vào Tứ kết: <span class='highlight'>+7 (ví dụ: 89)</span><br>ĐTQG vào Bán kết: <span class='highlight'>+9 (ví dụ: 91)</span><br>ĐTQG vào Chung kết: <span class='highlight'>+11 (ví dụ: 93)</span><br>Cầu thủ của đội vô địch giải đấu: <span class='highlight'>Chỉ số Tối đa (ví dụ: 86)</span><br><br>Các Dynamic Agent phải được đổi hoặc nhận trước khi vòng bảng của giải đấu kết thúc. Khi vượt qua thời gian quy định, các đặc vụ này sẽ tự động hết hạn. Thông thường, cơ hội để thu thập hoặc đổi các đặc vụ này được đưa ra vài ngày trước khi giải đấu bắt đầu và có hiệu lực cho đến khi kết thúc vòng bảng.<br><br>Giải phóng (Release) một cầu thủ Dynamic Stars sẽ nhận được một <span class='highlight'>HLV Đặc biệt Thường (Common Special Coach)</span>. Tuy nhiên, không thể giải phóng các cầu thủ này bất cứ lúc nào; bạn phải đợi cho đến khi giải đấu kết thúc. Tùy chọn giải phóng cầu thủ sẽ được mở khóa <span class='highlight'>48 giờ</span> sau khi các bản cập nhật cuối cùng của giải đấu được áp dụng hoàn toàn vào trò chơi."
+                          data-ar="تم تقديم حدث النجوم الديناميكيين (Dynamic Stars) لأول مرة في <span class='highlight'>DLS 26</span>. عادة ما يتم جلب هذا النوع من الأحداث ترقبًا للبطولات الكبرى مثل كأس العالم. على سبيل المثال، تم تضمين لاعبين مختارين من الفرق المشاركة في كأس العالم 2026 في هذا الحدث. تُعطى الأولوية بشكل أساسي للاعبين الذين يمثلون منتخباتهم الوطنية، والمواهب الصاعدة، واللاعبين الذين يحظون باهتمام كبير.<br><br>أهم جانب في Dynamic Stars هو ارتباطه المباشر بـ <span class='highlight'>كرة القدم في الحياة الواقعية</span>. عادةً، يتم تطوير اللاعبين للحد الأقصى من خلال التدريب، ولكن في هذا الحدث، يرتفع تقييم اللاعب تلقائيًا بناءً على تقدم فريقه في البطولة الحقيقية. في البداية، يكون للاعبين تقييم أساسي محدد (مثل 82)، والذي يتغير خلال البطولة، ويمكن أن يصل تقييم لاعب من الفريق الفائز بالبطولة إلى الحد الأقصى (مثل 86).<br><br>للحصول على لاعبي Dynamic Stars، يلزم وجود <span class='highlight'>وكلاء ديناميكيين (Dynamic Agents)</span>. يمكن الحصول على هؤلاء الوكلاء الخاصين عمومًا بالطرق التالية:<br>• الحدث المباشر (Live Event)<br>• التذكرة المجانية (Free Pass)<br>• تذكرة الموسم (Season Pass)<br>• دريم درافت (Dream Draft) {محتمل}<br>• مكافآت العشيرة (Clan Rewards)<br>• عروض ترويجية محدودة (Limited Promotions)<br><br>مع تقدم الفريق عبر مراحل البطولة المختلفة، يزداد التقييم (مثال عام):<br>المنتخب الوطني في دور المجموعات: <span class='highlight'>التقييم الأساسي (مثل 82)</span><br>المنتخب الوطني يصل إلى دور الـ 32: <span class='highlight'>+3 (مثل 85)</span><br>المنتخب الوطني يصل إلى دور الـ 16: <span class='highlight'>+5 (مثل 87)</span><br>المنتخب الوطني يصل إلى ربع النهائي: <span class='highlight'>+7 (مثل 89)</span><br>المنتخب الوطني يصل إلى نصف النهائي: <span class='highlight'>+9 (مثل 91)</span><br>المنتخب الوطني يصل إلى النهائي: <span class='highlight'>+11 (مثل 93)</span><br>لاعب الفريق الفائز بالبطولة: <span class='highlight'>التقييم الأقصى (مثل 86)</span><br><br>يجب استرداد أو المطالبة بالوكلاء الديناميكيين قبل انتهاء دور المجموعات من البطولة. بمجرد مرور الإطار الزمني المحدد، تنتهي صلاحية هؤلاء الوكلاء تلقائيًا، ولا يمكن الحصول على لاعبين منهم بعد ذلك. بشكل عام، يتم إعطاء فرصة جمع أو استرداد هؤلاء الوكلاء قبل أيام قليلة من بدء البطولة وتظل صالحة حتى نهاية دور المجموعات.<br><br>تحرير (Release) لاعب من Dynamic Stars يمنح <span class='highlight'>مدربًا خاصًا عاديًا (Common Special Coach)</span>. ومع ذلك، لا يمكن تحرير هؤلاء اللاعبين في أي وقت؛ يجب عليك الانتظار حتى نهائي البطولة. يتم فتح خيار تحرير اللاعب بعد <span class='highlight'>48 ساعة</span> من تطبيق التحديثات النهائية للبطولة بالكامل على اللعبة.">
+                        <span class='highlight'>DLS 26</span>-এ প্রথমবারের মতো ডাইনামিক স্টার্স (Dynamic Stars) ইভেন্টটি গেমে যুক্ত হয়। মূলত বিশ্বকাপ বা বড় টুর্নামেন্টকে সামনে রেখেই এই ধরনের ইভেন্ট আনা হয়। যেমন, ২০২৬ সালের বিশ্বকাপে অংশগ্রহণকারী দলগুলোর মধ্য থেকে বাছাইকৃত প্লেয়ারদের এই ইভেন্টে যুক্ত করা হয়েছিল। এখানে মূলত জাতীয় দলকে প্রতিনিধিত্ব করা প্লেয়ার, উদীয়মান তরুণ এবং হাইপে থাকা প্লেয়ারদের প্রাধান্য দেওয়া হয়。<br><br>ডাইনামিক স্টার্সের সবচেয়ে গুরুত্বপূর্ণ দিক হলো এটি <span class='highlight'>রিয়েল-লাইফ ফুটবলের</span> সাথে সরাসরি সম্পর্কিত। সাধারণত গেমে কোচিং করিয়ে প্লেয়ার ম্যাক্স করতে হয়, কিন্তু এই ইভেন্টে বাস্তব টুর্নামেন্টে দলের অগ্রগতির ওপর ভিত্তি করে প্লেয়ারের রেটিং স্বয়ংক্রিয়ভাবে বাড়তে থাকে। ইভেন্টের শুরুতে প্লেয়ারদের একটি নির্দিষ্ট বেস রেটিং (যেমন ৮২) থাকে, যা টুর্নামেন্ট চলাকালীন পরিবর্তিত হতে থাকে এবং চ্যাম্পিয়ন দলের প্লেয়ারের রেটিং সর্বোচ্চ (যেমন ৮৬) পর্যন্ত পৌঁছাতে পারে。<br><br>ডাইনামিক স্টার্স প্লেয়ারদের দলে ভেড়াতে <span class='highlight'>ডাইনামিক এজেন্ট (Dynamic Agent)</span>-এর প্রয়োজন হয়। এই স্পেশাল এজেন্টগুলো সাধারণত নিচের মাধ্যমগুলো থেকে সংগ্রহ করা যায়:<br>• লাইভ ইভেন্ট (Live Event)<br>• ফ্রি পাস (Free Pass)<br>• সিজন পাস (Season Pass)<br>• ড্রিম ড্রাফট (Dream Draft) {সম্ভাব্য}<br>• ক্ল্যান রিওয়ার্ড (Clan Rewards)<br>• লিমিটেড প্রমোশন (Limited Promotions)<br><br>টুর্নামেন্টের বিভিন্ন ধাপে দল উত্তীর্ণ হওয়ার সাথে সাথে রেটিং যেভাবে বৃদ্ধি পায় (একটি সাধারণ উদাহরণ):<br>জাতীয় দল গ্রুপ পর্বে থাকাকালীন: <span class='highlight'>বেস রেটিং (যেমন ৮২)</span><br>জাতীয় দল রাউন্ড ৩২-এ উঠলে: <span class='highlight'>+৩ (যেমন ৮৫)</span><br>জাতীয় দল রাউন্ড ১৬-তে উঠলে: <span class='highlight'>+৫ (যেমন ৮৭)</span><br>জাতীয় দল কোয়ার্টার ফাইনালে উঠলে: <span class='highlight'>+৭ (যেমন ৮৯)</span><br>জাতীয় দল সেমিফাইনালে উঠলে: <span class='highlight'>+৯ (যেমন ৯১)</span><br>জাতীয় দল ফাইনালে উঠলে: <span class='highlight'>+১১ (যেমন ৯৩)</span><br>টুর্নামেন্ট জয়ী দলের প্লেয়ার: <span class='highlight'>সর্বোচ্চ রেটিং (যেমন ৮৬)</span><br><br>ডাইনামিক এজেন্টগুলো টুর্নামেন্টের গ্রুপ পর্ব শেষ হওয়ার আগেই রিডিম বা ক্লেইম করতে হয়। নির্দিষ্ট সময় পার হয়ে গেলে এই এজেন্টগুলো স্বয়ংক্রিয়ভাবে বাতিল হয়ে যায় এবং তা থেকে আর কোনো প্লেয়ার পাওয়া যায় না। সাধারণত টুর্নামেন্ট শুরুর কিছু দিন আগে থেকে এই এজেন্টগুলো কালেক্ট বা রিডিম করার সুযোগ দেওয়া হয় এবং গ্রুপ পর্বের শেষ দিন পর্যন্ত তা কার্যকর থাকে。<br><br>ডাইনামিক স্টার্সের কোনো প্লেয়ারকে রিলিজ দিলে একটি <span class='highlight'>কমন স্পেশাল কোচ (Common Special Coach)</span> পাওয়া যায়। তবে চাইলেই যেকোনো সময় এই প্লেয়ারদের রিলিজ দেওয়া যায় না; এর জন্য টুর্নামেন্টের ফাইনাল পর্যন্ত অপেক্ষা করতে হয়। টুর্নামেন্ট শেষের ফাইনাল আপগ্রেডগুলো গেমে সম্পূর্ণভাবে অ্যাপ্লাই হওয়ার <span class='highlight'>৪৮ ঘণ্টা পর</span> প্লেয়ারটিকে রিলিজ দেওয়ার অপশন আনলক হয়।
+                    </span>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <script>
+        function applyTranslations() {
+            const lang = document.documentElement.getAttribute('data-lang') || 'bn';
+            document.querySelectorAll('[data-bn]').forEach(el => {
+                const translatedText = el.getAttribute('data-' + lang);
+                if (translatedText) {
+                    el.innerHTML = translatedText; 
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations();
+            document.body.style.visibility = 'visible'; 
+        });
+    </script>
+
+</body>
+</html>
