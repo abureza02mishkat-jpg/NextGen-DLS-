@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark" data-lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NextGen DLS - Auto Clicker</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            let savedTheme = localStorage.getItem('savedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            let savedLang = localStorage.getItem('savedLang') || 'bn';
+            document.documentElement.setAttribute('data-lang', savedLang);
+            document.documentElement.dir = (savedLang === 'ar') ? 'rtl' : 'ltr';
+        })();
+    </script>
+
+    <style>
+        :root {
+            --bg-main: #0b1120;
+            --card-bg: #151e32;
+            --card-hover: #1e293b;
+            --text-title: #ffffff;
+            --text-body: #94a3b8;
+            --border-color: #334155;
+            
+            --coin-color: #fbbf24;
+            --gem-color: #38bdf8;
+            --dp-color: #f43f5e;
+            --time-color: #818cf8;
+            --price-color: #22c55e;
+            --tnc-color: #a855f7;
+            
+            --theme-orange: #f97316;
+            
+            --bkash: #e2136e;
+            --nagad: #f7931e;
+            --rocket: #8c1595;
+            --upay: #0067b2;
+        }
+
+        html[data-theme="light"] {
+            --bg-main: #f0f2f5;
+            --card-bg: #ffffff;
+            --card-hover: #f8fafc;
+            --text-title: #0f172a;
+            --text-body: #475569;
+            --border-color: #cbd5e1;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-title); 
+            padding-bottom: 60px; 
+            touch-action: pan-y; /* Fixes zoom but allows vertical scroll */
+            -webkit-touch-callout: none; 
+            -webkit-user-select: none;   
+            -moz-user-select: none;      
+            -ms-user-select: none;       
+            user-select: none;
+            animation: pageFadeIn 0.35s ease-out forwards;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Language Visibility Control */
+        html[data-lang="en"] .lang-bn, html[data-lang="en"] .lang-vi, html[data-lang="en"] .lang-ar { display: none !important; }
+        html[data-lang="bn"] .lang-en, html[data-lang="bn"] .lang-vi, html[data-lang="bn"] .lang-ar { display: none !important; }
+        html[data-lang="vi"] .lang-bn, html[data-lang="vi"] .lang-en, html[data-lang="vi"] .lang-ar { display: none !important; }
+        html[data-lang="ar"] .lang-bn, html[data-lang="ar"] .lang-en, html[data-lang="ar"] .lang-vi { display: none !important; }
+
+        /* Header Style */
+        .header {
+            background: var(--card-bg);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border-bottom: 2px solid var(--theme-orange);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .header i { font-size: 26px; color: var(--theme-orange); }
+        .page-title { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 20px; 
+            font-weight: 900; 
+            color: var(--theme-orange); 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
+
+        /* Section Titles */
+        .section-header {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin: 30px 0 20px 0;
+        }
+        .section-header::before, .section-header::after { content: ""; height: 2px; flex: 1; background: var(--border-color); }
+        .section-title { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; text-transform: uppercase; padding: 0 15px; text-align: center; }
+
+        /* Package Cards Layout */
+        .pack-list { display: flex; flex-direction: column; gap: 15px; }
+        
+        .pack-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); transition: 0.3s; }
+        .pack-card:hover { border-color: var(--coin-color); transform: translateY(-2px); }
+        .special-card:hover { border-color: var(--dp-color); }
+
+        .card-top { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px dashed var(--border-color); padding-bottom: 15px; margin-bottom: 15px; }
+        .card-bottom { display: grid; grid-template-columns: repeat(2, 1fr); }
+
+        .item-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .item-label { font-size: 11px; font-weight: 700; color: var(--text-body); text-transform: uppercase; letter-spacing: 0.5px; }
+        .item-value { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+        
+        .c-coin { color: var(--coin-color); }
+        .c-gem { color: var(--gem-color); }
+        .c-dp { color: var(--dp-color); }
+        .c-time { color: var(--time-color); }
+        .c-price { color: var(--price-color); font-size: 18px; }
+        .c-tnc { color: var(--tnc-color); }
+
+        /* Divider */
+        .divider { height: 3px; background: var(--border-color); border-radius: 4px; margin: 40px auto; width: 60%; opacity: 0.6; }
+
+        /* T&C Section */
+        .tnc-box { background: transparent; margin-top: 20px; }
+        .tnc-list { list-style: none; counter-reset: custom-counter; }
+        .tnc-list li { 
+            position: relative; 
+            padding-left: 45px; 
+            margin-bottom: 25px; 
+            font-size: 13.5px; 
+            color: var(--text-body); 
+            line-height: 1.8; 
+            text-align: justify; 
+            font-weight: 400; 
+            -webkit-user-select: auto; /* Allow text selection in T&C if needed */
+            user-select: auto;
+        }
+        .tnc-list li::before {
+            counter-increment: custom-counter; 
+            content: counter(custom-counter, decimal-leading-zero);
+            position: absolute; left: 0; top: 2px; 
+            background: rgba(168, 85, 247, 0.15); 
+            color: var(--tnc-color);
+            width: 32px; height: 32px; border-radius: 6px; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 800; 
+        }
+
+        /* Payment Methods */
+        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .payment-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+            background: var(--card-bg); padding: 15px; border-radius: 10px;
+            border: 1px solid var(--border-color); font-weight: 700; font-size: 15px;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 5px; margin-top: 5px; color: var(--text-body);
+        }
+        .copy-btn:active { transform: scale(0.95); }
+        
+        .bkash { color: var(--bkash); border-bottom: 3px solid var(--bkash); }
+        .nagad { color: var(--nagad); border-bottom: 3px solid var(--nagad); }
+        .rocket { color: var(--rocket); border-bottom: 3px solid var(--rocket); }
+        .upay { color: var(--upay); border-bottom: 3px solid var(--upay); }
+
+        /* Contact Options */
+        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .whatsapp-card {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-title);
+            padding: 14px 18px; border-radius: 10px; font-size: 15px; font-weight: 600;
+        }
+        .wa-left { display: flex; align-items: center; gap: 12px; }
+        .wa-left i { color: #25D366; font-size: 24px; }
+        
+        .wa-right-btn { 
+            font-size: 12px; 
+            color: var(--text-body); 
+            font-weight: 500; 
+            background: rgba(37, 211, 102, 0.1); 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            color: #25D366;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .wa-right-btn:active { transform: scale(0.95); background: #25D366; color: #ffffff; }
+
+    </style>
+</head>
+<body style="opacity: 0;">
+
+    <div class="header">
+        <i class="fa-solid fa-desktop"></i>
+        <div class="page-title">
+            <span class="lang-bn">অটো ক্লিকার</span>
+            <span class="lang-en">AUTO CLICKER</span>
+            <span class="lang-vi">AUTO CLICKER</span>
+            <span class="lang-ar">النقر التلقائي</span>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <div class="section-header">
+            <span class="section-title c-coin">
+                <span class="lang-bn">কয়েন ও ডায়মন্ড প্যাকেজ</span>
+                <span class="lang-en">COIN & DIAMOND PACKAGE</span>
+                <span class="lang-vi">GÓI XU VÀ KIM CƯƠNG</span>
+                <span class="lang-ar">باقة العملات والجواهر</span>
+            </span>
+        </div>
+        
+        <div class="pack-list">
+            <!-- Pack 1 -->
+            <div class="pack-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৩০,০০০</span><span class="lang-en">30,000</span><span class="lang-vi">30,000</span><span class="lang-ar">٣٠,٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">১০০০</span><span class="lang-en">1000</span><span class="lang-vi">1000</span><span class="lang-ar">١٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৩৫K</span><span class="lang-en">35K</span><span class="lang-vi">35K</span><span class="lang-ar">٣٥K</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">৪</span><span class="lang-en">4</span><span class="lang-vi">4</span><span class="lang-ar">٤</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">৩৭০</span><span class="lang-en">370</span><span class="lang-vi">370</span><span class="lang-ar">٣٧٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pack 2 -->
+            <div class="pack-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৬০,০০০</span><span class="lang-en">60,000</span><span class="lang-vi">60,000</span><span class="lang-ar">٦٠,٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">২২০০+</span><span class="lang-en">2200+</span><span class="lang-vi">2200+</span><span class="lang-ar">٢٢٠٠+</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৭৫K</span><span class="lang-en">75K</span><span class="lang-vi">75K</span><span class="lang-ar">٧٥K</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">৮</span><span class="lang-en">8</span><span class="lang-vi">8</span><span class="lang-ar">٨</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">৮০০</span><span class="lang-en">800</span><span class="lang-vi">800</span><span class="lang-ar">٨٠٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pack 3 -->
+            <div class="pack-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">১৩০,০০০</span><span class="lang-en">130,000</span><span class="lang-vi">130,000</span><span class="lang-ar">١٣٠,٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">৫০০০+</span><span class="lang-en">5000+</span><span class="lang-vi">5000+</span><span class="lang-ar">٥٠٠٠+</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১৬০K</span><span class="lang-en">160K</span><span class="lang-vi">160K</span><span class="lang-ar">١٦٠K</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">১৭</span><span class="lang-en">17</span><span class="lang-vi">17</span><span class="lang-ar">١٧</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">১৭৫০</span><span class="lang-en">1750</span><span class="lang-vi">1750</span><span class="lang-ar">١٧٥٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pack 4 -->
+            <div class="pack-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">২০০,০০০</span><span class="lang-en">200,000</span><span class="lang-vi">200,000</span><span class="lang-ar">٢٠٠,٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">৮০০০+</span><span class="lang-en">8000+</span><span class="lang-vi">8000+</span><span class="lang-ar">٨٠٠٠+</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">২৫</span><span class="lang-en">25</span><span class="lang-vi">25</span><span class="lang-ar">٢٥</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">২৮০০</span><span class="lang-en">2800</span><span class="lang-vi">2800</span><span class="lang-ar">٢٨٠٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pack 5 -->
+            <div class="pack-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৩৫০,০০০</span><span class="lang-en">350,000</span><span class="lang-vi">350,000</span><span class="lang-ar">٣٥٠,٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">১৪,০০০+</span><span class="lang-en">14,000+</span><span class="lang-vi">14,000+</span><span class="lang-ar">١٤,٠٠٠+</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">৪৪</span><span class="lang-en">44</span><span class="lang-vi">44</span><span class="lang-ar">٤٤</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">৪০০০</span><span class="lang-en">4000</span><span class="lang-vi">4000</span><span class="lang-ar">٤٠٠٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pack 6 -->
+            <div class="pack-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৫৭০,০০০</span><span class="lang-en">570,000</span><span class="lang-vi">570,000</span><span class="lang-ar">٥٧٠,٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">২২,০০০</span><span class="lang-en">22,000</span><span class="lang-vi">22,000</span><span class="lang-ar">٢٢,٠٠٠</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">৭০</span><span class="lang-en">70</span><span class="lang-vi">70</span><span class="lang-ar">٧٠</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">৫০০০</span><span class="lang-en">5000</span><span class="lang-vi">5000</span><span class="lang-ar">٥٠٠٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <span class="section-title c-dp">
+                <span class="lang-bn">ডিপি স্পেশাল প্যাক</span>
+                <span class="lang-en">DP SPECIAL PACK</span>
+                <span class="lang-vi">GÓI DP ĐẶC BIỆT</span>
+                <span class="lang-ar">باقة DP الخاصة</span>
+            </span>
+        </div>
+        
+        <div class="pack-list">
+            <!-- Special Pack 1 -->
+            <div class="pack-card special-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৬২.৫K</span><span class="lang-en">62.5K</span><span class="lang-vi">62.5K</span><span class="lang-ar">٦٢.٥K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৫০K</span><span class="lang-en">50K</span><span class="lang-vi">50K</span><span class="lang-ar">٥٠K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">২০০০</span><span class="lang-en">2000</span><span class="lang-vi">2000</span><span class="lang-ar">٢٠٠٠</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">৭</span><span class="lang-en">7</span><span class="lang-vi">7</span><span class="lang-ar">٧</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">৭৫০</span><span class="lang-en">750</span><span class="lang-vi">750</span><span class="lang-ar">٧٥٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Pack 2 -->
+            <div class="pack-card special-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১১৫K</span><span class="lang-en">115K</span><span class="lang-vi">115K</span><span class="lang-ar">١١٥K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৯৫K</span><span class="lang-en">95K</span><span class="lang-vi">95K</span><span class="lang-ar">٩٥K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">৩৫০০</span><span class="lang-en">3500</span><span class="lang-vi">3500</span><span class="lang-ar">٣٥٠٠</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">১৩</span><span class="lang-en">13</span><span class="lang-vi">13</span><span class="lang-ar">١٣</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">১৪০০</span><span class="lang-en">1400</span><span class="lang-vi">1400</span><span class="lang-ar">١٤٠٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Pack 3 -->
+            <div class="pack-card special-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১৭৫K</span><span class="lang-en">175K</span><span class="lang-vi">175K</span><span class="lang-ar">١٧٥K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">১৪০K</span><span class="lang-en">140K</span><span class="lang-vi">140K</span><span class="lang-ar">١٤٠K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">৫৫০০</span><span class="lang-en">5500</span><span class="lang-vi">5500</span><span class="lang-ar">٥٥٠٠</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">১৭</span><span class="lang-en">17</span><span class="lang-vi">17</span><span class="lang-ar">١٧</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">১৯০০</span><span class="lang-en">1900</span><span class="lang-vi">1900</span><span class="lang-ar">١٩٠٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Pack 4 -->
+            <div class="pack-card special-card">
+                <div class="card-top">
+                    <div class="item-box">
+                        <div class="item-label">DP</div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Coin</div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">২০০K</span><span class="lang-en">200K</span><span class="lang-vi">200K</span><span class="lang-ar">٢٠٠K</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label">Gems</div>
+                        <div class="item-value c-gem"><i class="fa-regular fa-gem"></i> <span class="lang-bn">৮০০০</span><span class="lang-en">8000</span><span class="lang-vi">8000</span><span class="lang-ar">٨٠٠٠</span></div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">সময়</span><span class="lang-en">Time</span><span class="lang-vi">Thời gian</span><span class="lang-ar">الوقت</span></div>
+                        <div class="item-value c-time"><i class="fa-solid fa-clock"></i> <span class="lang-bn">২৫</span><span class="lang-en">25</span><span class="lang-vi">25</span><span class="lang-ar">٢٥</span> <span class="lang-bn">দিন</span><span class="lang-en">Days</span><span class="lang-vi">Ngày</span><span class="lang-ar">أيام</span></div>
+                    </div>
+                    <div class="item-box">
+                        <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">২৮০০</span><span class="lang-en">2800</span><span class="lang-vi">2800</span><span class="lang-ar">٢٨٠٠</span>৳</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- T&C Section -->
+        <div class="section-header">
+            <span class="section-title c-tnc">
+                <span class="lang-bn">শর্তাবলী</span>
+                <span class="lang-en">TERMS & CONDITIONS</span>
+                <span class="lang-vi">ĐIỀU KHOẢN & ĐIỀU KIỆN</span>
+                <span class="lang-ar">الشروط والأحكام</span>
+            </span>
+        </div>
+
+        <div class="tnc-box">
+            <ul class="tnc-list">
+                <li>
+                    <span class="lang-bn">শুরুতে অটো ক্লিকার ব্যবহারের ওপর কোনো নিষেধাজ্ঞা ছিল না। তাই ২০২২ সাল থেকে এটি দীর্ঘদিন ধরে ব্যবহৃত হয়ে আসছিল। তবে ২০২৪ সালে FTG অটোমেশন অ্যাপের মাধ্যমে গেম খেলা বন্ধ করতে অটো ক্লিকার ব্যবহারের ওপর নিষেধাজ্ঞা জারি করে। নিষেধাজ্ঞার বিষয়টি জানার সাথে সাথে আমরা আমাদের সার্ভিস সম্পূর্ণভাবে বন্ধ করে দিই এবং সবাইকে সতর্ক করি। আমাদের মাধ্যমে কোনো ব্যক্তির আইডি ক্ষতিগ্রস্ত হোক—এটি আমরা কখনোই চাইনি। পরবর্তীতে দেখা যায়, বিভিন্ন দেশের ডেভেলপাররা আরও নিরাপদ (Safe) কিছু টুলস তৈরি করছে। আমরাও দীর্ঘদিন ধরে একটি নির্ভরযোগ্য টুলসের অপেক্ষায় ছিলাম। অবশেষে এমন একটি নতুন টুলস পাওয়া গেছে, যা ব্যবহার করে এখন পর্যন্ত কোনো আইডি ব্যান হওয়ার ঘটনা আমাদের নজরে আসেনি। আমরা নিজেরাও দীর্ঘদিন ধরে আমাদের নিজস্ব আইডিতে এটি পরীক্ষা-নিরীক্ষা করেছি এবং আমাদের আইডি সুরক্ষিত রয়েছে। এসব বিষয় বিবেচনা করেই টুলসটি পুনরায় চালু করা হয়েছে। এবং আপনারা NextGen DLS সম্পর্কে খুব ভালো করেই জানেন যে NextGen DLS কোন বিষয়ের উপর পূর্ণ আস্থা না পেলে সেই কাজ তারা শুরু করে না। তবে FTG-এর কঠোর নজরদারির কারণে কোনো টুলসকেই ১০০% ঝুঁকিমুক্ত বা সম্পূর্ণ নিরাপদ বলে নিশ্চয়তা দেওয়া সম্ভব নয়। তাই যারা এই সার্ভিসটি গ্রহণ করবেন, তারা সম্পূর্ণ নিজ দায়িত্ব ও ঝুঁকিতে সার্ভিসটি ব্যবহার করবেন। অটো ক্লিকার ব্যবহারের কারণে দুর্ভাগ্যবশত কারও আইডি ব্যান, নষ্ট বা ক্ষতিগ্রস্ত হলে এর জন্য আমরা কোনোভাবেই আইডি-সংক্রান্ত দায়ভার বহন করব না। তবে সার্ভিসটির জন্য আপনার কেনা প্যাকেজটি ব্যবহার অনুপযোগী হয়ে পড়ে, সেক্ষেত্রে সেই প্যাকেজের সম্পূর্ণ মূল্য আপনাকে রিফান্ড (ফেরত) দেওয়া হবে। সবার প্রতি অনুরোধ, সার্ভিসটি নেওয়ার আগে উপরোক্ত বিষয়গুলো ভালোভাবে পড়ে ও বুঝে তারপর সিদ্ধান্ত নেবেন।</span>
+                    <span class="lang-en">Initially, there were no restrictions on using an auto-clicker. It had been used for a long time since 2022. However, in 2024, FTG issued a ban on playing games via automation apps. Upon learning of the ban, we immediately suspended our services and warned everyone. We never wanted anyone's ID to be harmed through us. Later, developers from various countries created safer tools. We were also waiting for a reliable tool for a long time. Finally, a new tool has been found, and so far, no ID bans have come to our attention while using it. We have tested it on our own IDs for a long time, and our IDs remain safe. Considering these facts, the tool has been restarted. And you know very well about NextGen DLS that they do not start anything unless they have full confidence in it. However, due to FTG's strict surveillance, no tool can be guaranteed to be 100% risk-free or completely safe. Therefore, those who accept this service will use it entirely at their own risk and responsibility. If unfortunately anyone's ID is banned, corrupted, or damaged due to the use of an auto-clicker, we will not bear any ID-related liability. However, if the package you purchased for the service becomes unusable, the full price of that package will be refunded to you. We request everyone to read and understand the above points carefully before making a decision to take the service.</span>
+                    <span class="lang-vi">Ban đầu, không có lệnh cấm nào về việc sử dụng auto-clicker. Nó đã được sử dụng từ năm 2022. Tuy nhiên, vào năm 2024, FTG đã cấm chơi game qua các ứng dụng tự động hóa. Ngay khi biết tin, chúng tôi đã đóng dịch vụ và cảnh báo mọi người. Chúng tôi không bao giờ muốn ID của bất kỳ ai bị tổn hại vì chúng tôi. Sau đó, các nhà phát triển đã tạo ra các công cụ an toàn hơn. Gần đây, một công cụ mới đã được tìm thấy và không có trường hợp cấm ID nào xảy ra cho đến nay. Chúng tôi đã tự kiểm tra nó trong một thời gian dài và ID của chúng tôi vẫn an toàn. Xem xét điều này, dịch vụ đã được mở lại. Bạn biết rõ NextGen DLS sẽ không làm gì nếu không có sự tin tưởng tuyệt đối. Tuy nhiên, do sự giám sát nghiêm ngặt của FTG, không có công cụ nào có thể đảm bảo an toàn 100%. Do đó, những ai sử dụng dịch vụ này sẽ tự chịu hoàn toàn rủi ro. Nếu ID bị cấm hoặc hỏng do auto-clicker, chúng tôi sẽ không chịu trách nhiệm. Nhưng nếu gói dịch vụ của bạn không thể sử dụng được, bạn sẽ được hoàn tiền toàn bộ. Xin vui lòng đọc kỹ trước khi quyết định.</span>
+                    <span class="lang-ar">في البداية، لم تكن هناك قيود على استخدام أداة النقر التلقائي. ومع ذلك، في عام 2024، أصدرت FTG حظرًا. عند علمنا بذلك، أوقفنا خدماتنا فورًا. لاحقًا، أنشأ المطورون أدوات أكثر أمانًا. أخيرًا، تم العثور على أداة جديدة ولم يتم حظر أي حساب حتى الآن. لقد اختبرناها على حساباتنا الخاصة لفترة طويلة وهي آمنة. بالنظر إلى ذلك، تمت إعادة تشغيل الأداة. ومع ذلك، بسبب المراقبة الصارمة، لا يمكن ضمان أي أداة بنسبة 100٪. لذلك، من يستخدم هذه الخدمة سيستخدمها على مسؤوليته الخاصة بالكامل. إذا تم حظر حساب أي شخص بسبب استخدام أداة النقر التلقائي، فلن نتحمل أي مسؤولية. ومع ذلك، إذا أصبحت الباقة التي اشتريتها غير قابلة للاستخدام، فسيتم استرداد السعر بالكامل. نطلب من الجميع قراءة هذه النقاط بعناية قبل اتخاذ القرار.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">অর্ডার নিশ্চিত করার আগে আপনাকে সম্পূর্ণ অর্থ পরিশোধ করতে হবে। অগ্রিম পেমেন্ট ছাড়া কোনো অর্ডার গ্রহণ করা হবে না।</span>
+                    <span class="lang-en">You must pay the full amount before confirming the order. No order will be accepted without advance payment.</span>
+                    <span class="lang-vi">Bạn phải thanh toán toàn bộ số tiền trước khi xác nhận đơn hàng. Không đơn hàng nào được chấp nhận mà không thanh toán trước.</span>
+                    <span class="lang-ar">يجب دفع المبلغ بالكامل قبل تأكيد الطلب. لن يتم قبول أي طلب بدون دفع مقدم.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">আপনি যে প্যাকেজটি নির্বাচন করবেন, সেটি সম্পন্ন করতে উল্লেখিত লিস্টে দেওয়া নির্দিষ্ট সময় (যেমন ৩ দিন, ৭ দিন ইত্যাদি) প্রয়োজন হবে। অনুগ্রহ করে এই নির্ধারিত সময়সীমার মধ্যে ধৈর্য ধরে অপেক্ষা করবেন।</span>
+                    <span class="lang-en">The package you choose will require the specific time mentioned in the list (e.g., 3 days, 7 days, etc.) to complete. Please wait patiently within this designated timeframe.</span>
+                    <span class="lang-vi">Gói bạn chọn sẽ yêu cầu thời gian cụ thể (ví dụ: 3 ngày, 7 ngày, v.v.) để hoàn thành. Vui lòng kiên nhẫn chờ đợi trong khoảng thời gian này.</span>
+                    <span class="lang-ar">ستتطلب الباقة التي تختارها الوقت المحدد المذكور في القائمة (مثل 3 أيام، 7 أيام، إلخ) للإكمال. يرجى الانتظار بصبر خلال هذا الإطار الزمني.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">প্যাকেজ চলাকালীন সময়ে প্রতিদিন একবার লগইন করে অগ্রগতি দেখার অনুমতি থাকবে। তবে এই সময় কোনো কয়েন, ডায়মন্ড খরচ করা বা গেম সেটিংসে পরিবর্তন আনা সম্পূর্ণ নিষিদ্ধ। এ নিয়ম ভঙ্গ করলে অর্ডার বাতিল হবে এবং কোনো রিফান্ড প্রদান করা হবে না। প্যাকেজ সম্পূর্ণ শেষ হলে আপনি স্বাভাবিকভাবে কয়েন ও ডায়মন্ড ব্যবহার করতে পারবেন।</span>
+                    <span class="lang-en">You are allowed to log in once a day to check the progress during the package duration. However, spending any coins or diamonds or making changes to the game settings during this time is strictly prohibited. Breaking this rule will result in order cancellation and no refund will be provided. Once the package is fully completed, you can use coins and diamonds normally.</span>
+                    <span class="lang-vi">Bạn được phép đăng nhập mỗi ngày một lần để kiểm tra tiến trình. Tuy nhiên, việc tiêu xu, kim cương hoặc thay đổi cài đặt trò chơi là hoàn toàn bị cấm. Vi phạm quy tắc này sẽ dẫn đến việc hủy đơn hàng mà không được hoàn tiền. Sau khi gói hoàn tất, bạn có thể sử dụng bình thường.</span>
+                    <span class="lang-ar">يُسمح لك بتسجيل الدخول مرة واحدة يوميًا للتحقق من التقدم. ومع ذلك، يُمنع منعًا باتًا إنفاق العملات أو تغيير الإعدادات. سيؤدي كسر هذه القاعدة إلى إلغاء الطلب ولن يتم تقديم أي استرداد. بمجرد اكتمال الباقة، يمكنك الاستخدام بشكل طبيعي.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">অর্ডার দেওয়ার সময় আপনার মোবাইল নম্বর প্রদান বাধ্যতামূলক।</span>
+                    <span class="lang-en">Providing your mobile number is mandatory when placing an order.</span>
+                    <span class="lang-vi">Bắt buộc phải cung cấp số điện thoại di động của bạn khi đặt hàng.</span>
+                    <span class="lang-ar">يعد تقديم رقم هاتفك المحمول إلزاميًا عند تقديم الطلب.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">আপনার আইডিতে অবশ্যই Gmail কানেক্ট থাকতে হবে।</span>
+                    <span class="lang-en">Your ID must have a Gmail connected to it.</span>
+                    <span class="lang-vi">ID của bạn phải có Gmail được kết nối.</span>
+                    <span class="lang-ar">يجب أن يكون حسابك متصلاً ببريد Gmail.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">ফেক বা সন্দেহজনক ফেসবুক আইডিতে কোনো ধরনের প্যাকেজ প্রদান করা হবে না।</span>
+                    <span class="lang-en">No packages will be provided to fake or suspicious Facebook IDs.</span>
+                    <span class="lang-vi">Không có gói nào được cung cấp cho các ID Facebook giả mạo hoặc đáng ngờ.</span>
+                    <span class="lang-ar">لن يتم تقديم أي باقات لحسابات Facebook المزيفة أو المشبوهة.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">আনসেইফ আইডি ব্যবহারজনিত কারণে কোনো সমস্যা দেখা দিলে তার দায়ভার সম্পূর্ণভাবে ব্যবহারকারীর। অনেকে আনসেইফ আইডি দিয়ে কয়েন/ডায়মন্ড খরচ করে ফেলেন বা আমাদের কিক দিয়ে দেন-এ ধরনের ঝুঁকি এড়াতে অনুগ্রহ করে সর্বোচ্চ সতর্ক থাকবেন।</span>
+                    <span class="lang-en">If any problem occurs due to using an unsafe ID, the responsibility lies entirely with the user. Many people spend coins/diamonds with unsafe IDs or kick us out—to avoid such risks, please be extremely careful.</span>
+                    <span class="lang-vi">Nếu có vấn đề xảy ra do sử dụng ID không an toàn, trách nhiệm hoàn toàn thuộc về người dùng. Để tránh rủi ro, vui lòng hết sức cẩn thận.</span>
+                    <span class="lang-ar">إذا حدثت أي مشكلة بسبب استخدام حساب غير آمن، فإن المسؤولية تقع بالكامل على المستخدم. يرجى توخي أقصى درجات الحذر.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">সাম্প্রতিক আপডেটের কারণে কোড নেওয়া এবং পিসিতে সেট করা এখন বেশ কঠিন হয়ে গেছে। উপরন্তু আমরা দৈনন্দিন কাজে ব্যস্ত থাকি। তাই সারাদিনে যেসব অর্ডার আসে, সেগুলোর সব কাজ আমরা একসাথে সকাল ৬ টায় শুরু করবো। এই সময়ের মধ্যেই কোড নেওয়া হবে। কারণ - DLS 2026-এ প্রতি ৭ দিনে একটি আইডি থেকে মাত্র একবার কোড দেওয়া যায় যার কারণে সারাদিন বিভিন্ন অর্ডারের কোড ফোনে সংরক্ষণ করা সম্ভব নয়, তাই নির্দিষ্ট সময়েই সরাসরি আপনাদের কাছ থেকে কোড সংগ্রহ করে পিসিতে কানেক্ট করা হবে।</span>
+                    <span class="lang-en">Due to recent updates, getting codes and setting them up on a PC has become quite difficult. In addition, we are busy with daily work. Therefore, we will start all work for the orders received throughout the day together at 6 AM. Codes will be collected within this time. Reason - In DLS 2026, a code can be given only once every 7 days from an ID, making it impossible to store codes for various orders on the phone all day. Hence, codes will be collected directly from you at a specific time and connected to the PC.</span>
+                    <span class="lang-vi">Do các bản cập nhật gần đây, việc lấy mã đã trở nên khó khăn. Chúng tôi sẽ bắt đầu mọi công việc cho các đơn hàng vào lúc 6 giờ sáng. Mã sẽ được thu thập trực tiếp từ bạn vào thời điểm cụ thể và kết nối với PC.</span>
+                    <span class="lang-ar">بسبب التحديثات الأخيرة، أصبح الحصول على الرموز صعبًا. سنبدأ كل العمل للطلبات معًا في الساعة 6 صباحًا. سيتم جمع الرموز مباشرة منك في وقت محدد.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">অর্ডার দেওয়ার সময় আপনাকে একটি সিরিয়াল নম্বর প্রদান করা হবে। অনুগ্রহ করে এই নম্বরটি সংরক্ষণ করুন, কারণ ভবিষ্যতে আপনার অ্যাকাউন্টের অগ্রগতি জানতে চাইলে সিরিয়াল নম্বর ছাড়া কোনো তথ্য প্রদান করা হবে না।</span>
+                    <span class="lang-en">A serial number will be provided to you when placing the order. Please save this number because no information will be provided in the future regarding your account's progress without it.</span>
+                    <span class="lang-vi">Một số sê-ri sẽ được cung cấp cho bạn. Vui lòng lưu số này vì không có thông tin nào được cung cấp trong tương lai nếu không có nó.</span>
+                    <span class="lang-ar">سيتم تزويدك برقم تسلسلي. يرجى حفظ هذا الرقم لأنه لن يتم تقديم أي معلومات في المستقبل بدونه.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">আপনার কাজ চলাকালীন মেয়াদে আপনি আইডিতে প্রবেশ করতে পারবেন না, যদি কেউ আইডিতে প্রবেশ করেন বা ডায়মন্ড কয়েন খরচ করেন তাহলে তার কাজ সেখানেই বন্ধ ঘোষণা করা হবে। তাই অনুগ্রহ করে এই সময়গুলোতে বিরক্ত বা উদ্বিগ্ন না হয়ে ধৈর্য ধারণ করবেন। কাজ চলমান কিনা তা দেখার জন্য, আমাদের থেকে অনুমতি নিয়ে প্রতিদিন একবার করে আইডিতে প্রবেশ করতে পারবেন। যদি আপনার একাউন্টে টানা দুই বা তিনদিন কাজ বন্ধ থাকে, তাহলে অবশ্যই আমাদের জানাবেন। আমরা বিষয়টি গুরুত্ব সহকারে দেখে সমাধান দেওয়ার চেষ্টা করবো। আপনাদের সহযোগিতার জন্য ধন্যবাদ। অনুগ্রহ করে সকল নিয়ম মেনে চলবেন।</span>
+                    <span class="lang-en">You cannot enter your ID during the working period. If anyone logs in or spends diamond/coins, their work will be declared stopped right there. So please be patient without being annoyed or anxious. To see if the work is running, you can enter the ID once a day taking permission from us. If the work is stopped on your account for 2-3 consecutive days, you must let us know. We will look into it seriously and try to resolve it. Thank you for your cooperation. Please follow all the rules.</span>
+                    <span class="lang-vi">Bạn không thể vào ID của mình trong thời gian làm việc. Nếu có ai đăng nhập hoặc tiêu xu, công việc sẽ bị dừng lại ngay lập tức. Hãy kiên nhẫn. Bạn có thể vào ID một lần mỗi ngày nếu được chúng tôi cho phép. Cảm ơn sự hợp tác của bạn.</span>
+                    <span class="lang-ar">لا يمكنك الدخول إلى حسابك خلال فترة العمل. إذا قام أي شخص بتسجيل الدخول أو إنفاق العملات، فسيتم إيقاف العمل. يرجى التحلي بالصبر. يمكنك الدخول مرة واحدة يوميًا بإذن منا. شكرا لتعاونك.</span>
+                </li>
+                <li>
+                    <span class="lang-bn">প্রতিটি নিয়ম অবশ্যই তিনবার করে পড়তে হবে।</span>
+                    <span class="lang-en">Each rule must be read three times.</span>
+                    <span class="lang-vi">Mỗi quy tắc phải được đọc ba lần.</span>
+                    <span class="lang-ar">يجب قراءة كل قاعدة ثلاث مرات.</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <span class="section-title">
+                <span class="lang-bn">পেমেন্ট মেথড</span>
+                <span class="lang-en">PAYMENT METHODS</span>
+                <span class="lang-vi">PHƯƠNG THỨC THANH TOÁN</span>
+                <span class="lang-ar">طرق الدفع</span>
+            </span>
+        </div>
+        
+        <div class="payment-grid">
+            <div class="payment-card bkash">
+                <div><i class="fa-solid fa-wallet"></i> bKash</div>
+                <div style="color: var(--text-title); font-size: 16px;">01774937056</div>
+                <div class="copy-btn" onclick="copyText('01774937056', this)"><i class="fa-regular fa-copy"></i> <span class="lang-bn">কপি করুন</span><span class="lang-en">Copy</span><span class="lang-vi">Sao chép</span><span class="lang-ar">نسخ</span></div>
+            </div>
+            <div class="payment-card nagad">
+                <div><i class="fa-solid fa-mobile-screen"></i> Nagad</div>
+                <div style="color: var(--text-title); font-size: 16px;">01774937056</div>
+                <div class="copy-btn" onclick="copyText('01774937056', this)"><i class="fa-regular fa-copy"></i> <span class="lang-bn">কপি করুন</span><span class="lang-en">Copy</span><span class="lang-vi">Sao chép</span><span class="lang-ar">نسخ</span></div>
+            </div>
+            <div class="payment-card rocket">
+                <div><i class="fa-solid fa-rocket"></i> Rocket</div>
+                <div style="color: var(--text-title); font-size: 16px;">01936328243</div>
+                <div class="copy-btn" onclick="copyText('01936328243', this)"><i class="fa-regular fa-copy"></i> <span class="lang-bn">কপি করুন</span><span class="lang-en">Copy</span><span class="lang-vi">Sao chép</span><span class="lang-ar">نسخ</span></div>
+            </div>
+            <div class="payment-card upay">
+                <div><i class="fa-solid fa-shield-halved"></i> Upay</div>
+                <div style="color: var(--text-title); font-size: 16px;">01625037334</div>
+                <div class="copy-btn" onclick="copyText('01625037334', this)"><i class="fa-regular fa-copy"></i> <span class="lang-bn">কপি করুন</span><span class="lang-en">Copy</span><span class="lang-vi">Sao chép</span><span class="lang-ar">نسخ</span></div>
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top: 45px;">
+            <span class="section-title" style="color: var(--price-color);">
+                <span class="lang-bn">অর্ডার করতে যোগাযোগ করুন</span>
+                <span class="lang-en">CONTACT US TO ORDER</span>
+                <span class="lang-vi">LIÊN HỆ ĐỂ ĐẶT HÀNG</span>
+                <span class="lang-ar">اتصل بنا للطلب</span>
+            </span>
+        </div>
+        
+        <div class="contact-grid">
+            <div class="whatsapp-card">
+                <div class="wa-left">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>Abu Reza Mishkat</span>
+                </div>
+                <a href="#" onclick="openWhatsApp('8801743450499'); return false;" class="wa-right-btn">
+                    <span class="lang-bn">মেসেজ দিন</span><span class="lang-en">Message</span><span class="lang-vi">Tin nhắn</span><span class="lang-ar">رسالة</span>
+                </a>
+            </div>
+            
+            <div class="whatsapp-card">
+                <div class="wa-left">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>Ashik Ahmed</span>
+                </div>
+                <a href="#" onclick="openWhatsApp('8801774937056'); return false;" class="wa-right-btn">
+                    <span class="lang-bn">মেসেজ দিন</span><span class="lang-en">Message</span><span class="lang-vi">Tin nhắn</span><span class="lang-ar">رسالة</span>
+                </a>
+            </div>
+            
+            <div class="whatsapp-card">
+                <div class="wa-left">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>Bayzid Bepary</span>
+                </div>
+                <a href="#" onclick="openWhatsApp('8801936328243'); return false;" class="wa-right-btn">
+                    <span class="lang-bn">মেসেজ দিন</span><span class="lang-en">Message</span><span class="lang-vi">Tin nhắn</span><span class="lang-ar">رسالة</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Reveal body opacity on load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.opacity = '1';
+        });
+
+        // Copy functionality
+        function copyText(text, element) {
+            navigator.clipboard.writeText(text).then(() => {
+                element.innerHTML = '<i class="fa-solid fa-check"></i> <span class="lang-bn">কপি হয়েছে!</span><span class="lang-en">Copied!</span><span class="lang-vi">Đã chép!</span><span class="lang-ar">تم النسخ!</span>';
+                element.style.color = '#22c55e';
+                element.style.background = 'rgba(34, 197, 94, 0.1)';
+                
+                setTimeout(() => {
+                    element.innerHTML = '<i class="fa-regular fa-copy"></i> <span class="lang-bn">কপি করুন</span><span class="lang-en">Copy</span><span class="lang-vi">Sao chép</span><span class="lang-ar">نسخ</span>';
+                    element.style.color = 'var(--text-body)';
+                    element.style.background = 'rgba(255, 255, 255, 0.1)';
+                }, 2000);
+            });
+        }
+
+        // WhatsApp functionality with auto-text based on language
+        function openWhatsApp(phone) {
+            let currentLang = localStorage.getItem('savedLang') || 'bn';
+            let message = "";
+            
+            if (currentLang === 'bn') {
+                message = "আমি অটো ক্লিকারের প্যাকেজ কিনতে চাই";
+            } else if (currentLang === 'en') {
+                message = "I want to buy Auto Clicker package";
+            } else if (currentLang === 'vi') {
+                message = "Tôi muốn mua gói Auto Clicker";
+            } else if (currentLang === 'ar') {
+                message = "أريد شراء باقة النقر التلقائي";
+            }
+            
+            let encodedMessage = encodeURIComponent(message);
+            window.open('https://wa.me/' + phone + '?text=' + encodedMessage, '_blank');
+        }
+    </script>
+</body>
+</html>
