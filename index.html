@@ -179,6 +179,11 @@
         .c19 .icon-box{ background: linear-gradient(135deg, #22c55e, #166534); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); } 
         .c20 .icon-box{ background: linear-gradient(135deg, #475569, #1e293b); } 
 
+        /* Joint Menu Icon for Auto Clicker */
+        .joint-menu-icon { position: relative; }
+        .joint-menu-icon .fa-coins { position: absolute; bottom: 7px; left: 6px; font-size: 21px; }
+        .joint-menu-icon .fa-gem { position: absolute; top: 7px; right: 5px; font-size: 14px; text-shadow: -2px 2px 0 #ca8307; z-index: 2; }
+
         .label { 
             font-size: 10px; text-align: center; font-weight: 600; line-height: 1.2; 
             display: block; width: 100%; height: 26px; word-wrap: break-word; color: var(--text-color);
@@ -219,8 +224,14 @@
             <a href="coaching-guide2.html" class="service-item c3"><div class="icon-box"><i class="fa-solid fa-chalkboard-user"></i></div><span class="label" data-bn="কোচিং গাইড" data-en="Coaching Guide" data-vi="Hướng dẫn Huấn luyện" data-ar="دليل التدريب">কোচিং গাইড</span></a>
             <a href="live-events2.html" class="service-item c4"><div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div><span class="label" data-bn="লাইভ ইভেন্ট" data-en="Live Events" data-vi="Sự kiện Trực tiếp" data-ar="أحداث حية">লাইভ ইভেন্ট</span></a>
             
-            <!-- Changed "Current Event" to "Auto Clicker" -->
-            <a href="auto-clicker.html" class="service-item c5"><div class="icon-box"><i class="fa-solid fa-desktop"></i></div><span class="label" data-bn="অটো ক্লিকার" data-en="Auto Clicker" data-vi="Auto Clicker" data-ar="النقر التلقائي">অটো ক্লিকার</span></a>
+            <!-- Auto Clicker with Custom Joint Icon -->
+            <a href="auto-clicker.html" class="service-item c5">
+                <div class="icon-box joint-menu-icon">
+                    <i class="fa-solid fa-coins"></i>
+                    <i class="fa-solid fa-gem"></i>
+                </div>
+                <span class="label" data-bn="অটো ক্লিকার" data-en="Auto Clicker" data-vi="Auto Clicker" data-ar="النقر التلقائي">অটো ক্লিকার</span>
+            </a>
             
             <a href="formations-guide2.html" class="service-item c6"><div class="icon-box"><i class="fa-solid fa-people-group"></i></div><span class="label" data-bn="ফরমেশন গাইড" data-en="Formations Guide" data-vi="Hướng dẫn Đội hình" data-ar="دليل التشكيلات">ফরমেশন গাইড</span></a>
             <a href="best-cards2.html" class="service-item c7"><div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div><span class="label" data-bn="সেরা কার্ড" data-en="Best Cards" data-vi="Thẻ Tốt nhất" data-ar="أفضل البطاقات">সেরা কার্ড</span></a>

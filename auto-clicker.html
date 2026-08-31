@@ -63,7 +63,7 @@
             background-color: var(--bg-main); 
             color: var(--text-title); 
             padding-bottom: 60px; 
-            touch-action: pan-y; /* Fixes zoom but allows vertical scroll */
+            touch-action: pan-y;
             -webkit-touch-callout: none; 
             -webkit-user-select: none;   
             -moz-user-select: none;      
@@ -96,14 +96,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             border-bottom: 2px solid var(--theme-orange);
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        .header i { font-size: 26px; color: var(--theme-orange); }
+
+        /* Joint Coin & Gem Icon */
+        .joint-icon {
+            position: relative;
+            width: 40px;
+            height: 32px;
+        }
+        .joint-icon .fa-coins {
+            font-size: 25px;
+            color: var(--coin-color);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        .joint-icon .fa-gem {
+            font-size: 19px;
+            color: var(--gem-color);
+            position: absolute;
+            top: 0;
+            right: 0;
+            /* Creates a cutout effect against the coin */
+            text-shadow: -2px 2px 0 var(--card-bg), -1px 1px 0 var(--card-bg), -2px 1px 0 var(--card-bg); 
+            z-index: 2;
+        }
+
         .page-title { 
             font-family: 'Montserrat', sans-serif; 
             font-size: 20px; 
@@ -159,7 +183,7 @@
             line-height: 1.8; 
             text-align: justify; 
             font-weight: 400; 
-            -webkit-user-select: auto; /* Allow text selection in T&C if needed */
+            -webkit-user-select: auto; 
             user-select: auto;
         }
         .tnc-list li::before {
@@ -220,7 +244,10 @@
 <body style="opacity: 0;">
 
     <div class="header">
-        <i class="fa-solid fa-desktop"></i>
+        <div class="joint-icon">
+            <i class="fa-solid fa-coins"></i>
+            <i class="fa-solid fa-gem"></i>
+        </div>
         <div class="page-title">
             <span class="lang-bn">অটো ক্লিকার</span>
             <span class="lang-en">AUTO CLICKER</span>
@@ -254,7 +281,7 @@
                     </div>
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৩৫K</span><span class="lang-en">35K</span><span class="lang-vi">35K</span><span class="lang-ar">٣٥K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৩৫,০০০</span><span class="lang-en">35,000</span><span class="lang-vi">35,000</span><span class="lang-ar">٣٥,٠٠٠</span></div>
                     </div>
                 </div>
                 <div class="card-bottom">
@@ -282,7 +309,7 @@
                     </div>
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৭৫K</span><span class="lang-en">75K</span><span class="lang-vi">75K</span><span class="lang-ar">٧٥K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৭৫,০০০</span><span class="lang-en">75,000</span><span class="lang-vi">75,000</span><span class="lang-ar">٧٥,٠٠٠</span></div>
                     </div>
                 </div>
                 <div class="card-bottom">
@@ -310,7 +337,7 @@
                     </div>
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১৬০K</span><span class="lang-en">160K</span><span class="lang-vi">160K</span><span class="lang-ar">١٦٠K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১৬০,০০০</span><span class="lang-en">160,000</span><span class="lang-vi">160,000</span><span class="lang-ar">١٦٠,٠٠٠</span></div>
                     </div>
                 </div>
                 <div class="card-bottom">
@@ -338,7 +365,7 @@
                     </div>
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০,০০০</span><span class="lang-en">250,000</span><span class="lang-vi">250,000</span><span class="lang-ar">٢٥٠,٠٠٠</span></div>
                     </div>
                 </div>
                 <div class="card-bottom">
@@ -366,7 +393,7 @@
                     </div>
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০,০০০</span><span class="lang-en">250,000</span><span class="lang-vi">250,000</span><span class="lang-ar">٢٥٠,٠٠٠</span></div>
                     </div>
                 </div>
                 <div class="card-bottom">
@@ -394,7 +421,7 @@
                     </div>
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০,০০০</span><span class="lang-en">250,000</span><span class="lang-vi">250,000</span><span class="lang-ar">٢٥٠,٠٠٠</span></div>
                     </div>
                 </div>
                 <div class="card-bottom">
@@ -427,11 +454,11 @@
                 <div class="card-top">
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৬২.৫K</span><span class="lang-en">62.5K</span><span class="lang-vi">62.5K</span><span class="lang-ar">٦٢.٥K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">৬২,৫০০</span><span class="lang-en">62,500</span><span class="lang-vi">62,500</span><span class="lang-ar">٦٢,٥٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Coin</div>
-                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৫০K</span><span class="lang-en">50K</span><span class="lang-vi">50K</span><span class="lang-ar">٥٠K</span></div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৫০,০০০</span><span class="lang-en">50,000</span><span class="lang-vi">50,000</span><span class="lang-ar">٥٠,٠٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Gems</div>
@@ -445,7 +472,7 @@
                     </div>
                     <div class="item-box">
                         <div class="item-label"><span class="lang-bn">মূল্য</span><span class="lang-en">Price</span><span class="lang-vi">Giá</span><span class="lang-ar">السعر</span></div>
-                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">৭৫০</span><span class="lang-en">750</span><span class="lang-vi">750</span><span class="lang-ar">٧٥٠</span>৳</div>
+                        <div class="item-value c-price"><i class="fa-solid fa-sack-dollar"></i> <span class="lang-bn">৭৫০</span><span class="lang-en">750</span><span class="lang-vi">750</span><span class="lang-ar">৭৫০</span>৳</div>
                     </div>
                 </div>
             </div>
@@ -455,11 +482,11 @@
                 <div class="card-top">
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১১৫K</span><span class="lang-en">115K</span><span class="lang-vi">115K</span><span class="lang-ar">١١٥K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১১৫,০০০</span><span class="lang-en">115,000</span><span class="lang-vi">115,000</span><span class="lang-ar">١١٥,٠٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Coin</div>
-                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৯৫K</span><span class="lang-en">95K</span><span class="lang-vi">95K</span><span class="lang-ar">٩٥K</span></div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">৯৫,০০০</span><span class="lang-en">95,000</span><span class="lang-vi">95,000</span><span class="lang-ar">٩٥,٠٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Gems</div>
@@ -483,11 +510,11 @@
                 <div class="card-top">
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১৭৫K</span><span class="lang-en">175K</span><span class="lang-vi">175K</span><span class="lang-ar">١٧٥K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">১৭৫,০০০</span><span class="lang-en">175,000</span><span class="lang-vi">175,000</span><span class="lang-ar">١٧٥,٠٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Coin</div>
-                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">১৪০K</span><span class="lang-en">140K</span><span class="lang-vi">140K</span><span class="lang-ar">١٤٠K</span></div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">১৪০,০০০</span><span class="lang-en">140,000</span><span class="lang-vi">140,000</span><span class="lang-ar">١٤٠,٠٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Gems</div>
@@ -511,11 +538,11 @@
                 <div class="card-top">
                     <div class="item-box">
                         <div class="item-label">DP</div>
-                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০K</span><span class="lang-en">250K</span><span class="lang-vi">250K</span><span class="lang-ar">٢٥٠K</span></div>
+                        <div class="item-value c-dp"><i class="fa-solid fa-bullseye"></i> <span class="lang-bn">২৫০,০০০</span><span class="lang-en">250,000</span><span class="lang-vi">250,000</span><span class="lang-ar">٢٥٠,٠٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Coin</div>
-                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">২০০K</span><span class="lang-en">200K</span><span class="lang-vi">200K</span><span class="lang-ar">٢٠٠K</span></div>
+                        <div class="item-value c-coin"><i class="fa-solid fa-coins"></i> <span class="lang-bn">২০০,০০০</span><span class="lang-en">200,000</span><span class="lang-vi">200,000</span><span class="lang-ar">٢٠٠,٠٠٠</span></div>
                     </div>
                     <div class="item-box">
                         <div class="item-label">Gems</div>
@@ -713,12 +740,6 @@
                 element.innerHTML = '<i class="fa-solid fa-check"></i> <span class="lang-bn">কপি হয়েছে!</span><span class="lang-en">Copied!</span><span class="lang-vi">Đã chép!</span><span class="lang-ar">تم النسخ!</span>';
                 element.style.color = '#22c55e';
                 element.style.background = 'rgba(34, 197, 94, 0.1)';
-                
-                setTimeout(() => {
-                    element.innerHTML = '<i class="fa-regular fa-copy"></i> <span class="lang-bn">কপি করুন</span><span class="lang-en">Copy</span><span class="lang-vi">Sao chép</span><span class="lang-ar">نسخ</span>';
-                    element.style.color = 'var(--text-body)';
-                    element.style.background = 'rgba(255, 255, 255, 0.1)';
-                }, 2000);
             });
         }
 
