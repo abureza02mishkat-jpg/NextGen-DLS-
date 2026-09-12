@@ -258,7 +258,6 @@
     </div>
 </div> 
 
-
 <script>
     function toggleT() {
         let currentTheme = document.documentElement.getAttribute('data-theme');
@@ -291,12 +290,19 @@
         setL(lang);
 
         let ua = navigator.userAgent.toLowerCase();
+        // App condition detect
         let isApp = ua.includes("wv") || ua.includes("gonative") || ua.includes("median") || window.matchMedia('(display-mode: standalone)').matches;
         
         if (isApp) {
+            // Hide download button in app
             let appBtn = document.getElementById('app-download-btn');
             if (appBtn) {
                 appBtn.style.display = 'none';
+            }
+            // Hide the extra logo in app
+            let appLogo = document.querySelector('.app-logo');
+            if (appLogo) {
+                appLogo.style.display = 'none';
             }
         }
     });
