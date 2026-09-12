@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.nextgendls.game",
+    "sha256_cert_fingerprints": ["59:1C:3A:F9:92:90:31:86:34:2A:03:05:BB:9D:44:43:C4:BD:86:68:83:1A:5A:61:51:A7:30:A0:5A:13:1B:FD"]
+  }
+}]
