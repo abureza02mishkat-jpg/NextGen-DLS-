@@ -1,0 +1,28 @@
+{
+  "background_color": "#ffffff",
+  "description": "This is the official NextGen DLS App! Your ultimate hub for DLS News, Coaching Guides, Tips &amp; Tricks, Custom Card Maker, Squad Builder, Kits, and Player Compare.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "NextGen DLS",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "NextGen DLS",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "https://nextgendls.com/nextgen.webp",
+      "type": "image/webp",
+      "sizes": "96x96",
+      "isSquare": true,
+      "isPng": false,
+      "isWebp": true,
+      "isJpg": false,
+      "width": 96,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    }
+  ],
+  "id": "com.nextgendls.game"
+}
